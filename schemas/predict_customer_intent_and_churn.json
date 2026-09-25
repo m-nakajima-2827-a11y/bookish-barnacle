@@ -1,0 +1,22 @@
+{
+  "name": "predict_customer_intent_and_churn",
+  "description": "顧客のオムニチャネル行動ログから、LTV予測、次回購入確率、離脱リスクスコアを算出し、最適セグメントを判定する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "customer_id": { "type": "string" },
+      "analysis_window_days": {
+        "type": "integer",
+        "description": "分析対象とする過去の日数（例: 30, 90, 180）"
+      },
+      "prediction_targets": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["purchase_propensity", "churn_risk", "category_affinity", "optimal_channel"]
+        }
+      }
+    },
+    "required": ["customer_id", "prediction_targets"]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "sync_omnichannel_customer_data",
+  "description": "実店舗の購買履歴、EC閲覧履歴、アプリ内イベントを単一の顧客IDに統合し、プロファイルをリアルタイム更新する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "customer_id": {
+        "type": "string",
+        "description": "共通顧客IDまたはハッシュ化された会員ID"
+      },
+      "touchpoints": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "channel": {
+              "type": "string",
+              "enum": ["web", "mobile_app", "physical_store_pos", "sns", "email"]
+            },
+            "timestamp": { "type": "string", "format": "date-time" },
+            "event_type": {
+              "type": "string",
+              "enum": ["page_view", "cart_add", "store_purchase", "app_open", "ad_click"]
+            },
+            "payload": {
+              "type": "object",
+              "description": "購入金額、SKU、閲覧URL、店舗コードなどの詳細データ"
+            }
+          },
+          "required": ["channel", "timestamp", "event_type"]
+        }
+      }
+    },
+    "required": ["customer_id", "touchpoints"]
+  }
+}

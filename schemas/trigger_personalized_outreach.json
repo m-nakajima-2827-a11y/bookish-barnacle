@@ -1,0 +1,27 @@
+{
+  "name": "trigger_personalized_outreach",
+  "description": "行動イベントに基づき、最もエンゲージメント率が高いチャネルを選択して個別化されたコンテンツを自動配信する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "customer_id": { "type": "string" },
+      "selected_channel": {
+        "type": "string",
+        "enum": ["app_push", "line_official", "email", "sms"]
+      },
+      "campaign_scenario": {
+        "type": "string",
+        "enum": ["abandoned_cart", "post_store_visit_followup", "churn_prevention", "cross_sell_recommendation"]
+      },
+      "offer_type": {
+        "type": "string",
+        "enum": ["store_coupon", "ec_free_shipping", "personalized_content", "point_multiplier"]
+      },
+      "payload_details": {
+        "type": "object",
+        "description": "推奨商品IDリスト、有効期限、ダイナミックバナーURL等"
+      }
+    },
+    "required": ["customer_id", "selected_channel", "campaign_scenario"]
+  }
+}

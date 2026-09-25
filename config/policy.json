@@ -1,0 +1,42 @@
+{
+  "_comment": "ガードレール設定。数値はすべて初期値（仮説）です。運用開始前に広告主・法務と合意した値へ変更してください。",
+  "timezone": "Asia/Tokyo",
+  "execution_mode": "dry_run",
+  "ads": {
+    "max_daily_budget_change_ratio": 0.2,
+    "require_human_approval_over_ratio": 0.1,
+    "min_conversions_for_bid_change": 30,
+    "min_impressions_for_creative_pause": 1000,
+    "creative_pause_ctr_ratio_to_avg": 0.5
+  },
+  "outreach": {
+    "frequency_cap_per_customer_per_7days": 3,
+    "same_scenario_cooldown_days": 7,
+    "quiet_hours": {
+      "start": "21:00",
+      "end": "08:00",
+      "channels": [
+        "app_push",
+        "sms",
+        "line_official"
+      ]
+    },
+    "max_discount_rate": 0.2,
+    "default_coupon_valid_days": 14,
+    "require_consent": true
+  },
+  "prediction": {
+    "default_analysis_window_days": 90,
+    "high_affinity_threshold": 0.6,
+    "churn_inactive_days": 60
+  },
+  "workflow": {
+    "post_purchase_followup_days": 3,
+    "exclusion_platforms": [
+      "google_ads",
+      "meta_ads"
+    ],
+    "cross_sell_offer_type": "store_coupon",
+    "cross_sell_discount_rate": 0.1
+  }
+}

@@ -1,0 +1,271 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "sync_omnichannel_customer_data",
+      "description": "実店舗の購買履歴、EC閲覧履歴、アプリ内イベントを単一の顧客IDに統合し、プロファイルをリアルタイム更新する",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "description": "共通顧客IDまたはハッシュ化された会員ID"
+          },
+          "touchpoints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "web",
+                    "mobile_app",
+                    "physical_store_pos",
+                    "sns",
+                    "email"
+                  ]
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "event_type": {
+                  "type": "string",
+                  "enum": [
+                    "page_view",
+                    "cart_add",
+                    "store_purchase",
+                    "app_open",
+                    "ad_click"
+                  ]
+                },
+                "payload": {
+                  "type": "object",
+                  "description": "購入金額、SKU、閲覧URL、店舗コードなどの詳細データ"
+                }
+              },
+              "required": [
+                "channel",
+                "timestamp",
+                "event_type"
+              ]
+            }
+          }
+        },
+        "required": [
+          "customer_id",
+          "touchpoints"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "predict_customer_intent_and_churn",
+      "description": "顧客のオムニチャネル行動ログから、LTV予測、次回購入確率、離脱リスクスコアを算出し、最適セグメントを判定する",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          },
+          "analysis_window_days": {
+            "type": "integer",
+            "description": "分析対象とする過去の日数（例: 30, 90, 180）"
+          },
+          "prediction_targets": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "purchase_propensity",
+                "churn_risk",
+                "category_affinity",
+                "optimal_channel"
+              ]
+            }
+          }
+        },
+        "required": [
+          "customer_id",
+          "prediction_targets"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "optimize_ad_and_social_campaigns",
+      "description": "購買済みユーザーの除外設定、類似セグメントの広告媒体への同期、および自動入札・予算配分の調整を実行する",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "google_ads",
+              "meta_ads",
+              "line_ads",
+              "x_ads"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "sync_audience_exclusion",
+              "update_budget",
+              "adjust_bidding_strategy",
+              "pause_underperforming_creative"
+            ]
+          },
+          "target_segment_id": {
+            "type": "string"
+          },
+          "optimization_metrics": {
+            "type": "object",
+            "properties": {
+              "target_roas": {
+                "type": "number"
+              },
+              "max_cpa": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "required": [
+          "platform",
+          "action"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "trigger_personalized_outreach",
+      "description": "行動イベントに基づき、最もエンゲージメント率が高いチャネルを選択して個別化されたコンテンツを自動配信する",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          },
+          "selected_channel": {
+            "type": "string",
+            "enum": [
+              "app_push",
+              "line_official",
+              "email",
+              "sms"
+            ]
+          },
+          "campaign_scenario": {
+            "type": "string",
+            "enum": [
+              "abandoned_cart",
+              "post_store_visit_followup",
+              "churn_prevention",
+              "cross_sell_recommendation"
+            ]
+          },
+          "offer_type": {
+            "type": "string",
+            "enum": [
+              "store_coupon",
+              "ec_free_shipping",
+              "personalized_content",
+              "point_multiplier"
+            ]
+          },
+          "payload_details": {
+            "type": "object",
+            "description": "推奨商品IDリスト、有効期限、ダイナミックバナーURL等"
+          }
+        },
+        "required": [
+          "customer_id",
+          "selected_channel",
+          "campaign_scenario"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "generate_omnichannel_attribution_report",
+      "description": "Web・アプリ・広告・SNS・メール・実店舗POSの全チャネル実績を統合し、指定アトリビューションモデルで各チャネル・施策の売上貢献度を算出して、改善案とともにレポートを出力する",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "period_start": {
+            "type": "string",
+            "format": "date",
+            "description": "集計開始日（YYYY-MM-DD、JST）"
+          },
+          "period_end": {
+            "type": "string",
+            "format": "date",
+            "description": "集計終了日（YYYY-MM-DD、JST、当日を含む）"
+          },
+          "attribution_model": {
+            "type": "string",
+            "enum": [
+              "last_touch",
+              "first_touch",
+              "linear",
+              "time_decay",
+              "position_based",
+              "data_driven_mta",
+              "mmm"
+            ],
+            "description": "貢献度の配分ロジック。data_driven_mta / mmm は外部分析基盤との接続が必要"
+          },
+          "lookback_window_days": {
+            "type": "integer",
+            "description": "コンバージョン前に遡って接点を評価する日数（例: 7, 30）"
+          },
+          "channels": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "web",
+                "mobile_app",
+                "physical_store_pos",
+                "sns",
+                "email",
+                "google_ads",
+                "meta_ads",
+                "line_ads",
+                "x_ads"
+              ]
+            },
+            "description": "対象チャネル。省略時は全チャネル"
+          },
+          "include_offline_sales": {
+            "type": "boolean",
+            "description": "実店舗POS売上をコンバージョンに含めるか（既定: true）"
+          },
+          "output_format": {
+            "type": "string",
+            "enum": [
+              "json",
+              "markdown"
+            ],
+            "description": "出力形式（既定: markdown）"
+          }
+        },
+        "required": [
+          "period_start",
+          "period_end",
+          "attribution_model"
+        ]
+      }
+    }
+  }
+]

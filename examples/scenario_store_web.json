@@ -1,0 +1,1010 @@
+{
+ "_comment": "デモ用の架空データです。数値は動作確認用のサンプルであり、実績値ではありません。",
+ "start_at": "2026-09-20T10:00:00+09:00",
+ "history": {
+  "C001": [
+   {
+    "channel": "web",
+    "timestamp": "2026-09-10T20:15:00+09:00",
+    "event_type": "page_view",
+    "payload": {
+     "url": "/products/JKT-001",
+     "sku": "JKT-001"
+    }
+   },
+   {
+    "channel": "sns",
+    "timestamp": "2026-09-12T12:30:00+09:00",
+    "event_type": "ad_click",
+    "payload": {
+     "platform": "meta_ads",
+     "campaign_id": "M-RMK-JKT"
+    }
+   },
+   {
+    "channel": "web",
+    "timestamp": "2026-09-14T21:05:00+09:00",
+    "event_type": "ad_click",
+    "payload": {
+     "platform": "google_ads",
+     "campaign_id": "G-RMK-JKT"
+    }
+   },
+   {
+    "channel": "mobile_app",
+    "timestamp": "2026-09-15T08:40:00+09:00",
+    "event_type": "app_open",
+    "payload": {
+     "consent": {
+      "app_push": true,
+      "email": true
+     }
+    }
+   }
+  ],
+  "C002": [
+   {
+    "channel": "web",
+    "timestamp": "2026-09-08T19:00:00+09:00",
+    "event_type": "ad_click",
+    "payload": {
+     "platform": "google_ads",
+     "campaign_id": "G-SRCH-BRAND"
+    }
+   },
+   {
+    "channel": "web",
+    "timestamp": "2026-09-08T19:03:00+09:00",
+    "event_type": "cart_add",
+    "payload": {
+     "sku": "SHO-100",
+     "consent": {
+      "email": true
+     }
+    }
+   }
+  ],
+  "C003": [
+   {
+    "channel": "sns",
+    "timestamp": "2026-09-02T12:00:00+09:00",
+    "event_type": "ad_click",
+    "payload": {
+     "platform": "meta_ads",
+     "campaign_id": "M-PROS"
+    }
+   },
+   {
+    "channel": "web",
+    "timestamp": "2026-09-02T12:02:00+09:00",
+    "event_type": "page_view",
+    "payload": {
+     "url": "/products/TNT-300",
+     "sku": "TNT-300"
+    }
+   },
+   {
+    "channel": "physical_store_pos",
+    "timestamp": "2026-09-06T15:20:00+09:00",
+    "event_type": "store_purchase",
+    "payload": {
+     "store_code": "S012",
+     "amount": 48000,
+     "skus": [
+      "TNT-300"
+     ]
+    }
+   }
+  ],
+  "C004": [
+   {
+    "channel": "email",
+    "timestamp": "2026-09-03T09:00:00+09:00",
+    "event_type": "page_view",
+    "payload": {
+     "url": "/mail/autumn"
+    }
+   },
+   {
+    "channel": "web",
+    "timestamp": "2026-09-11T22:10:00+09:00",
+    "event_type": "ad_click",
+    "payload": {
+     "platform": "google_ads",
+     "campaign_id": "G-SRCH-BRAND"
+    }
+   },
+   {
+    "channel": "web",
+    "timestamp": "2026-09-11T22:20:00+09:00",
+    "event_type": "store_purchase",
+    "payload": {
+     "order_id": "EC-5521",
+     "amount": 15800,
+     "skus": [
+      "BAG-200"
+     ]
+    }
+   }
+  ],
+  "C005": [
+   {
+    "channel": "physical_store_pos",
+    "timestamp": "2026-09-13T13:00:00+09:00",
+    "event_type": "store_purchase",
+    "payload": {
+     "store_code": "S003",
+     "amount": 3200,
+     "skus": [
+      "SPR-010"
+     ]
+    }
+   }
+  ],
+  "C006": [
+   {
+    "channel": "mobile_app",
+    "timestamp": "2026-06-10T19:00:00+09:00",
+    "event_type": "app_open",
+    "payload": {
+     "consent": {
+      "app_push": true,
+      "line_official": true
+     }
+    }
+   },
+   {
+    "channel": "physical_store_pos",
+    "timestamp": "2026-06-12T11:00:00+09:00",
+    "event_type": "store_purchase",
+    "payload": {
+     "store_code": "S001",
+     "amount": 22000,
+     "skus": [
+      "SHO-100"
+     ]
+    }
+   }
+  ]
+ },
+ "campaigns": {
+  "google_ads": [
+   {
+    "campaign_id": "G-RMK-JKT",
+    "name": "ジャケット購買検討者リマーケティング",
+    "daily_budget": 30000,
+    "bidding_strategy": "maximize_clicks",
+    "segment_id": "rmk_outdoor_jacket",
+    "exclude_segment_candidates": [
+     "purchased_outdoor_jacket"
+    ],
+    "creatives": {
+     "G-RMK-JKT-a": {
+      "impressions": 42000,
+      "clicks": 630,
+      "status": "active"
+     },
+     "G-RMK-JKT-b": {
+      "impressions": 38000,
+      "clicks": 152,
+      "status": "active"
+     },
+     "G-RMK-JKT-c": {
+      "impressions": 800,
+      "clicks": 2,
+      "status": "active"
+     }
+    }
+   },
+   {
+    "campaign_id": "G-SRCH-BRAND",
+    "name": "指名検索",
+    "daily_budget": 20000,
+    "bidding_strategy": "maximize_conversions",
+    "segment_id": "search_brand",
+    "creatives": {}
+   }
+  ],
+  "meta_ads": [
+   {
+    "campaign_id": "M-RMK-JKT",
+    "name": "ジャケット閲覧者リタゲ",
+    "daily_budget": 25000,
+    "bidding_strategy": "lowest_cost",
+    "segment_id": "rmk_outdoor_jacket",
+    "exclude_segment_candidates": [
+     "purchased_outdoor_jacket"
+    ],
+    "creatives": {}
+   },
+   {
+    "campaign_id": "M-PROS",
+    "name": "新規見込み（類似オーディエンス）",
+    "daily_budget": 40000,
+    "bidding_strategy": "lowest_cost",
+    "segment_id": "lookalike_buyers",
+    "creatives": {}
+   }
+  ]
+ },
+ "ad_spend": [
+  {
+   "date": "2026-09-01",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-01",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-01",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-01",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-02",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-02",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-02",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-02",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-03",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-03",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-03",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-03",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-04",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-04",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-04",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-04",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-05",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-05",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-05",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-05",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-06",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-06",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-06",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-06",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-07",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-07",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-07",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-07",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-08",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-08",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-08",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-08",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-09",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-09",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-09",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-09",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-10",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-10",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-10",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-10",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-11",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-11",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-11",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-11",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-12",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-12",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-12",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-12",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-13",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-13",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-13",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-13",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-14",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-14",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-14",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-14",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-15",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-15",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-15",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-15",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-16",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-16",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-16",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-16",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-17",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-17",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-17",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-17",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-18",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-18",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-18",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-18",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  },
+  {
+   "date": "2026-09-19",
+   "platform": "google_ads",
+   "campaign_id": "G-RMK-JKT",
+   "cost": 28000,
+   "impressions": 5200,
+   "clicks": 95,
+   "conversions": 1,
+   "revenue": 33000
+  },
+  {
+   "date": "2026-09-19",
+   "platform": "google_ads",
+   "campaign_id": "G-SRCH-BRAND",
+   "cost": 19000,
+   "impressions": 3100,
+   "clicks": 410,
+   "conversions": 3,
+   "revenue": 96000
+  },
+  {
+   "date": "2026-09-19",
+   "platform": "meta_ads",
+   "campaign_id": "M-RMK-JKT",
+   "cost": 24000,
+   "impressions": 18000,
+   "clicks": 160,
+   "conversions": 1,
+   "revenue": 21000
+  },
+  {
+   "date": "2026-09-19",
+   "platform": "meta_ads",
+   "campaign_id": "M-PROS",
+   "cost": 39000,
+   "impressions": 60000,
+   "clicks": 380,
+   "conversions": 1,
+   "revenue": 30000
+  }
+ ],
+ "trigger_event": {
+  "customer_id": "C001",
+  "touchpoints": [
+   {
+    "channel": "physical_store_pos",
+    "timestamp": "2026-09-20T11:00:00+09:00",
+    "event_type": "store_purchase",
+    "payload": {
+     "store_code": "S001",
+     "amount": 29800,
+     "skus": [
+      "JKT-001"
+     ],
+     "member_barcode_scanned": true
+    }
+   }
+  ]
+ }
+}

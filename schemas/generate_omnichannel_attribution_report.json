@@ -1,0 +1,46 @@
+{
+  "name": "generate_omnichannel_attribution_report",
+  "description": "Web・アプリ・広告・SNS・メール・実店舗POSの全チャネル実績を統合し、指定アトリビューションモデルで各チャネル・施策の売上貢献度を算出して、改善案とともにレポートを出力する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "period_start": {
+        "type": "string",
+        "format": "date",
+        "description": "集計開始日（YYYY-MM-DD、JST）"
+      },
+      "period_end": {
+        "type": "string",
+        "format": "date",
+        "description": "集計終了日（YYYY-MM-DD、JST、当日を含む）"
+      },
+      "attribution_model": {
+        "type": "string",
+        "enum": ["last_touch", "first_touch", "linear", "time_decay", "position_based", "data_driven_mta", "mmm"],
+        "description": "貢献度の配分ロジック。data_driven_mta / mmm は外部分析基盤との接続が必要"
+      },
+      "lookback_window_days": {
+        "type": "integer",
+        "description": "コンバージョン前に遡って接点を評価する日数（例: 7, 30）"
+      },
+      "channels": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["web", "mobile_app", "physical_store_pos", "sns", "email", "google_ads", "meta_ads", "line_ads", "x_ads"]
+        },
+        "description": "対象チャネル。省略時は全チャネル"
+      },
+      "include_offline_sales": {
+        "type": "boolean",
+        "description": "実店舗POS売上をコンバージョンに含めるか（既定: true）"
+      },
+      "output_format": {
+        "type": "string",
+        "enum": ["json", "markdown"],
+        "description": "出力形式（既定: markdown）"
+      }
+    },
+    "required": ["period_start", "period_end", "attribution_model"]
+  }
+}
