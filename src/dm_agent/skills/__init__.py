@@ -1,13 +1,17 @@
-from .ads import optimize_ad_and_social_campaigns
-from .outreach import trigger_personalized_outreach
-from .predict import predict_customer_intent_and_churn
-from .report import generate_omnichannel_attribution_report
-from .sync import sync_omnichannel_customer_data
+from .ads import optimize_lead_gen_campaigns
+from .content_calendar import plan_social_content_calendar
+from .funnel import analyze_marketing_funnel
+from .nurture import trigger_nurture_action
+from .scoring import score_and_qualify_leads
+from .sync import sync_lead_activity
+from .utm_builder import build_utm_tracking_url
 
 HANDLERS = {
-    "sync_omnichannel_customer_data": sync_omnichannel_customer_data,
-    "predict_customer_intent_and_churn": predict_customer_intent_and_churn,
-    "optimize_ad_and_social_campaigns": optimize_ad_and_social_campaigns,
-    "trigger_personalized_outreach": trigger_personalized_outreach,
-    "generate_omnichannel_attribution_report": generate_omnichannel_attribution_report,
+    "sync_lead_activity": sync_lead_activity,
+    "score_and_qualify_leads": score_and_qualify_leads,
+    "trigger_nurture_action": trigger_nurture_action,
+    "optimize_lead_gen_campaigns": optimize_lead_gen_campaigns,
+    "build_utm_tracking_url": build_utm_tracking_url,
+    "plan_social_content_calendar": plan_social_content_calendar,
+    "analyze_marketing_funnel": analyze_marketing_funnel,
 }

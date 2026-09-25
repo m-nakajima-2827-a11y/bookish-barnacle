@@ -1,48 +1,48 @@
-"""Event-driven automation playbook: store purchase → ad suppression → prediction → cross-sell outreach.
+"""BtoB automation playbook: lead capture → scoring → nurture / sales handoff → recontact.
 
-Deterministic rules run without an LLM so that routine, high-volume reactions are
-fast, cheap, and auditable. The LLM agent (llm_agent.py) handles open-ended
-requests and exceptions on top of the same tools.
+Deterministic rules handle the routine, time-sensitive reactions (e.g. the 30-minute
+first-contact rule) so they don't wait on an LLM. The LLM agent works on top of the
+same tools for analysis, planning and exceptions.
 """
 
 from __future__ import annotations
 
-from datetime import timedelta
-from typing import Any
-
 from .runtime import AgentRuntime
+
+AD_PLATFORMS_FOR_EXCLUSION = ("google_ads", "meta_ads")
 
 
 def install_default_playbook(rt: AgentRuntime) -> None:
-    wf = rt.policy["workflow"]
+    def rescore(rt: AgentRuntime, origin: str, lead_id: str, **_) -> None:
+        # 1) Conversions (資料DL・セミナー申込・問い合わせ) and high-intent activity
+        #    (セミナー参加・料金ページ・事例閲覧) re-score the lead immediately.
+        rt.execute("score_and_qualify_leads", {"lead_ids": [lead_id]}, origin="playbook")
 
-    def on_category_purchased(rt: AgentRuntime, origin: str, customer_id: str, category: str, timestamp: str) -> None:
-        # Step 2: stop paying to retarget someone who already bought.
-        for platform in wf["exclusion_platforms"]:
-            rt.execute("optimize_ad_and_social_campaigns",
-                       {"platform": platform, "action": "sync_audience_exclusion",
-                        "target_segment_id": f"purchased_{category}"}, origin="playbook")
-        # Step 3: re-score intent after the follow-up delay.
-        rt.schedule(rt.now() + timedelta(days=wf["post_purchase_followup_days"]),
-                    "predict_customer_intent_and_churn",
-                    {"customer_id": customer_id,
-                     "prediction_targets": ["category_affinity", "optimal_channel", "purchase_propensity"]})
+    def on_mql(rt: AgentRuntime, origin: str, lead_id: str) -> None:
+        # 2) MQL → industry-specific nurture track (IT / 製造業 / 汎用).
+        rt.execute("trigger_nurture_action", {"lead_id": lead_id, "action": "enroll_nurture_track"}, origin="playbook")
 
-    def on_prediction(rt: AgentRuntime, origin: str, customer_id: str, result: dict[str, Any]) -> None:
-        # Step 4: cross-sell on high affinity via the best consented channel.
-        # Only the playbook's own scheduled follow-up auto-sends; ad-hoc predictions stay read-only.
-        if origin != "scheduler":
-            return
-        high = [a for a in result.get("category_affinity", []) if a["level"] == "high"]
-        channel = (result.get("optimal_channel") or {}).get("channel")
-        if not high or not channel:
-            return
-        products = [pid for a in high for pid in a["recommended_products"]]
-        rt.execute("trigger_personalized_outreach", {
-            "customer_id": customer_id, "selected_channel": channel,
-            "campaign_scenario": "cross_sell_recommendation", "offer_type": wf["cross_sell_offer_type"],
-            "payload_details": {"product_ids": products, "categories": [a["category"] for a in high],
-                                "discount_rate": wf["cross_sell_discount_rate"]}}, origin="playbook")
+    def on_hot(rt: AgentRuntime, origin: str, lead_id: str) -> None:
+        # 3) Hot lead → inside-sales task with a first-contact deadline (SLA).
+        rt.execute("trigger_nurture_action", {"lead_id": lead_id, "action": "sales_handoff"}, origin="playbook")
 
-    rt.on("category_purchased", on_category_purchased)
-    rt.on("prediction_completed", on_prediction)
+    def on_pipeline_change(rt: AgentRuntime, origin: str, lead_id: str, **_) -> None:
+        # 4) Stop spending ad budget on companies already in sales conversations or won.
+        for platform in AD_PLATFORMS_FOR_EXCLUSION:
+            for seg in ("open_opportunities", "customers"):
+                rt.execute("optimize_lead_gen_campaigns", {"platform": platform, "action": "sync_audience_exclusion",
+                                                           "target_segment_id": seg}, origin="playbook")
+
+    def on_lost(rt: AgentRuntime, origin: str, lead_id: str, lost_reason: str | None = None, **_) -> None:
+        # 5) Lost on timing/budget → recontact task at the (assumed) budget-planning month.
+        if lost_reason in {"timing", "budget"}:
+            rt.execute("trigger_nurture_action", {"lead_id": lead_id, "action": "schedule_recontact"}, origin="playbook")
+
+    rt.on("lead_converted", rescore)
+    rt.on("high_intent_activity", rescore)
+    rt.on("lead_mql", on_mql)
+    rt.on("lead_hot", on_hot)
+    rt.on("lead_handed_off", on_pipeline_change)
+    rt.on("opportunity_created", on_pipeline_change)
+    rt.on("deal_won", on_pipeline_change)
+    rt.on("deal_lost", on_lost)

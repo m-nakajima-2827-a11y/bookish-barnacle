@@ -9,26 +9,34 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
-from .cdp import CDPStore
-from .connectors import MockAdPlatform, MockMessaging
+from .connectors import MockAdPlatform, MockCRM, MockEmail
 from .guardrails import Guardrails
 from .registry import ROOT, ToolValidationError, load_schemas, validate_input
 from .skills import HANDLERS
+from .store import LeadStore
 
 CONFIG_DIR = ROOT / "config"
+DEFAULT_CLIENT = "sample_sales_consulting"
+
+
+def load_client(client_id: str) -> dict[str, Any]:
+    """Per-client settings (ICP, scoring, content, UTM dictionary) — one file per client."""
+    return json.loads((CONFIG_DIR / "clients" / f"{client_id}.json").read_text(encoding="utf-8"))
 
 
 class AgentRuntime:
-    def __init__(self, policy: dict[str, Any] | None = None, catalog: dict[str, Any] | None = None,
-                 store: CDPStore | None = None, ad_platforms: dict[str, Any] | None = None,
-                 messaging: Any = None, now: datetime | None = None):
+    def __init__(self, client_id: str = DEFAULT_CLIENT, policy: dict[str, Any] | None = None,
+                 client: dict[str, Any] | None = None, store: LeadStore | None = None,
+                 ad_platforms: dict[str, Any] | None = None, email: Any = None, crm: Any = None,
+                 now: datetime | None = None):
         self.policy = policy or json.loads((CONFIG_DIR / "policy.json").read_text(encoding="utf-8"))
-        self.catalog = catalog or json.loads((CONFIG_DIR / "catalog.json").read_text(encoding="utf-8"))
-        self.store = store or CDPStore(self.catalog)
+        self.client = client or load_client(client_id)
+        self.store = store or LeadStore()
         self.guardrails = Guardrails(self.policy)
         self.ad_platforms = ad_platforms if ad_platforms is not None else {
-            n: MockAdPlatform(n) for n in ("google_ads", "meta_ads", "line_ads", "x_ads")}
-        self.messaging = messaging or MockMessaging()
+            n: MockAdPlatform(n) for n in ("google_ads", "yahoo_ads", "meta_ads", "linkedin_ads")}
+        self.email = email or MockEmail()
+        self.crm = crm or MockCRM()
         self.schemas = load_schemas()
         self._clock = now
         self._jobs: list[tuple[datetime, int, str, dict[str, Any]]] = []

@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -12,15 +13,21 @@ def scenario():
     return json.loads(Path(SCENARIO).read_text(encoding="utf-8"))
 
 
-@pytest.fixture
-def live_rt(scenario):
-    rt = build_runtime(scenario, live_mocks=True)
+def _rt(scenario, live):
+    rt = build_runtime(scenario, live_mocks=live)
     install_default_playbook(rt)
     return rt
+
+
+@pytest.fixture
+def live_rt(scenario):
+    return _rt(scenario, True)
 
 
 @pytest.fixture
 def dry_rt(scenario):
-    rt = build_runtime(scenario, live_mocks=False)
-    install_default_playbook(rt)
-    return rt
+    return _rt(scenario, False)
+
+
+def at(rt, iso):
+    rt.advance_to(datetime.fromisoformat(iso))

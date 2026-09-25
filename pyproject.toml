@@ -1,7 +1,7 @@
 [project]
 name = "dm-agent"
 version = "0.1.0"
-description = "Omnichannel digital marketing AI agent: CDP sync, prediction, ad optimization, personalized outreach, attribution reporting"
+description = "BtoB digital marketing AI agent: lead capture, scoring, nurturing, sales handoff, UTM design, Instagram planning, GA4/Search Console/CRM funnel analysis"
 requires-python = ">=3.10"
 dependencies = ["jsonschema>=4.0"]
 

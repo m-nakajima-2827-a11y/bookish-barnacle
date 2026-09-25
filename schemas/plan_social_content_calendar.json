@@ -1,0 +1,23 @@
+{
+  "name": "plan_social_content_calendar",
+  "description": "BtoB向けInstagram運用の投稿カレンダーを作成する。業界別（IT・製造業）のテーマ、投稿形式（保存狙いの図解カルーセル、導入事例、中の人リール、ウェビナー告知ストーリーズ）、資料DLへのUTM付き導線、投稿ごとのKPIを割り当てる。新規アカウントの場合はプロフィール設計のチェックリストも出力する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "start_date": { "type": "string", "format": "date" },
+      "weeks": { "type": "integer", "minimum": 1, "maximum": 12 },
+      "posting_days": {
+        "type": "array",
+        "items": { "type": "string", "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] },
+        "description": "投稿曜日（既定: mon, fri）"
+      },
+      "target_industries": {
+        "type": "array",
+        "items": { "type": "string", "enum": ["it_saas", "manufacturing"] }
+      },
+      "account_status": { "type": "string", "enum": ["new", "active"], "description": "new の場合、プロフィール設計チェックリストを含める" },
+      "include_webinar_stories": { "type": "boolean", "description": "ウェビナー告知ストーリーズを含めるか（既定: true）" }
+    },
+    "required": ["start_date", "weeks", "target_industries"]
+  }
+}

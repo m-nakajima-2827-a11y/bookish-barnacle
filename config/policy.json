@@ -1,42 +1,53 @@
 {
-  "_comment": "ガードレール設定。数値はすべて初期値（仮説）です。運用開始前に広告主・法務と合意した値へ変更してください。",
+  "_comment": "ガードレール設定。数値はすべて初期値（仮置き）です。運用開始前にクライアント・法務と合意した値へ変更してください。",
   "timezone": "Asia/Tokyo",
   "execution_mode": "dry_run",
+  "business_hours": {
+    "days": [
+      "mon",
+      "tue",
+      "wed",
+      "thu",
+      "fri"
+    ],
+    "start": "09:00",
+    "end": "18:00",
+    "closed_dates_mmdd": [
+      "12-29",
+      "12-30",
+      "12-31",
+      "01-01",
+      "01-02",
+      "01-03"
+    ],
+    "_comment": "年末年始のみ休業日として登録済み。祝日は未対応のため、運用時は祝日カレンダーを追加してください。"
+  },
+  "email": {
+    "require_opt_in": true,
+    "frequency_cap_per_lead_per_7days": 2,
+    "same_asset_resend_block_days": 30,
+    "send_in_business_hours_only": true,
+    "required_footer": "配信停止はこちら: {unsubscribe_url}\n送信者: {sender_name}（{sender_address}）"
+  },
+  "sales_handoff": {
+    "first_contact_sla_minutes": 30,
+    "allow_stages": [
+      "hot"
+    ]
+  },
   "ads": {
     "max_daily_budget_change_ratio": 0.2,
     "require_human_approval_over_ratio": 0.1,
     "min_conversions_for_bid_change": 30,
+    "min_sql_for_budget_judgement": 3,
     "min_impressions_for_creative_pause": 1000,
     "creative_pause_ctr_ratio_to_avg": 0.5
   },
-  "outreach": {
-    "frequency_cap_per_customer_per_7days": 3,
-    "same_scenario_cooldown_days": 7,
-    "quiet_hours": {
-      "start": "21:00",
-      "end": "08:00",
-      "channels": [
-        "app_push",
-        "sms",
-        "line_official"
-      ]
-    },
-    "max_discount_rate": 0.2,
-    "default_coupon_valid_days": 14,
-    "require_consent": true
-  },
-  "prediction": {
-    "default_analysis_window_days": 90,
-    "high_affinity_threshold": 0.6,
-    "churn_inactive_days": 60
-  },
-  "workflow": {
-    "post_purchase_followup_days": 3,
-    "exclusion_platforms": [
-      "google_ads",
-      "meta_ads"
-    ],
-    "cross_sell_offer_type": "store_coupon",
-    "cross_sell_discount_rate": 0.1
+  "analysis": {
+    "min_leads_for_rate_judgement": 5,
+    "low_sql_rate": 0.1,
+    "lp_min_sessions": 100,
+    "lp_low_cvr": 0.01,
+    "brand_search_growth_alert": 0.2
   }
 }

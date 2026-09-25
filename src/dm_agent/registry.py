@@ -12,11 +12,13 @@ ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_DIR = ROOT / "schemas"
 
 TOOL_ORDER = [
-    "sync_omnichannel_customer_data",
-    "predict_customer_intent_and_churn",
-    "optimize_ad_and_social_campaigns",
-    "trigger_personalized_outreach",
-    "generate_omnichannel_attribution_report",
+    "sync_lead_activity",
+    "score_and_qualify_leads",
+    "trigger_nurture_action",
+    "optimize_lead_gen_campaigns",
+    "build_utm_tracking_url",
+    "plan_social_content_calendar",
+    "analyze_marketing_funnel",
 ]
 
 

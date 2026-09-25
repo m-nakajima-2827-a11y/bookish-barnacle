@@ -2,14 +2,75 @@
   {
     "type": "function",
     "function": {
-      "name": "sync_omnichannel_customer_data",
-      "description": "実店舗の購買履歴、EC閲覧履歴、アプリ内イベントを単一の顧客IDに統合し、プロファイルをリアルタイム更新する",
+      "name": "sync_lead_activity",
+      "description": "Webサイト・LP・Instagram・メール・ウェビナー・広告・インサイドセールスの行動履歴と企業属性を、リードIDと企業（アカウント）IDに統合してリードプロファイルを更新する。資料DL、ウェビナー参加、問い合わせ、商談化・受注・失注の記録に使う",
       "parameters": {
         "type": "object",
         "properties": {
-          "customer_id": {
+          "lead_id": {
             "type": "string",
-            "description": "共通顧客IDまたはハッシュ化された会員ID"
+            "description": "MA/CRM上のリードID（メールアドレス等の個人情報ではなく、ハッシュ化または採番済みID）"
+          },
+          "account": {
+            "type": "object",
+            "description": "企業属性。初回登録時またはフォーム入力で更新があったときに指定",
+            "properties": {
+              "account_id": {
+                "type": "string",
+                "description": "企業ID（法人番号・CRM企業ID等）"
+              },
+              "industry": {
+                "type": "string",
+                "enum": [
+                  "it_saas",
+                  "manufacturing",
+                  "professional_services",
+                  "retail",
+                  "construction",
+                  "other"
+                ]
+              },
+              "employee_band": {
+                "type": "string",
+                "enum": [
+                  "1-9",
+                  "10-49",
+                  "50-299",
+                  "300-999",
+                  "1000+"
+                ]
+              },
+              "job_role": {
+                "type": "string",
+                "enum": [
+                  "executive",
+                  "sales_manager",
+                  "sales_rep",
+                  "marketing",
+                  "other",
+                  "student",
+                  "job_seeker"
+                ]
+              },
+              "fiscal_year_end_month": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 12,
+                "description": "決算月（予算編成時期の推定に使用）"
+              }
+            }
+          },
+          "consent": {
+            "type": "object",
+            "description": "同意状態の取得・変更時のみ指定",
+            "properties": {
+              "email_opt_in": {
+                "type": "boolean"
+              },
+              "unsubscribed": {
+                "type": "boolean"
+              }
+            }
           },
           "touchpoints": {
             "type": "array",
@@ -19,11 +80,15 @@
                 "channel": {
                   "type": "string",
                   "enum": [
-                    "web",
-                    "mobile_app",
-                    "physical_store_pos",
-                    "sns",
-                    "email"
+                    "website",
+                    "landing_page",
+                    "instagram",
+                    "email",
+                    "webinar",
+                    "search_ads",
+                    "social_ads",
+                    "inside_sales",
+                    "offline_event"
                   ]
                 },
                 "timestamp": {
@@ -34,15 +99,25 @@
                   "type": "string",
                   "enum": [
                     "page_view",
-                    "cart_add",
-                    "store_purchase",
-                    "app_open",
-                    "ad_click"
+                    "pricing_page_view",
+                    "case_study_view",
+                    "whitepaper_download",
+                    "webinar_registration",
+                    "webinar_attendance",
+                    "email_open",
+                    "email_click",
+                    "social_engagement",
+                    "ad_click",
+                    "contact_request",
+                    "sales_call",
+                    "meeting_booked",
+                    "deal_won",
+                    "deal_lost"
                   ]
                 },
                 "payload": {
                   "type": "object",
-                  "description": "購入金額、SKU、閲覧URL、店舗コードなどの詳細データ"
+                  "description": "url、landing_page、utm（source/medium/campaign/content/term）、asset_id、webinar_id、amount（商談見込額・受注額）、lost_reason 等"
                 }
               },
               "required": [
@@ -54,7 +129,7 @@
           }
         },
         "required": [
-          "customer_id",
+          "lead_id",
           "touchpoints"
         ]
       }
@@ -63,34 +138,74 @@
   {
     "type": "function",
     "function": {
-      "name": "predict_customer_intent_and_churn",
-      "description": "顧客のオムニチャネル行動ログから、LTV予測、次回購入確率、離脱リスクスコアを算出し、最適セグメントを判定する",
+      "name": "score_and_qualify_leads",
+      "description": "企業属性の適合度（フィット）と行動履歴（エンゲージメント）からリードスコアを算出し、MQL・ホットリード（営業引き渡し対象）・育成継続・対象外を判定する。同一企業の複数担当者の動き（購買関与者）も企業単位で評価する",
       "parameters": {
         "type": "object",
         "properties": {
-          "customer_id": {
-            "type": "string"
+          "lead_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "判定対象のリードID。省略時は直近の行動があった全リード"
           },
           "analysis_window_days": {
             "type": "integer",
-            "description": "分析対象とする過去の日数（例: 30, 90, 180）"
+            "description": "行動履歴を評価する過去日数（例: 30, 90, 180）"
           },
-          "prediction_targets": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "purchase_propensity",
-                "churn_risk",
-                "category_affinity",
-                "optimal_channel"
-              ]
-            }
+          "include_account_view": {
+            "type": "boolean",
+            "description": "企業単位の集計（関与人数・企業スコア）を含めるか（既定: true）"
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "trigger_nurture_action",
+      "description": "リードの業界・検討段階に応じて、育成シナリオ登録、メール配信、ウェビナー招待、次に読むべき資料の案内、インサイドセールスへの引き渡し（初回接触期限つきタスク）、予算編成時期に合わせた再アプローチ予約を実行する",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "lead_id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "enroll_nurture_track",
+              "send_email",
+              "invite_webinar",
+              "recommend_content",
+              "sales_handoff",
+              "schedule_recontact"
+            ]
+          },
+          "nurture_track": {
+            "type": "string",
+            "enum": [
+              "it_saas",
+              "manufacturing",
+              "general"
+            ],
+            "description": "育成シナリオ。省略時はリードの業界から自動選択"
+          },
+          "content_asset_id": {
+            "type": "string",
+            "description": "案内する資料・ウェビナーのID（config のコンテンツ一覧）"
+          },
+          "payload_details": {
+            "type": "object",
+            "description": "件名、本文差し込み、recontact_date（YYYY-MM-DD）、handoff_note 等"
           }
         },
         "required": [
-          "customer_id",
-          "prediction_targets"
+          "lead_id",
+          "action"
         ]
       }
     }
@@ -98,8 +213,8 @@
   {
     "type": "function",
     "function": {
-      "name": "optimize_ad_and_social_campaigns",
-      "description": "購買済みユーザーの除外設定、類似セグメントの広告媒体への同期、および自動入札・予算配分の調整を実行する",
+      "name": "optimize_lead_gen_campaigns",
+      "description": "リード獲得広告（Google/Yahoo!検索、Meta・Instagram、LinkedIn）について、既存顧客・商談中企業・対象外リードの除外同期、商談化単価（Cost per SQL）を重視した予算再配分、入札戦略の変更、低成果クリエイティブの停止を行う",
       "parameters": {
         "type": "object",
         "properties": {
@@ -107,9 +222,9 @@
             "type": "string",
             "enum": [
               "google_ads",
+              "yahoo_ads",
               "meta_ads",
-              "line_ads",
-              "x_ads"
+              "linkedin_ads"
             ]
           },
           "action": {
@@ -122,16 +237,19 @@
             ]
           },
           "target_segment_id": {
-            "type": "string"
+            "type": "string",
+            "description": "除外同期では customers / open_opportunities / disqualified など。その他の操作では対象キャンペーンの絞り込み"
           },
           "optimization_metrics": {
             "type": "object",
             "properties": {
-              "target_roas": {
-                "type": "number"
+              "target_cpl": {
+                "type": "number",
+                "description": "目標リード獲得単価（円）"
               },
-              "max_cpa": {
-                "type": "number"
+              "target_cost_per_sql": {
+                "type": "number",
+                "description": "目標商談化単価（円）"
               }
             }
           }
@@ -146,50 +264,64 @@
   {
     "type": "function",
     "function": {
-      "name": "trigger_personalized_outreach",
-      "description": "行動イベントに基づき、最もエンゲージメント率が高いチャネルを選択して個別化されたコンテンツを自動配信する",
+      "name": "build_utm_tracking_url",
+      "description": "GA4で流入元を正しく計測するためのUTMパラメータ付きURLを作成する。小文字統一・全角文字禁止などの命名ルールを検証し、GA4での想定チャネル分類を返し、キャンペーン台帳に登録する",
       "parameters": {
         "type": "object",
         "properties": {
-          "customer_id": {
-            "type": "string"
+          "base_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "リンク先のページURL（LP・資料DLページ等）"
           },
-          "selected_channel": {
+          "utm_source": {
+            "type": "string",
+            "description": "流入元の媒体名（例: instagram, google, newsletter）"
+          },
+          "utm_medium": {
+            "type": "string",
+            "description": "流入の種類（例: social, paid_social, cpc, email）"
+          },
+          "utm_campaign": {
+            "type": "string",
+            "description": "企画名（例: mfg_paper, it_seminar）。半角英数字・_・- のみ"
+          },
+          "utm_content": {
+            "type": "string",
+            "description": "リンクの設置場所やクリエイティブの区別（例: profile_link, story_it）"
+          },
+          "utm_term": {
+            "type": "string",
+            "description": "検索広告のキーワード等（任意）"
+          },
+          "placement": {
             "type": "string",
             "enum": [
-              "app_push",
-              "line_official",
-              "email",
-              "sms"
-            ]
+              "instagram_profile",
+              "instagram_story",
+              "instagram_post",
+              "instagram_ad",
+              "email_newsletter",
+              "webinar_invite",
+              "search_ad",
+              "other"
+            ],
+            "description": "リンクの設置場所。utm_content 省略時の既定値と命名チェックに使用"
           },
-          "campaign_scenario": {
+          "target_industry": {
             "type": "string",
             "enum": [
-              "abandoned_cart",
-              "post_store_visit_followup",
-              "churn_prevention",
-              "cross_sell_recommendation"
+              "it_saas",
+              "manufacturing",
+              "general"
             ]
-          },
-          "offer_type": {
-            "type": "string",
-            "enum": [
-              "store_coupon",
-              "ec_free_shipping",
-              "personalized_content",
-              "point_multiplier"
-            ]
-          },
-          "payload_details": {
-            "type": "object",
-            "description": "推奨商品IDリスト、有効期限、ダイナミックバナーURL等"
           }
         },
         "required": [
-          "customer_id",
-          "selected_channel",
-          "campaign_scenario"
+          "base_url",
+          "utm_source",
+          "utm_medium",
+          "utm_campaign"
         ]
       }
     }
@@ -197,73 +329,119 @@
   {
     "type": "function",
     "function": {
-      "name": "generate_omnichannel_attribution_report",
-      "description": "Web・アプリ・広告・SNS・メール・実店舗POSの全チャネル実績を統合し、指定アトリビューションモデルで各チャネル・施策の売上貢献度を算出して、改善案とともにレポートを出力する",
+      "name": "plan_social_content_calendar",
+      "description": "BtoB向けInstagram運用の投稿カレンダーを作成する。業界別（IT・製造業）のテーマ、投稿形式（保存狙いの図解カルーセル、導入事例、中の人リール、ウェビナー告知ストーリーズ）、資料DLへのUTM付き導線、投稿ごとのKPIを割り当てる。新規アカウントの場合はプロフィール設計のチェックリストも出力する",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "weeks": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "posting_days": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "mon",
+                "tue",
+                "wed",
+                "thu",
+                "fri",
+                "sat",
+                "sun"
+              ]
+            },
+            "description": "投稿曜日（既定: mon, fri）"
+          },
+          "target_industries": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "it_saas",
+                "manufacturing"
+              ]
+            }
+          },
+          "account_status": {
+            "type": "string",
+            "enum": [
+              "new",
+              "active"
+            ],
+            "description": "new の場合、プロフィール設計チェックリストを含める"
+          },
+          "include_webinar_stories": {
+            "type": "boolean",
+            "description": "ウェビナー告知ストーリーズを含めるか（既定: true）"
+          }
+        },
+        "required": [
+          "start_date",
+          "weeks",
+          "target_industries"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "analyze_marketing_funnel",
+      "description": "GA4の流入データ、サーチコンソールの検索クエリ、MA/CRMのリード・商談データを統合し、流入元・キャンペーン・LP・業界別に、セッション→資料DL→MQL→ホットリード→商談→受注のファネルと商談金額の貢献を分析する。UTMの表記ゆれ、指名検索の推移、初回接触までの時間も点検し、改善提案を出力する",
       "parameters": {
         "type": "object",
         "properties": {
           "period_start": {
             "type": "string",
-            "format": "date",
-            "description": "集計開始日（YYYY-MM-DD、JST）"
+            "format": "date"
           },
           "period_end": {
             "type": "string",
-            "format": "date",
-            "description": "集計終了日（YYYY-MM-DD、JST、当日を含む）"
+            "format": "date"
+          },
+          "group_by": {
+            "type": "string",
+            "enum": [
+              "channel_group",
+              "source_medium",
+              "campaign",
+              "landing_page",
+              "industry"
+            ]
           },
           "attribution_model": {
             "type": "string",
             "enum": [
-              "last_touch",
               "first_touch",
+              "last_touch",
               "linear",
-              "time_decay",
-              "position_based",
-              "data_driven_mta",
-              "mmm"
+              "position_based"
             ],
-            "description": "貢献度の配分ロジック。data_driven_mta / mmm は外部分析基盤との接続が必要"
+            "description": "商談金額をどの接点に配分するか（既定: first_touch = リード創出元）"
           },
-          "lookback_window_days": {
-            "type": "integer",
-            "description": "コンバージョン前に遡って接点を評価する日数（例: 7, 30）"
-          },
-          "channels": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "web",
-                "mobile_app",
-                "physical_store_pos",
-                "sns",
-                "email",
-                "google_ads",
-                "meta_ads",
-                "line_ads",
-                "x_ads"
-              ]
-            },
-            "description": "対象チャネル。省略時は全チャネル"
-          },
-          "include_offline_sales": {
+          "include_search_console": {
             "type": "boolean",
-            "description": "実店舗POS売上をコンバージョンに含めるか（既定: true）"
+            "description": "検索クエリ分析を含めるか（既定: true）"
           },
           "output_format": {
             "type": "string",
             "enum": [
               "json",
               "markdown"
-            ],
-            "description": "出力形式（既定: markdown）"
+            ]
           }
         },
         "required": [
           "period_start",
           "period_end",
-          "attribution_model"
+          "group_by"
         ]
       }
     }

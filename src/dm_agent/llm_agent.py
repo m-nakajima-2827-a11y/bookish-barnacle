@@ -1,4 +1,4 @@
-"""Claude-driven agent: a manual tool-use loop over the five marketing skills.
+"""Claude-driven agent: a manual tool-use loop over the BtoB marketing skills.
 
 The model decides which skills to call; every call still goes through
 AgentRuntime.execute (schema validation + guardrails + audit log).

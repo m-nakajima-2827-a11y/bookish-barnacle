@@ -1,0 +1,23 @@
+{
+  "name": "score_and_qualify_leads",
+  "description": "企業属性の適合度（フィット）と行動履歴（エンゲージメント）からリードスコアを算出し、MQL・ホットリード（営業引き渡し対象）・育成継続・対象外を判定する。同一企業の複数担当者の動き（購買関与者）も企業単位で評価する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "lead_ids": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "判定対象のリードID。省略時は直近の行動があった全リード"
+      },
+      "analysis_window_days": {
+        "type": "integer",
+        "description": "行動履歴を評価する過去日数（例: 30, 90, 180）"
+      },
+      "include_account_view": {
+        "type": "boolean",
+        "description": "企業単位の集計（関与人数・企業スコア）を含めるか（既定: true）"
+      }
+    },
+    "required": []
+  }
+}

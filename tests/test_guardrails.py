@@ -1,65 +1,67 @@
 from datetime import datetime
 
-
-def _push(rt, cid="C001", channel="app_push", scenario="churn_prevention", **kw):
-    return rt.execute("trigger_personalized_outreach", {
-        "customer_id": cid, "selected_channel": channel, "campaign_scenario": scenario, **kw})
+from conftest import at
 
 
-def test_no_consent_is_blocked(live_rt):
-    r = _push(live_rt, channel="sms")
-    assert r["status"] == "blocked" and any("no_consent" in x for x in r["reasons"])
+def _mail(rt, lead="L103", asset="CS-IT-01"):
+    return rt.execute("trigger_nurture_action", {"lead_id": lead, "action": "send_email", "content_asset_id": asset})
 
 
-def test_discount_cap(live_rt):
-    r = _push(live_rt, offer_type="store_coupon", payload_details={"discount_rate": 0.5})
-    assert r["status"] == "blocked" and any("discount_cap" in x for x in r["reasons"])
+def test_no_opt_in_blocks_email(live_rt):
+    at(live_rt, "2026-09-08T10:00:00+09:00")
+    r = _mail(live_rt, lead="L102")
+    assert r["status"] == "blocked" and any("no_opt_in" in x for x in r["reasons"])
 
 
-def test_quiet_hours_reschedules_to_morning(live_rt):
-    live_rt.advance_to(datetime.fromisoformat("2026-09-20T22:30:00+09:00"))
-    r = _push(live_rt)
-    assert r["status"] == "scheduled"
-    assert r["scheduled_at"].startswith("2026-09-21T08:00")
-    live_rt.advance_to(datetime.fromisoformat("2026-09-21T08:05:00+09:00"))
-    assert live_rt.store.outreach_log[-1]["status"] == "sent"
-
-
-def test_frequency_cap_and_cooldown(live_rt):
-    assert _push(live_rt, scenario="churn_prevention")["status"] == "sent"
-    again = _push(live_rt, scenario="churn_prevention")
-    assert again["status"] == "blocked" and any("cooldown" in x for x in again["reasons"])
-    assert _push(live_rt, scenario="abandoned_cart")["status"] == "sent"
-    assert _push(live_rt, scenario="cross_sell_recommendation")["status"] == "sent"
-    capped = _push(live_rt, scenario="post_store_visit_followup")
+def test_frequency_cap_and_duplicate_asset(live_rt):
+    at(live_rt, "2026-09-08T10:00:00+09:00")
+    assert _mail(live_rt, asset="CS-IT-01")["status"] == "sent"
+    dup = _mail(live_rt, asset="CS-IT-01")
+    assert any("duplicate_asset" in x for x in dup["reasons"])
+    assert _mail(live_rt, asset="WP-GEN-01")["status"] == "sent"
+    capped = _mail(live_rt, asset="DC-GEN-01")
     assert any("frequency_cap" in x for x in capped["reasons"])
 
 
-def test_budget_change_is_clamped_and_needs_approval(live_rt):
-    live_rt.advance_to(datetime.fromisoformat("2026-09-20T10:00:00+09:00"))
-    r = live_rt.execute("optimize_ad_and_social_campaigns", {
-        "platform": "google_ads", "action": "update_budget", "optimization_metrics": {"target_roas": 2.0}})
-    for ch in r["changes"]:
-        assert abs(ch["to"] - ch["from"]) <= ch["from"] * 0.2 + 1
-        assert ch["status"] == "pending_approval"
-    # nothing applied until approved
-    assert not any(c[0] == "set_daily_budget" for c in live_rt.ad_platforms["google_ads"].calls)
+def test_weekend_email_waits_for_monday(live_rt):
+    at(live_rt, "2026-09-12T11:00:00+09:00")  # Saturday
+    r = _mail(live_rt)
+    assert r["status"] == "scheduled" and r["scheduled_at"].startswith("2026-09-14T09:00")
+
+
+def test_handoff_requires_hot_stage(live_rt):
+    r = live_rt.execute("trigger_nurture_action", {"lead_id": "L102", "action": "sales_handoff"})
+    assert r["status"] == "blocked"
+
+
+def test_sla_counts_business_minutes(live_rt):
+    g = live_rt.guardrails
+    fri_evening = datetime.fromisoformat("2026-09-11T17:50:00+09:00")
+    assert g.add_business_minutes(fri_evening, 30).isoformat().startswith("2026-09-14T09:20")
+
+
+def test_budget_cut_for_zero_sql_campaign_needs_approval(live_rt):
+    at(live_rt, "2026-09-14T17:00:00+09:00")
+    r = live_rt.execute("optimize_lead_gen_campaigns", {"platform": "meta_ads", "action": "update_budget",
+                                                        "optimization_metrics": {"target_cost_per_sql": 100000}})
+    ch = r["changes"][0]
+    assert ch["campaign_id"] == "M-MFG-LEADAD" and ch["to"] == 6400 and ch["status"] == "pending_approval"
+    assert ch["performance_30d"]["crm_leads"] == 5 and ch["performance_30d"]["sql"] == 0
+    assert not any(c[0] == "set_daily_budget" for c in live_rt.ad_platforms["meta_ads"].calls)
     live_rt.approve(live_rt.approvals[0]["id"])
-    assert any(c[0] == "set_daily_budget" for c in live_rt.ad_platforms["google_ads"].calls)
+    assert live_rt.ad_platforms["meta_ads"].campaigns["M-MFG-LEADAD"]["daily_budget"] == 6400
 
 
-def test_bidding_requires_enough_conversions(live_rt):
-    r = live_rt.execute("optimize_ad_and_social_campaigns", {
-        "platform": "google_ads", "action": "adjust_bidding_strategy", "optimization_metrics": {"max_cpa": 8000}})
-    by_id = {c["campaign_id"]: c for c in r["changes"]}
-    assert by_id["G-RMK-JKT"]["status"] == "skipped"
-    assert by_id["G-SRCH-BRAND"]["status"] == "applied" and by_id["G-SRCH-BRAND"]["from"] == "maximize_conversions"
+def test_budget_held_when_sql_sample_is_small(live_rt):
+    at(live_rt, "2026-09-14T17:00:00+09:00")
+    r = live_rt.execute("optimize_lead_gen_campaigns", {"platform": "google_ads", "action": "update_budget",
+                                                        "optimization_metrics": {"target_cost_per_sql": 100000}})
+    assert set(r["held_for_insufficient_sql"]) == {"G-IT-SEMINAR", "G-IT-PAPER"} and r["changes"] == []
 
 
-def test_never_pauses_last_active_creative(live_rt):
-    r = live_rt.execute("optimize_ad_and_social_campaigns",
-                        {"platform": "google_ads", "action": "pause_underperforming_creative"})
-    creatives = live_rt.ad_platforms["google_ads"].campaigns["G-RMK-JKT"]["creatives"]
-    assert [p["creative_id"] for p in r["paused"]] == ["G-RMK-JKT-b"]
-    assert creatives["G-RMK-JKT-a"]["status"] == "active"
-    assert creatives["G-RMK-JKT-c"]["status"] == "active"  # below impression threshold
+def test_bidding_requires_learning_volume(live_rt):
+    at(live_rt, "2026-09-14T17:00:00+09:00")
+    r = live_rt.execute("optimize_lead_gen_campaigns", {"platform": "google_ads", "action": "adjust_bidding_strategy",
+                                                        "optimization_metrics": {"target_cpl": 20000}})
+    st = {c["campaign_id"]: c["status"] for c in r["changes"]}
+    assert st == {"G-IT-SEMINAR": "applied", "G-IT-PAPER": "skipped"}

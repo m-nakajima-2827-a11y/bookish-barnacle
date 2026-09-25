@@ -1,0 +1,29 @@
+{
+  "name": "optimize_lead_gen_campaigns",
+  "description": "リード獲得広告（Google/Yahoo!検索、Meta・Instagram、LinkedIn）について、既存顧客・商談中企業・対象外リードの除外同期、商談化単価（Cost per SQL）を重視した予算再配分、入札戦略の変更、低成果クリエイティブの停止を行う",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "platform": {
+        "type": "string",
+        "enum": ["google_ads", "yahoo_ads", "meta_ads", "linkedin_ads"]
+      },
+      "action": {
+        "type": "string",
+        "enum": ["sync_audience_exclusion", "update_budget", "adjust_bidding_strategy", "pause_underperforming_creative"]
+      },
+      "target_segment_id": {
+        "type": "string",
+        "description": "除外同期では customers / open_opportunities / disqualified など。その他の操作では対象キャンペーンの絞り込み"
+      },
+      "optimization_metrics": {
+        "type": "object",
+        "properties": {
+          "target_cpl": { "type": "number", "description": "目標リード獲得単価（円）" },
+          "target_cost_per_sql": { "type": "number", "description": "目標商談化単価（円）" }
+        }
+      }
+    },
+    "required": ["platform", "action"]
+  }
+}

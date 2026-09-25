@@ -1,0 +1,387 @@
+{
+  "_comment": "サンプルのクライアント設定（架空）。クライアントごとにこのファイルを複製して ICP・スコア・コンテンツを調整します。重み・しきい値は初期仮説です。",
+  "client_id": "sample_sales_consulting",
+  "name": "（サンプル）中小企業向け営業コンサルティング会社",
+  "positioning": "中小企業の営業組織を仕組み化する営業コンサル",
+  "site_base_url": "https://example.com",
+  "sender": {
+    "name": "サンプル営業コンサル株式会社",
+    "address": "東京都千代田区（サンプル）",
+    "unsubscribe_url": "https://example.com/unsubscribe"
+  },
+  "brand_queries": [
+    "サンプル営業コンサル",
+    "sample consulting"
+  ],
+  "icp": {
+    "industry_points": {
+      "it_saas": 20,
+      "manufacturing": 20,
+      "professional_services": 8,
+      "retail": 4,
+      "construction": 4,
+      "other": 0
+    },
+    "employee_band_points": {
+      "1-9": 3,
+      "10-49": 12,
+      "50-299": 15,
+      "300-999": 8,
+      "1000+": 3
+    },
+    "role_points": {
+      "executive": 15,
+      "sales_manager": 12,
+      "marketing": 8,
+      "sales_rep": 5,
+      "other": 0
+    },
+    "disqualify_roles": [
+      "student",
+      "job_seeker"
+    ]
+  },
+  "scoring": {
+    "engagement_points": {
+      "page_view": 1,
+      "pricing_page_view": 10,
+      "case_study_view": 6,
+      "whitepaper_download": 10,
+      "webinar_registration": 8,
+      "webinar_attendance": 15,
+      "email_open": 0,
+      "email_click": 3,
+      "social_engagement": 1,
+      "ad_click": 2
+    },
+    "caps": {
+      "page_view": 10,
+      "social_engagement": 5,
+      "email_click": 9,
+      "ad_click": 6
+    },
+    "half_life_days": 30,
+    "mql": {
+      "fit": 25,
+      "engagement": 20
+    },
+    "hot": {
+      "fit": 30,
+      "engagement": 45
+    },
+    "instant_hot_events": [
+      "contact_request"
+    ],
+    "high_intent_combo": {
+      "events": [
+        "pricing_page_view",
+        "whitepaper_download"
+      ],
+      "within_days": 14
+    },
+    "buying_committee_min_contacts": 2,
+    "buying_committee_bonus": 10
+  },
+  "recontact": {
+    "default_fiscal_year_end_month": 3,
+    "budget_planning_months_before_fy_start": 3
+  },
+  "content_library": [
+    {
+      "asset_id": "WP-MFG-01",
+      "type": "whitepaper",
+      "industry": "manufacturing",
+      "stage": "awareness",
+      "title": "製造業向け：営業仕組み化チェックシート",
+      "url": "https://example.com/lp/mfg-checksheet"
+    },
+    {
+      "asset_id": "CS-MFG-01",
+      "type": "case_study",
+      "industry": "manufacturing",
+      "stage": "consideration",
+      "title": "ルート営業から提案型営業へ移行した事例",
+      "url": "https://example.com/case/mfg-01"
+    },
+    {
+      "asset_id": "WP-IT-01",
+      "type": "whitepaper",
+      "industry": "it_saas",
+      "stage": "awareness",
+      "title": "インサイドセールスのトス上げ基準テンプレート",
+      "url": "https://example.com/lp/it-toss-criteria"
+    },
+    {
+      "asset_id": "CS-IT-01",
+      "type": "case_study",
+      "industry": "it_saas",
+      "stage": "consideration",
+      "title": "CSと営業の連携で解約率を見直した事例",
+      "url": "https://example.com/case/it-01"
+    },
+    {
+      "asset_id": "WB-GEN-01",
+      "type": "webinar",
+      "industry": "general",
+      "stage": "consideration",
+      "title": "BtoB営業組織の立ち上げ方（オンラインセミナー）",
+      "url": "https://example.com/seminar/sales-org"
+    },
+    {
+      "asset_id": "WP-GEN-01",
+      "type": "whitepaper",
+      "industry": "general",
+      "stage": "awareness",
+      "title": "営業力強化のための評価指標まとめ",
+      "url": "https://example.com/lp/sales-kpi"
+    },
+    {
+      "asset_id": "DC-GEN-01",
+      "type": "consultation",
+      "industry": "general",
+      "stage": "decision",
+      "title": "無料の営業組織診断（30分）",
+      "url": "https://example.com/contact"
+    }
+  ],
+  "nurture_tracks": {
+    "manufacturing": [
+      {
+        "day": 0,
+        "asset_id": "WP-MFG-01",
+        "subject": "【資料送付】営業仕組み化チェックシート"
+      },
+      {
+        "day": 3,
+        "asset_id": "CS-MFG-01",
+        "subject": "ルート営業から提案型営業へ：事例のご紹介"
+      },
+      {
+        "day": 10,
+        "asset_id": "WB-GEN-01",
+        "subject": "オンラインセミナーのご案内"
+      },
+      {
+        "day": 20,
+        "asset_id": "DC-GEN-01",
+        "subject": "無料の営業組織診断のご案内"
+      }
+    ],
+    "it_saas": [
+      {
+        "day": 0,
+        "asset_id": "WP-IT-01",
+        "subject": "【資料送付】トス上げ基準テンプレート"
+      },
+      {
+        "day": 3,
+        "asset_id": "CS-IT-01",
+        "subject": "CSと営業の連携事例のご紹介"
+      },
+      {
+        "day": 10,
+        "asset_id": "WB-GEN-01",
+        "subject": "オンラインセミナーのご案内"
+      },
+      {
+        "day": 20,
+        "asset_id": "DC-GEN-01",
+        "subject": "無料の営業組織診断のご案内"
+      }
+    ],
+    "general": [
+      {
+        "day": 0,
+        "asset_id": "WP-GEN-01",
+        "subject": "【資料送付】営業力強化のための評価指標まとめ"
+      },
+      {
+        "day": 7,
+        "asset_id": "WB-GEN-01",
+        "subject": "オンラインセミナーのご案内"
+      },
+      {
+        "day": 21,
+        "asset_id": "DC-GEN-01",
+        "subject": "無料の営業組織診断のご案内"
+      }
+    ]
+  },
+  "social": {
+    "profile_checklist": [
+      "名前欄に検索キーワードを入れる（例: ◯◯｜営業コンサル・組織支援）",
+      "自己紹介文で「誰のどんな課題を解決するか」を3行以内で書く（例: 中小企業の営業組織を仕組み化する営業コンサル）",
+      "プロフィールリンクはUTM付きURL（instagram / social / profile_link）にする。複数の資料へ誘導する場合はリンク集ツールを使う",
+      "ハイライトを「IT企業の実績」「製造業の実績」「セミナー」に分ける",
+      "ビジネスアカウント（プロアカウント）に切り替え、インサイトを取得できるようにする"
+    ],
+    "pillars": {
+      "howto_carousel": {
+        "format": "carousel",
+        "goal": "保存数（新規リーチ）",
+        "kpis": [
+          "saves",
+          "reach",
+          "profile_visits"
+        ]
+      },
+      "case_study": {
+        "format": "carousel",
+        "goal": "信頼形成・指名検索",
+        "kpis": [
+          "saves",
+          "profile_visits",
+          "link_clicks"
+        ]
+      },
+      "expert_reel": {
+        "format": "reel",
+        "goal": "専門性・親近感",
+        "kpis": [
+          "plays",
+          "profile_visits",
+          "follows"
+        ]
+      },
+      "webinar_story": {
+        "format": "story",
+        "goal": "ウェビナー集客",
+        "kpis": [
+          "link_clicks",
+          "webinar_registrations"
+        ]
+      }
+    },
+    "weekly_pattern": {
+      "mon": "howto_carousel",
+      "wed": "expert_reel",
+      "fri": "case_study"
+    },
+    "themes": {
+      "it_saas": {
+        "howto_carousel": [
+          "インサイドセールスのトス上げ基準の作り方",
+          "商談化率が伸びない原因3つ（優先順位付け・テレアポ化・初回接触の遅れ）",
+          "SaaSの解約率（チャーンレート）を下げるCSと営業の連携"
+        ],
+        "case_study": [
+          "トス上げ基準の見直しで商談の質を揃えた事例",
+          "CSと営業の連携を仕組み化した事例"
+        ],
+        "expert_reel": [
+          "インサイドセールス立ち上げの現場の裏側",
+          "コンサルタント紹介：IT企業の営業支援"
+        ]
+      },
+      "manufacturing": {
+        "howto_carousel": [
+          "ベテラン営業の「勘と経験」をマニュアル化する方法",
+          "カタログ頼みのルート営業から提案型営業への脱却",
+          "営業週報がまとまらないNG例と解決策"
+        ],
+        "case_study": [
+          "営業報告の仕組み化で報告の質を揃えた製造業の事例",
+          "提案型営業への転換を進めた製造業の事例"
+        ],
+        "expert_reel": [
+          "製造業の営業現場で見た「属人化」の実態",
+          "コンサルタント紹介：製造業の営業支援"
+        ]
+      }
+    },
+    "lead_magnet_by_industry": {
+      "it_saas": "WP-IT-01",
+      "manufacturing": "WP-MFG-01"
+    },
+    "webinar_asset_id": "WB-GEN-01"
+  },
+  "utm_dictionary": {
+    "sources": [
+      "instagram",
+      "google",
+      "yahoo",
+      "facebook",
+      "linkedin",
+      "newsletter",
+      "ma_email",
+      "partner"
+    ],
+    "mediums": [
+      "social",
+      "paid_social",
+      "cpc",
+      "email",
+      "referral",
+      "display"
+    ],
+    "placement_defaults": {
+      "instagram_profile": {
+        "source": "instagram",
+        "medium": "social",
+        "content": "profile_link"
+      },
+      "instagram_story": {
+        "source": "instagram",
+        "medium": "social",
+        "content": "story"
+      },
+      "instagram_post": {
+        "source": "instagram",
+        "medium": "social",
+        "content": "post"
+      },
+      "instagram_ad": {
+        "source": "instagram",
+        "medium": "paid_social",
+        "content": "ad"
+      },
+      "email_newsletter": {
+        "source": "newsletter",
+        "medium": "email",
+        "content": "newsletter"
+      },
+      "webinar_invite": {
+        "source": "ma_email",
+        "medium": "email",
+        "content": "webinar_invite"
+      },
+      "search_ad": {
+        "source": "google",
+        "medium": "cpc",
+        "content": "search_ad"
+      }
+    },
+    "allowed_mediums_by_source": {
+      "instagram": [
+        "social",
+        "paid_social"
+      ],
+      "facebook": [
+        "paid_social",
+        "social"
+      ],
+      "linkedin": [
+        "paid_social",
+        "social"
+      ],
+      "google": [
+        "cpc",
+        "organic"
+      ],
+      "yahoo": [
+        "cpc",
+        "organic"
+      ],
+      "newsletter": [
+        "email"
+      ],
+      "ma_email": [
+        "email"
+      ],
+      "partner": [
+        "referral"
+      ]
+    },
+    "_comment": "allowed_mediums_by_source の先頭がオーガニック投稿・通常配信での推奨値です。organic は検索エンジンの自然流入でGA4が自動付与する値です。"
+  }
+}

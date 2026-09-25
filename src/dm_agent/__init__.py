@@ -1,4 +1,4 @@
-"""Omnichannel digital marketing AI agent."""
+"""BtoB digital marketing AI agent."""
 
 from .runtime import AgentRuntime
 

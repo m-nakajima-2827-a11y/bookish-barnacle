@@ -1,0 +1,61 @@
+{
+  "name": "sync_lead_activity",
+  "description": "Webサイト・LP・Instagram・メール・ウェビナー・広告・インサイドセールスの行動履歴と企業属性を、リードIDと企業（アカウント）IDに統合してリードプロファイルを更新する。資料DL、ウェビナー参加、問い合わせ、商談化・受注・失注の記録に使う",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "lead_id": {
+        "type": "string",
+        "description": "MA/CRM上のリードID（メールアドレス等の個人情報ではなく、ハッシュ化または採番済みID）"
+      },
+      "account": {
+        "type": "object",
+        "description": "企業属性。初回登録時またはフォーム入力で更新があったときに指定",
+        "properties": {
+          "account_id": { "type": "string", "description": "企業ID（法人番号・CRM企業ID等）" },
+          "industry": {
+            "type": "string",
+            "enum": ["it_saas", "manufacturing", "professional_services", "retail", "construction", "other"]
+          },
+          "employee_band": { "type": "string", "enum": ["1-9", "10-49", "50-299", "300-999", "1000+"] },
+          "job_role": {
+            "type": "string",
+            "enum": ["executive", "sales_manager", "sales_rep", "marketing", "other", "student", "job_seeker"]
+          },
+          "fiscal_year_end_month": { "type": "integer", "minimum": 1, "maximum": 12, "description": "決算月（予算編成時期の推定に使用）" }
+        }
+      },
+      "consent": {
+        "type": "object",
+        "description": "同意状態の取得・変更時のみ指定",
+        "properties": {
+          "email_opt_in": { "type": "boolean" },
+          "unsubscribed": { "type": "boolean" }
+        }
+      },
+      "touchpoints": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "channel": {
+              "type": "string",
+              "enum": ["website", "landing_page", "instagram", "email", "webinar", "search_ads", "social_ads", "inside_sales", "offline_event"]
+            },
+            "timestamp": { "type": "string", "format": "date-time" },
+            "event_type": {
+              "type": "string",
+              "enum": ["page_view", "pricing_page_view", "case_study_view", "whitepaper_download", "webinar_registration", "webinar_attendance", "email_open", "email_click", "social_engagement", "ad_click", "contact_request", "sales_call", "meeting_booked", "deal_won", "deal_lost"]
+            },
+            "payload": {
+              "type": "object",
+              "description": "url、landing_page、utm（source/medium/campaign/content/term）、asset_id、webinar_id、amount（商談見込額・受注額）、lost_reason 等"
+            }
+          },
+          "required": ["channel", "timestamp", "event_type"]
+        }
+      }
+    },
+    "required": ["lead_id", "touchpoints"]
+  }
+}

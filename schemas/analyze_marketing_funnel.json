@@ -1,0 +1,23 @@
+{
+  "name": "analyze_marketing_funnel",
+  "description": "GA4の流入データ、サーチコンソールの検索クエリ、MA/CRMのリード・商談データを統合し、流入元・キャンペーン・LP・業界別に、セッション→資料DL→MQL→ホットリード→商談→受注のファネルと商談金額の貢献を分析する。UTMの表記ゆれ、指名検索の推移、初回接触までの時間も点検し、改善提案を出力する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "period_start": { "type": "string", "format": "date" },
+      "period_end": { "type": "string", "format": "date" },
+      "group_by": {
+        "type": "string",
+        "enum": ["channel_group", "source_medium", "campaign", "landing_page", "industry"]
+      },
+      "attribution_model": {
+        "type": "string",
+        "enum": ["first_touch", "last_touch", "linear", "position_based"],
+        "description": "商談金額をどの接点に配分するか（既定: first_touch = リード創出元）"
+      },
+      "include_search_console": { "type": "boolean", "description": "検索クエリ分析を含めるか（既定: true）" },
+      "output_format": { "type": "string", "enum": ["json", "markdown"] }
+    },
+    "required": ["period_start", "period_end", "group_by"]
+  }
+}

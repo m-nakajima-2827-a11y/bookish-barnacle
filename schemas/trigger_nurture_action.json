@@ -1,0 +1,25 @@
+{
+  "name": "trigger_nurture_action",
+  "description": "リードの業界・検討段階に応じて、育成シナリオ登録、メール配信、ウェビナー招待、次に読むべき資料の案内、インサイドセールスへの引き渡し（初回接触期限つきタスク）、予算編成時期に合わせた再アプローチ予約を実行する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "lead_id": { "type": "string" },
+      "action": {
+        "type": "string",
+        "enum": ["enroll_nurture_track", "send_email", "invite_webinar", "recommend_content", "sales_handoff", "schedule_recontact"]
+      },
+      "nurture_track": {
+        "type": "string",
+        "enum": ["it_saas", "manufacturing", "general"],
+        "description": "育成シナリオ。省略時はリードの業界から自動選択"
+      },
+      "content_asset_id": { "type": "string", "description": "案内する資料・ウェビナーのID（config のコンテンツ一覧）" },
+      "payload_details": {
+        "type": "object",
+        "description": "件名、本文差し込み、recontact_date（YYYY-MM-DD）、handoff_note 等"
+      }
+    },
+    "required": ["lead_id", "action"]
+  }
+}

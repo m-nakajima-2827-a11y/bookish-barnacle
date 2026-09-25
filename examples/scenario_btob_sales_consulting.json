@@ -1,0 +1,2660 @@
+{
+ "_comment": "デモ用の架空データです。企業・数値はすべて動作確認用のサンプルであり、実績ではありません。",
+ "client_id": "sample_sales_consulting",
+ "start_at": "2026-09-07T09:00:00+09:00",
+ "history": [
+  {
+   "lead_id": "L102",
+   "account": {
+    "account_id": "A-MFG-01",
+    "industry": "manufacturing",
+    "employee_band": "50-299",
+    "job_role": "executive"
+   },
+   "touchpoints": [
+    {
+     "channel": "website",
+     "timestamp": "2026-09-03T10:05:00+09:00",
+     "event_type": "page_view",
+     "payload": {
+      "url": "/service"
+     }
+    },
+    {
+     "channel": "website",
+     "timestamp": "2026-09-04T11:20:00+09:00",
+     "event_type": "case_study_view",
+     "payload": {
+      "url": "/case/mfg-01",
+      "asset_id": "CS-MFG-01"
+     }
+    }
+   ]
+  },
+  {
+   "lead_id": "L101",
+   "account": {
+    "account_id": "A-MFG-01",
+    "industry": "manufacturing",
+    "employee_band": "50-299",
+    "job_role": "sales_manager"
+   },
+   "touchpoints": [
+    {
+     "channel": "instagram",
+     "timestamp": "2026-08-28T12:10:00+09:00",
+     "event_type": "social_engagement",
+     "payload": {
+      "action": "save"
+     }
+    },
+    {
+     "channel": "instagram",
+     "timestamp": "2026-09-01T12:15:00+09:00",
+     "event_type": "social_engagement",
+     "payload": {
+      "action": "profile_visit"
+     }
+    },
+    {
+     "channel": "landing_page",
+     "timestamp": "2026-09-02T21:00:00+09:00",
+     "event_type": "page_view",
+     "payload": {
+      "landing_page": "/lp/mfg-checksheet",
+      "utm": {
+       "source": "instagram",
+       "medium": "social",
+       "campaign": "mfg_paper",
+       "content": "profile_link_manufacturing"
+      }
+     }
+    },
+    {
+     "channel": "website",
+     "timestamp": "2026-09-02T21:05:00+09:00",
+     "event_type": "case_study_view",
+     "payload": {
+      "url": "/case/mfg-01",
+      "asset_id": "CS-MFG-01"
+     }
+    }
+   ]
+  },
+  {
+   "lead_id": "L103",
+   "account": {
+    "account_id": "A-IT-07",
+    "industry": "it_saas",
+    "employee_band": "10-49",
+    "job_role": "executive",
+    "fiscal_year_end_month": 12
+   },
+   "consent": {
+    "email_opt_in": true
+   },
+   "touchpoints": [
+    {
+     "channel": "search_ads",
+     "timestamp": "2026-08-04T10:00:00+09:00",
+     "event_type": "ad_click",
+     "payload": {
+      "utm": {
+       "source": "google",
+       "medium": "cpc",
+       "campaign": "it_seminar"
+      },
+      "landing_page": "/seminar/sales-org"
+     }
+    },
+    {
+     "channel": "webinar",
+     "timestamp": "2026-08-04T10:03:00+09:00",
+     "event_type": "webinar_registration",
+     "payload": {
+      "asset_id": "WB-GEN-01",
+      "landing_page": "/seminar/sales-org",
+      "utm": {
+       "source": "google",
+       "medium": "cpc",
+       "campaign": "it_seminar"
+      }
+     }
+    },
+    {
+     "channel": "webinar",
+     "timestamp": "2026-08-19T15:00:00+09:00",
+     "event_type": "webinar_attendance",
+     "payload": {
+      "asset_id": "WB-GEN-01"
+     }
+    },
+    {
+     "channel": "inside_sales",
+     "timestamp": "2026-08-20T10:10:00+09:00",
+     "event_type": "sales_call"
+    },
+    {
+     "channel": "inside_sales",
+     "timestamp": "2026-08-25T16:00:00+09:00",
+     "event_type": "meeting_booked",
+     "payload": {
+      "amount": 1200000
+     }
+    },
+    {
+     "channel": "inside_sales",
+     "timestamp": "2026-09-03T17:00:00+09:00",
+     "event_type": "deal_won",
+     "payload": {
+      "amount": 1200000
+     }
+    }
+   ]
+  },
+  {
+   "lead_id": "L104",
+   "account": {
+    "account_id": "A-UNI-01",
+    "industry": "other",
+    "employee_band": "1000+",
+    "job_role": "student"
+   },
+   "consent": {
+    "email_opt_in": true
+   },
+   "touchpoints": [
+    {
+     "channel": "landing_page",
+     "timestamp": "2026-08-12T22:00:00+09:00",
+     "event_type": "whitepaper_download",
+     "payload": {
+      "asset_id": "WP-MFG-01",
+      "landing_page": "/lp/mfg-checksheet",
+      "utm": {
+       "source": "instagram",
+       "medium": "social",
+       "campaign": "mfg_paper",
+       "content": "profile_link_manufacturing"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "lead_id": "L105",
+   "account": {
+    "account_id": "A-IT-03",
+    "industry": "it_saas",
+    "employee_band": "50-299",
+    "job_role": "sales_manager",
+    "fiscal_year_end_month": 3
+   },
+   "consent": {
+    "email_opt_in": true
+   },
+   "touchpoints": [
+    {
+     "channel": "search_ads",
+     "timestamp": "2026-08-06T09:30:00+09:00",
+     "event_type": "ad_click",
+     "payload": {
+      "utm": {
+       "source": "google",
+       "medium": "cpc",
+       "campaign": "it_paper_search"
+      },
+      "landing_page": "/lp/it-toss-criteria"
+     }
+    },
+    {
+     "channel": "landing_page",
+     "timestamp": "2026-08-06T09:34:00+09:00",
+     "event_type": "whitepaper_download",
+     "payload": {
+      "asset_id": "WP-IT-01",
+      "landing_page": "/lp/it-toss-criteria",
+      "utm": {
+       "source": "google",
+       "medium": "cpc",
+       "campaign": "it_paper_search"
+      }
+     }
+    },
+    {
+     "channel": "website",
+     "timestamp": "2026-08-10T13:00:00+09:00",
+     "event_type": "contact_request",
+     "payload": {
+      "url": "/contact",
+      "asset_id": "DC-GEN-01"
+     }
+    },
+    {
+     "channel": "inside_sales",
+     "timestamp": "2026-08-10T15:30:00+09:00",
+     "event_type": "sales_call"
+    },
+    {
+     "channel": "inside_sales",
+     "timestamp": "2026-08-18T11:00:00+09:00",
+     "event_type": "meeting_booked",
+     "payload": {
+      "amount": 900000
+     }
+    }
+   ]
+  },
+  {
+   "lead_id": "L110",
+   "account": {
+    "account_id": "A-SMB-10",
+    "industry": "retail",
+    "employee_band": "1-9",
+    "job_role": "sales_rep"
+   },
+   "consent": {
+    "email_opt_in": true
+   },
+   "touchpoints": [
+    {
+     "channel": "social_ads",
+     "timestamp": "2026-08-10T19:00:00+09:00",
+     "event_type": "whitepaper_download",
+     "payload": {
+      "asset_id": "WP-MFG-01",
+      "landing_page": "/lp/mfg-checksheet",
+      "utm": {
+       "source": "instagram",
+       "medium": "paid_social",
+       "campaign": "mfg_leadad",
+       "content": "ad"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "lead_id": "L111",
+   "account": {
+    "account_id": "A-SMB-11",
+    "industry": "construction",
+    "employee_band": "1-9",
+    "job_role": "sales_rep"
+   },
+   "consent": {
+    "email_opt_in": true
+   },
+   "touchpoints": [
+    {
+     "channel": "social_ads",
+     "timestamp": "2026-08-14T19:00:00+09:00",
+     "event_type": "whitepaper_download",
+     "payload": {
+      "asset_id": "WP-MFG-01",
+      "landing_page": "/lp/mfg-checksheet",
+      "utm": {
+       "source": "instagram",
+       "medium": "paid_social",
+       "campaign": "mfg_leadad",
+       "content": "ad"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "lead_id": "L112",
+   "account": {
+    "account_id": "A-SMB-12",
+    "industry": "manufacturing",
+    "employee_band": "1-9",
+    "job_role": "sales_rep"
+   },
+   "consent": {
+    "email_opt_in": true
+   },
+   "touchpoints": [
+    {
+     "channel": "social_ads",
+     "timestamp": "2026-08-18T19:00:00+09:00",
+     "event_type": "whitepaper_download",
+     "payload": {
+      "asset_id": "WP-MFG-01",
+      "landing_page": "/lp/mfg-checksheet",
+      "utm": {
+       "source": "instagram",
+       "medium": "paid_social",
+       "campaign": "mfg_leadad",
+       "content": "ad"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "lead_id": "L113",
+   "account": {
+    "account_id": "A-SMB-13",
+    "industry": "other",
+    "employee_band": "1-9",
+    "job_role": "sales_rep"
+   },
+   "consent": {
+    "email_opt_in": true
+   },
+   "touchpoints": [
+    {
+     "channel": "social_ads",
+     "timestamp": "2026-08-22T19:00:00+09:00",
+     "event_type": "whitepaper_download",
+     "payload": {
+      "asset_id": "WP-MFG-01",
+      "landing_page": "/lp/mfg-checksheet",
+      "utm": {
+       "source": "instagram",
+       "medium": "paid_social",
+       "campaign": "mfg_leadad",
+       "content": "ad"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "lead_id": "L114",
+   "account": {
+    "account_id": "A-SMB-14",
+    "industry": "manufacturing",
+    "employee_band": "1-9",
+    "job_role": "sales_rep"
+   },
+   "consent": {
+    "email_opt_in": true
+   },
+   "touchpoints": [
+    {
+     "channel": "social_ads",
+     "timestamp": "2026-08-26T19:00:00+09:00",
+     "event_type": "whitepaper_download",
+     "payload": {
+      "asset_id": "WP-MFG-01",
+      "landing_page": "/lp/mfg-checksheet",
+      "utm": {
+       "source": "instagram",
+       "medium": "paid_social",
+       "campaign": "mfg_leadad",
+       "content": "ad"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "campaigns": {
+  "google_ads": [
+   {
+    "campaign_id": "G-IT-SEMINAR",
+    "name": "IT企業向けセミナー集客（検索）",
+    "daily_budget": 6000,
+    "bidding_strategy": "maximize_clicks",
+    "segment_id": "it",
+    "creatives": {}
+   },
+   {
+    "campaign_id": "G-IT-PAPER",
+    "name": "IT企業向け資料DL（検索）",
+    "daily_budget": 4000,
+    "bidding_strategy": "maximize_clicks",
+    "segment_id": "it",
+    "creatives": {}
+   }
+  ],
+  "meta_ads": [
+   {
+    "campaign_id": "M-MFG-LEADAD",
+    "name": "製造業向け資料DL（Instagram広告）",
+    "daily_budget": 8000,
+    "bidding_strategy": "lowest_cost",
+    "segment_id": "mfg",
+    "creatives": {
+     "M-MFG-LEADAD-a": {
+      "impressions": 52000,
+      "clicks": 780,
+      "status": "active"
+     },
+     "M-MFG-LEADAD-b": {
+      "impressions": 48000,
+      "clicks": 190,
+      "status": "active"
+     }
+    }
+   }
+  ]
+ },
+ "ad_stats": [
+  {
+   "date": "2026-08-01",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-01",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-01",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-02",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-02",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-02",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-03",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-03",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-03",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-04",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-04",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-04",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-05",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-05",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-05",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-06",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-06",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-06",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-07",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-07",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-07",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-08",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-08",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-08",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-09",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-09",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-09",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-10",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-10",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-10",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-11",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-11",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-11",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-12",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-12",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-12",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-13",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-13",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-13",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-14",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-14",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-14",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-15",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-15",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-15",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-16",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-16",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-16",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-17",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-17",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-17",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-18",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-18",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-18",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-19",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-19",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-19",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-20",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-20",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-20",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-21",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-21",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-21",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-22",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-22",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-22",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-23",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-23",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-23",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-24",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-24",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-24",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-25",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-25",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-25",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-26",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-26",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-26",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-27",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-27",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-27",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-28",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-28",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-28",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-29",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-29",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-29",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-30",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-30",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-30",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-08-31",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-08-31",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-08-31",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-01",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-01",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-09-01",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-02",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-02",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-02",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-03",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-03",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-09-03",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-04",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-04",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-09-04",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-05",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-05",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-09-05",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-06",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-06",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-06",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-07",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-07",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-09-07",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-08",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-08",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-09-08",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-09",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-09",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-09-09",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-10",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-10",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-10",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-11",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-11",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-09-11",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-12",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-12",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-09-12",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  },
+  {
+   "date": "2026-09-13",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-13",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 0
+  },
+  {
+   "date": "2026-09-13",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-14",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-SEMINAR",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "cost": 6000,
+   "impressions": 900,
+   "clicks": 45,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-14",
+   "platform": "google_ads",
+   "campaign_id": "G-IT-PAPER",
+   "utm_source": "google",
+   "utm_medium": "cpc",
+   "utm_campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "cost": 4000,
+   "impressions": 700,
+   "clicks": 28,
+   "platform_leads": 1
+  },
+  {
+   "date": "2026-09-14",
+   "platform": "meta_ads",
+   "campaign_id": "M-MFG-LEADAD",
+   "utm_source": "instagram",
+   "utm_medium": "paid_social",
+   "utm_campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "cost": 8000,
+   "impressions": 2200,
+   "clicks": 21,
+   "platform_leads": 2
+  }
+ ],
+ "ga4_sessions": [
+  {
+   "date": "2026-08-10",
+   "source": "instagram",
+   "medium": "social",
+   "campaign": "mfg_paper",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 60,
+   "engaged_sessions": 38,
+   "key_events": 2
+  },
+  {
+   "date": "2026-08-10",
+   "source": "Instagram",
+   "medium": "social",
+   "campaign": "mfg_paper",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 8,
+   "engaged_sessions": 5,
+   "key_events": 0
+  },
+  {
+   "date": "2026-08-10",
+   "source": "instagram",
+   "medium": "referral",
+   "campaign": "it_paper",
+   "landing_page": "/lp/it-toss-criteria",
+   "sessions": 14,
+   "engaged_sessions": 8,
+   "key_events": 0
+  },
+  {
+   "date": "2026-08-10",
+   "source": "google",
+   "medium": "cpc",
+   "campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "sessions": 75,
+   "engaged_sessions": 50,
+   "key_events": 3
+  },
+  {
+   "date": "2026-08-10",
+   "source": "google",
+   "medium": "cpc",
+   "campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "sessions": 50,
+   "engaged_sessions": 26,
+   "key_events": 1
+  },
+  {
+   "date": "2026-08-10",
+   "source": "instagram",
+   "medium": "paid_social",
+   "campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 150,
+   "engaged_sessions": 40,
+   "key_events": 2
+  },
+  {
+   "date": "2026-08-10",
+   "source": "google",
+   "medium": "organic",
+   "campaign": "(not set)",
+   "landing_page": "/",
+   "sessions": 300,
+   "engaged_sessions": 180,
+   "key_events": 2
+  },
+  {
+   "date": "2026-08-10",
+   "source": "(direct)",
+   "medium": "(none)",
+   "campaign": "(not set)",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 40,
+   "engaged_sessions": 20,
+   "key_events": 0
+  },
+  {
+   "date": "2026-08-10",
+   "source": "(direct)",
+   "medium": "(none)",
+   "campaign": "(not set)",
+   "landing_page": "/",
+   "sessions": 160,
+   "engaged_sessions": 90,
+   "key_events": 1
+  },
+  {
+   "date": "2026-08-24",
+   "source": "instagram",
+   "medium": "social",
+   "campaign": "mfg_paper",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 66,
+   "engaged_sessions": 41,
+   "key_events": 2
+  },
+  {
+   "date": "2026-08-24",
+   "source": "Instagram",
+   "medium": "social",
+   "campaign": "mfg_paper",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 8,
+   "engaged_sessions": 5,
+   "key_events": 0
+  },
+  {
+   "date": "2026-08-24",
+   "source": "instagram",
+   "medium": "referral",
+   "campaign": "it_paper",
+   "landing_page": "/lp/it-toss-criteria",
+   "sessions": 15,
+   "engaged_sessions": 8,
+   "key_events": 0
+  },
+  {
+   "date": "2026-08-24",
+   "source": "google",
+   "medium": "cpc",
+   "campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "sessions": 82,
+   "engaged_sessions": 55,
+   "key_events": 3
+  },
+  {
+   "date": "2026-08-24",
+   "source": "google",
+   "medium": "cpc",
+   "campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "sessions": 55,
+   "engaged_sessions": 28,
+   "key_events": 1
+  },
+  {
+   "date": "2026-08-24",
+   "source": "instagram",
+   "medium": "paid_social",
+   "campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 165,
+   "engaged_sessions": 44,
+   "key_events": 2
+  },
+  {
+   "date": "2026-08-24",
+   "source": "google",
+   "medium": "organic",
+   "campaign": "(not set)",
+   "landing_page": "/",
+   "sessions": 330,
+   "engaged_sessions": 198,
+   "key_events": 2
+  },
+  {
+   "date": "2026-08-24",
+   "source": "(direct)",
+   "medium": "(none)",
+   "campaign": "(not set)",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 44,
+   "engaged_sessions": 22,
+   "key_events": 0
+  },
+  {
+   "date": "2026-08-24",
+   "source": "(direct)",
+   "medium": "(none)",
+   "campaign": "(not set)",
+   "landing_page": "/",
+   "sessions": 176,
+   "engaged_sessions": 99,
+   "key_events": 1
+  },
+  {
+   "date": "2026-09-07",
+   "source": "instagram",
+   "medium": "social",
+   "campaign": "mfg_paper",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 72,
+   "engaged_sessions": 45,
+   "key_events": 2
+  },
+  {
+   "date": "2026-09-07",
+   "source": "Instagram",
+   "medium": "social",
+   "campaign": "mfg_paper",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 9,
+   "engaged_sessions": 6,
+   "key_events": 0
+  },
+  {
+   "date": "2026-09-07",
+   "source": "instagram",
+   "medium": "referral",
+   "campaign": "it_paper",
+   "landing_page": "/lp/it-toss-criteria",
+   "sessions": 16,
+   "engaged_sessions": 9,
+   "key_events": 0
+  },
+  {
+   "date": "2026-09-07",
+   "source": "google",
+   "medium": "cpc",
+   "campaign": "it_seminar",
+   "landing_page": "/seminar/sales-org",
+   "sessions": 90,
+   "engaged_sessions": 60,
+   "key_events": 3
+  },
+  {
+   "date": "2026-09-07",
+   "source": "google",
+   "medium": "cpc",
+   "campaign": "it_paper_search",
+   "landing_page": "/lp/it-toss-criteria",
+   "sessions": 60,
+   "engaged_sessions": 31,
+   "key_events": 1
+  },
+  {
+   "date": "2026-09-07",
+   "source": "instagram",
+   "medium": "paid_social",
+   "campaign": "mfg_leadad",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 180,
+   "engaged_sessions": 48,
+   "key_events": 2
+  },
+  {
+   "date": "2026-09-07",
+   "source": "google",
+   "medium": "organic",
+   "campaign": "(not set)",
+   "landing_page": "/",
+   "sessions": 360,
+   "engaged_sessions": 216,
+   "key_events": 2
+  },
+  {
+   "date": "2026-09-07",
+   "source": "(direct)",
+   "medium": "(none)",
+   "campaign": "(not set)",
+   "landing_page": "/lp/mfg-checksheet",
+   "sessions": 48,
+   "engaged_sessions": 24,
+   "key_events": 0
+  },
+  {
+   "date": "2026-09-07",
+   "source": "(direct)",
+   "medium": "(none)",
+   "campaign": "(not set)",
+   "landing_page": "/",
+   "sessions": 192,
+   "engaged_sessions": 108,
+   "key_events": 1
+  }
+ ],
+ "gsc_queries": [
+  {
+   "date": "2026-08-05",
+   "query": "サンプル営業コンサル",
+   "clicks": 18,
+   "impressions": 54,
+   "position": 1.2
+  },
+  {
+   "date": "2026-08-05",
+   "query": "営業 仕組み化",
+   "clicks": 3,
+   "impressions": 320,
+   "position": 6.4
+  },
+  {
+   "date": "2026-08-05",
+   "query": "インサイドセールス トス上げ 基準",
+   "clicks": 6,
+   "impressions": 150,
+   "position": 8.1
+  },
+  {
+   "date": "2026-08-05",
+   "query": "製造業 営業 属人化",
+   "clicks": 2,
+   "impressions": 90,
+   "position": 11.5
+  },
+  {
+   "date": "2026-08-15",
+   "query": "サンプル営業コンサル",
+   "clicks": 21,
+   "impressions": 63,
+   "position": 1.2
+  },
+  {
+   "date": "2026-08-15",
+   "query": "営業 仕組み化",
+   "clicks": 3,
+   "impressions": 320,
+   "position": 6.4
+  },
+  {
+   "date": "2026-08-15",
+   "query": "インサイドセールス トス上げ 基準",
+   "clicks": 6,
+   "impressions": 150,
+   "position": 8.1
+  },
+  {
+   "date": "2026-08-15",
+   "query": "製造業 営業 属人化",
+   "clicks": 2,
+   "impressions": 90,
+   "position": 11.5
+  },
+  {
+   "date": "2026-08-28",
+   "query": "サンプル営業コンサル",
+   "clicks": 30,
+   "impressions": 90,
+   "position": 1.2
+  },
+  {
+   "date": "2026-08-28",
+   "query": "営業 仕組み化",
+   "clicks": 3,
+   "impressions": 320,
+   "position": 6.4
+  },
+  {
+   "date": "2026-08-28",
+   "query": "インサイドセールス トス上げ 基準",
+   "clicks": 6,
+   "impressions": 150,
+   "position": 8.1
+  },
+  {
+   "date": "2026-08-28",
+   "query": "製造業 営業 属人化",
+   "clicks": 2,
+   "impressions": 90,
+   "position": 11.5
+  },
+  {
+   "date": "2026-09-08",
+   "query": "サンプル営業コンサル",
+   "clicks": 38,
+   "impressions": 114,
+   "position": 1.2
+  },
+  {
+   "date": "2026-09-08",
+   "query": "営業 仕組み化",
+   "clicks": 3,
+   "impressions": 320,
+   "position": 6.4
+  },
+  {
+   "date": "2026-09-08",
+   "query": "インサイドセールス トス上げ 基準",
+   "clicks": 6,
+   "impressions": 150,
+   "position": 8.1
+  },
+  {
+   "date": "2026-09-08",
+   "query": "製造業 営業 属人化",
+   "clicks": 2,
+   "impressions": 90,
+   "position": 11.5
+  }
+ ],
+ "live": {
+  "step1_download": {
+   "lead_id": "L101",
+   "consent": {
+    "email_opt_in": true
+   },
+   "touchpoints": [
+    {
+     "channel": "landing_page",
+     "timestamp": "2026-09-07T20:30:00+09:00",
+     "event_type": "whitepaper_download",
+     "payload": {
+      "asset_id": "WP-MFG-01",
+      "landing_page": "/lp/mfg-checksheet",
+      "utm": {
+       "source": "instagram",
+       "medium": "social",
+       "campaign": "mfg_paper",
+       "content": "profile_link_manufacturing"
+      }
+     }
+    }
+   ]
+  },
+  "step3_high_intent": {
+   "lead_id": "L101",
+   "touchpoints": [
+    {
+     "channel": "webinar",
+     "timestamp": "2026-09-10T14:00:00+09:00",
+     "event_type": "webinar_attendance",
+     "payload": {
+      "asset_id": "WB-GEN-01"
+     }
+    },
+    {
+     "channel": "website",
+     "timestamp": "2026-09-10T15:05:00+09:00",
+     "event_type": "pricing_page_view",
+     "payload": {
+      "url": "/price"
+     }
+    }
+   ]
+  },
+  "step4_first_contact": {
+   "lead_id": "L101",
+   "touchpoints": [
+    {
+     "channel": "inside_sales",
+     "timestamp": "2026-09-10T15:25:00+09:00",
+     "event_type": "sales_call"
+    }
+   ]
+  },
+  "step5_meeting": {
+   "lead_id": "L101",
+   "touchpoints": [
+    {
+     "channel": "inside_sales",
+     "timestamp": "2026-09-14T11:00:00+09:00",
+     "event_type": "meeting_booked",
+     "payload": {
+      "amount": 1800000
+     }
+    }
+   ]
+  },
+  "step6_lost": {
+   "lead_id": "L105",
+   "touchpoints": [
+    {
+     "channel": "inside_sales",
+     "timestamp": "2026-09-14T16:00:00+09:00",
+     "event_type": "deal_lost",
+     "payload": {
+      "lost_reason": "timing"
+     }
+    }
+   ]
+  }
+ }
+}
