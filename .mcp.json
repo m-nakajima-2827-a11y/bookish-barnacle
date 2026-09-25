@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "wpvibe": {
+      "type": "http",
+      "url": "https://mcp.wpvibe.ai/mcp"
+    }
+  }
+}
