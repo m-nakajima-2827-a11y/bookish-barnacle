@@ -101,7 +101,7 @@ python -m dm_agent call analyze_marketing_funnel '{"period_start":"2026-09-01","
 このリポジトリを開くと、`btob-marketing-agent` と9つの Skill が読み込まれます。
 例:「btob-marketing-agent で、先月のファネルを分析して、商談化しない原因と改善策をまとめて」
 
-`website-improvement-proposal` は、URLを渡すとサイトを分析し、改善提案（3〜5点）を確認したうえで、1提案1枚の提案書（.pptx、BIZ UDPゴシック・紺金緑の配色）を作成します。
+`website-improvement-proposal` は、URLを渡すとサイトを分析し、改善提案（3〜5点）を確認したうえで、1提案1枚の提案書（.pptx、Noto Sans JP Medium・紺金緑の配色）を作成します。
 例:「https://example.co.jp/ の改善提案書を作って」
 エージェントとして単体で動かす場合は `.claude/agents/website-improvement-agent.md` を使います（チェックリスト・デザイン仕様・生成コードを1ファイルに同梱）。
 

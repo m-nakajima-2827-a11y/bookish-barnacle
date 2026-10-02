@@ -3,7 +3,7 @@
 使い方:
     python build_deck.py <原稿.json> <出力.pptx>
 
-デザインは references/design-rules.md（BIZ UDPゴシック／紺・金・緑の3色）に準拠。
+デザインは references/design-rules.md（Noto Sans JP Medium／紺・金・緑の3色）に準拠。
 原稿の構造は examples/sample-deck.json を参照。文字列中の **...** はアクセント色になる。
 """
 import json
@@ -19,7 +19,9 @@ from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.oxml.ns import qn
 from pptx.util import Inches, Pt
 
-FONT = "BIZ UDPゴシック"
+# Medium は独立したファミリー名で指定し、太字（擬似ボールド）は掛けない
+FONT = "Noto Sans JP Medium"
+BOLD = False
 
 NAVY = RGBColor(0x1F, 0x3A, 0x5F)
 GOLD = RGBColor(0x9A, 0x6F, 0x2E)
@@ -43,7 +45,7 @@ ML = 0.6
 CW = 12.1
 
 
-def _font(run, size, color, bold=True, spc=None):
+def _font(run, size, color, bold=BOLD, spc=None):
     f = run.font
     f.name = FONT
     f.size = Pt(size)
@@ -60,7 +62,7 @@ def _font(run, size, color, bold=True, spc=None):
         rpr.set("spc", str(spc))
 
 
-def _runs(p, text, size, color, bold=True, accent=GOLD, spc=None):
+def _runs(p, text, size, color, bold=BOLD, accent=GOLD, spc=None):
     """**...** をアクセント色の run に分けて追加する。"""
     for i, part in enumerate(re.split(r"\*\*(.+?)\*\*", text)):
         if part:
@@ -69,7 +71,7 @@ def _runs(p, text, size, color, bold=True, accent=GOLD, spc=None):
             _font(r, size, accent if i % 2 else color, bold, spc)
 
 
-def text(slide, x, y, w, h, lines, size, color=INK, bold=True, align=PP_ALIGN.LEFT,
+def text(slide, x, y, w, h, lines, size, color=INK, bold=BOLD, align=PP_ALIGN.LEFT,
          anchor=MSO_ANCHOR.TOP, spacing=None, after=0, accent=GOLD, spc=None):
     box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = box.text_frame
@@ -219,7 +221,7 @@ def slide_proposal(prs, d, p, idx, no, page):
         card(s, x, y, cw, ch)
         text(s, x + 0.25, y + 0.15, cw - 0.4, 0.30, en, 11, color, spc=300)
         text(s, x + 0.25, y + 0.36, cw - 0.4, 0.45, ja, 21, color)
-        text(s, x + 0.25, y + 0.85, cw - 0.45, ch - 0.95, bullets(items, num), 15, spacing=1.15, after=4)
+        text(s, x + 0.25, y + 0.85, cw - 0.45, ch - 0.95, bullets(items, num), 14, spacing=1.15, after=4)
     rx = gx + gw + 0.25
     rw = ML + CW - rx
     if p.get("chart"):
@@ -257,7 +259,7 @@ def chart(slide, x, y, w, h, c):
     ch.has_title = False
     ch.font.name = FONT
     ch.font.size = Pt(11)
-    ch.font.bold = True
+    ch.font.bold = BOLD
     ch.font.color.rgb = AXIS
     va, ca = ch.value_axis, ch.category_axis
     va.has_major_gridlines = line
@@ -274,7 +276,7 @@ def chart(slide, x, y, w, h, c):
     dl.number_format = ('0.0' if dec else '0') + (f'"{unit}"' if unit else "")
     dl.number_format_is_linked = False
     dl.font.size = Pt(11)
-    dl.font.bold = True
+    dl.font.bold = BOLD
     dl.font.color.rgb = INK
     ser = plot.series[0]
     if line:

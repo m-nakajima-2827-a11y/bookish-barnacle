@@ -1,6 +1,6 @@
 ---
 name: website-improvement-proposal
-description: 対象WEBサイトのURLを受け取り、ファーストビュー・導線・CV・SEO・表示速度・モバイル・信頼性・計測を分析・検証し、課題と改善点を洗い出して改善提案を3〜5点に絞り込む。内容をユーザーに確認し、変更・修正・追加がなければ、BIZ UDPゴシック・紺金緑の3色・大きな数字で魅せる「1提案1枚」の提案書をPowerPoint（.pptx）で作成する。「サイトを改善したい」「LPのCVが低い」「WEBサイトの改善提案書を作って」という依頼で使う。
+description: 対象WEBサイトのURLを受け取り、ファーストビュー・導線・CV・SEO・表示速度・モバイル・信頼性・計測を分析・検証し、課題と改善点を洗い出して改善提案を3〜5点に絞り込む。内容をユーザーに確認し、変更・修正・追加がなければ、Noto Sans JP Medium・紺金緑の3色・大きな数字で魅せる「1提案1枚」の提案書をPowerPoint（.pptx）で作成する。「サイトを改善したい」「LPのCVが低い」「WEBサイトの改善提案書を作って」という依頼で使う。
 ---
 
 # WEBサイト改善提案（website-improvement-proposal）
@@ -183,7 +183,7 @@ Step 1〜3 を以下の形で簡潔に提示し、確認を取ります。
    pdftoppm -png -r 60 <出力.pdf> preview
    ```
    画像を確認し、文字あふれ・重なり・はみ出しがあれば原稿を削って再生成する（フォントは縮小しない）。
-   - BIZ UDPゴシックが無い環境ではプレビューの文字幅がずれるため、先に導入する（Ubuntu: `apt-get install -y fonts-morisawa-bizud-gothic`。Windows 10以降は標準搭載）。
+   - Noto Sans JP Medium が無い環境ではプレビューの文字幅がずれるため、先に導入する（Google Fonts から NotoSansJP-Medium を取得。Ubuntu で取得できない場合は `apt-get install -y fonts-noto-cjk` を入れ、fontconfig で「Noto Sans JP Medium」を「Noto Sans CJK JP」に置き換えて代用）。
    - `source file could not be loaded` と出る場合は Impress が未導入（`apt-get install -y libreoffice-impress`）。
 4. `.pptx` をユーザーへ送付（SendUserFile が使える場合はそれを使う）。
 

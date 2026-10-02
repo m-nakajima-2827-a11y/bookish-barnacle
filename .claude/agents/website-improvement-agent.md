@@ -1,6 +1,6 @@
 ---
 name: website-improvement-agent
-description: 対象WEBサイトのURLを受け取り、ファーストビュー・導線・CV・SEO・表示速度・モバイル・信頼性・計測を分析・検証し、課題と改善点を洗い出して改善提案を3〜5点に絞り込む。内容をユーザーに確認し、変更・修正・追加がなければ、BIZ UDPゴシック・紺金緑の3色・大きな数字で魅せる「1提案1枚」の提案書をPowerPoint（.pptx）で作成する。「サイトを改善したい」「LPのCVが低い」「WEBサイトの改善提案書を作って」という依頼で使う。
+description: 対象WEBサイトのURLを受け取り、ファーストビュー・導線・CV・SEO・表示速度・モバイル・信頼性・計測を分析・検証し、課題と改善点を洗い出して改善提案を3〜5点に絞り込む。内容をユーザーに確認し、変更・修正・追加がなければ、Noto Sans JP Medium・紺金緑の3色・大きな数字で魅せる「1提案1枚」の提案書をPowerPoint（.pptx）で作成する。「サイトを改善したい」「LPのCVが低い」「WEBサイトの改善提案書を作って」という依頼で使う。
 tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch
 ---
 
@@ -10,7 +10,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch
 
 ## 実行環境
 - 必要なもの: Python 3、`python-pptx`（未導入なら `pip install python-pptx`）
-- 推奨フォント: BIZ UDPゴシック（Windows 10以降は標準搭載。Ubuntu は `apt-get install -y fonts-morisawa-bizud-gothic`）
+- フォント: Noto Sans JP Medium（Google Fonts の静的フォント NotoSansJP-Medium を、資料を開くPCにもインストールしておく）
 - あれば使うもの: WebFetch または `curl`（サイト取得）、Playwright + Chromium（スクリーンショット）、PageSpeed Insights API（表示速度）、LibreOffice Impress と `pdftoppm`（生成後のプレビュー確認）
 - 作業ファイル（取得したHTML、スクリーンショット、原稿JSON、pptx）は作業用ディレクトリにまとめ、リポジトリには置かない。
 - 使えないツールがある場合は、代わりの方法で進め、その旨と影響（例:「表示速度は推定」）を報告に明記する。
@@ -205,7 +205,7 @@ Step 1〜3 を以下の形で簡潔に提示し、確認を取ります。
    pdftoppm -png -r 60 <出力.pdf> preview
    ```
    画像を確認し、文字あふれ・重なり・はみ出しがあれば原稿を削って再生成する（フォントは縮小しない）。
-   - BIZ UDPゴシックが無い環境ではプレビューの文字幅がずれるため、先に導入する（Ubuntu: `apt-get install -y fonts-morisawa-bizud-gothic`。Windows 10以降は標準搭載）。
+   - Noto Sans JP Medium が無い環境ではプレビューの文字幅がずれるため、先に導入する（Google Fonts から NotoSansJP-Medium を取得。Ubuntu で取得できない場合は `apt-get install -y fonts-noto-cjk` を入れ、fontconfig で「Noto Sans JP Medium」を「Noto Sans CJK JP」に置き換えて代用）。
    - `source file could not be loaded` と出る場合は Impress が未導入（`apt-get install -y libreoffice-impress`）。
 4. `.pptx` の保存先パスを報告する（ファイル送付ツールが使える場合は送付する）。
 
@@ -335,8 +335,9 @@ with sync_playwright() as p:
 - 背景: 本文スライドは白 `#FFFFFF`、表紙・締めは紺 `#1F3A5F`
 
 ### フォント
-- **BIZ UDPゴシック**（全テキスト。和文・欧文とも同じ書体を指定）
-- 全テキスト太字（Bold）
+- **Noto Sans JP Medium**（全テキスト。和文・欧文とも同じ書体を指定）
+- 太さは Medium の1種類のみ。太字（Bold）は掛けない（Medium に太字を掛けると擬似ボールドになり、文字がつぶれるため）
+- PowerPoint では書体名を「Noto Sans JP Medium」と指定する（Google Fonts の静的フォント NotoSansJP-Medium を各PCにインストールしておく。可変フォント版だけでは Medium を選べない）
 - 強調は太字ではなく**アクセント色（金 `#9A6F2E`）**で行う。原稿の `**...**` は金色になる
 
 ### カラー
@@ -368,7 +369,7 @@ with sync_playwright() as p:
 | リード文（タイトル下の結論） | 20pt・行間1.2 | `#1A1A1A` | x0.60 y1.70 |
 | カード見出し | 21〜24pt | 金／紺／緑 | ― |
 | カード英字ラベル（WHY 等） | 11pt・字間300 | 金／紺／緑 | ― |
-| カード本文 | 15〜16pt・行間1.15 | `#1A1A1A` | ― |
+| カード本文 | 14〜16pt・行間1.15（提案スライドの2×2カードは14pt） | `#1A1A1A` | ― |
 | 大きな数字 | **38pt**＋単位14pt | 金 | 中央揃え |
 | 数字の説明 | 16pt | `#1A1A1A` | 中央揃え |
 | 数字の補足（前年比・目標など） | 14pt | 緑 | 中央揃え |
@@ -401,7 +402,7 @@ with sync_playwright() as p:
 ### 禁止事項
 - 絵文字、クリップアート
 - 影、グラデーション、3D
-- 指定外の色、指定外の書体
+- 指定外の色、指定外の書体・太さ
 - 文字の縮小による詰め込み（あふれたら原稿を削る）
 
 ---
@@ -612,7 +613,7 @@ with sync_playwright() as p:
 使い方:
     python build_deck.py <原稿.json> <出力.pptx>
 
-デザインは references/design-rules.md（BIZ UDPゴシック／紺・金・緑の3色）に準拠。
+デザインは references/design-rules.md（Noto Sans JP Medium／紺・金・緑の3色）に準拠。
 原稿の構造は examples/sample-deck.json を参照。文字列中の **...** はアクセント色になる。
 """
 import json
@@ -628,7 +629,9 @@ from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.oxml.ns import qn
 from pptx.util import Inches, Pt
 
-FONT = "BIZ UDPゴシック"
+# Medium は独立したファミリー名で指定し、太字（擬似ボールド）は掛けない
+FONT = "Noto Sans JP Medium"
+BOLD = False
 
 NAVY = RGBColor(0x1F, 0x3A, 0x5F)
 GOLD = RGBColor(0x9A, 0x6F, 0x2E)
@@ -652,7 +655,7 @@ ML = 0.6
 CW = 12.1
 
 
-def _font(run, size, color, bold=True, spc=None):
+def _font(run, size, color, bold=BOLD, spc=None):
     f = run.font
     f.name = FONT
     f.size = Pt(size)
@@ -669,7 +672,7 @@ def _font(run, size, color, bold=True, spc=None):
         rpr.set("spc", str(spc))
 
 
-def _runs(p, text, size, color, bold=True, accent=GOLD, spc=None):
+def _runs(p, text, size, color, bold=BOLD, accent=GOLD, spc=None):
     """**...** をアクセント色の run に分けて追加する。"""
     for i, part in enumerate(re.split(r"\*\*(.+?)\*\*", text)):
         if part:
@@ -678,7 +681,7 @@ def _runs(p, text, size, color, bold=True, accent=GOLD, spc=None):
             _font(r, size, accent if i % 2 else color, bold, spc)
 
 
-def text(slide, x, y, w, h, lines, size, color=INK, bold=True, align=PP_ALIGN.LEFT,
+def text(slide, x, y, w, h, lines, size, color=INK, bold=BOLD, align=PP_ALIGN.LEFT,
          anchor=MSO_ANCHOR.TOP, spacing=None, after=0, accent=GOLD, spc=None):
     box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = box.text_frame
@@ -828,7 +831,7 @@ def slide_proposal(prs, d, p, idx, no, page):
         card(s, x, y, cw, ch)
         text(s, x + 0.25, y + 0.15, cw - 0.4, 0.30, en, 11, color, spc=300)
         text(s, x + 0.25, y + 0.36, cw - 0.4, 0.45, ja, 21, color)
-        text(s, x + 0.25, y + 0.85, cw - 0.45, ch - 0.95, bullets(items, num), 15, spacing=1.15, after=4)
+        text(s, x + 0.25, y + 0.85, cw - 0.45, ch - 0.95, bullets(items, num), 14, spacing=1.15, after=4)
     rx = gx + gw + 0.25
     rw = ML + CW - rx
     if p.get("chart"):
@@ -866,7 +869,7 @@ def chart(slide, x, y, w, h, c):
     ch.has_title = False
     ch.font.name = FONT
     ch.font.size = Pt(11)
-    ch.font.bold = True
+    ch.font.bold = BOLD
     ch.font.color.rgb = AXIS
     va, ca = ch.value_axis, ch.category_axis
     va.has_major_gridlines = line
@@ -883,7 +886,7 @@ def chart(slide, x, y, w, h, c):
     dl.number_format = ('0.0' if dec else '0') + (f'"{unit}"' if unit else "")
     dl.number_format_is_linked = False
     dl.font.size = Pt(11)
-    dl.font.bold = True
+    dl.font.bold = BOLD
     dl.font.color.rgb = INK
     ser = plot.series[0]
     if line:
