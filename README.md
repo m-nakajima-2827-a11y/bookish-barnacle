@@ -103,7 +103,7 @@ python -m dm_agent call analyze_marketing_funnel '{"period_start":"2026-09-01","
 
 `website-improvement-proposal` は、URLを渡すとサイトを分析し、改善提案（3〜5点）を確認したうえで、1提案1枚の提案書（.pptx、Noto Sans JP Medium・紺金緑の配色）を作成します。
 例:「https://example.co.jp/ の改善提案書を作って」
-エージェントとして単体で動かす場合は `.claude/agents/website-improvement-agent.md` を使います（チェックリスト・デザイン仕様・生成コードを1ファイルに同梱）。
+エージェントとして単体で動かす場合は `.claude/agents/website-improvement-agent.md` を使います（チェックリスト・デザイン仕様・生成コードを1ファイルに同梱）。導入・更新の手順は `.claude/skills/website-improvement-proposal/README.md` を参照してください。
 
 ### B. Claude API（自律実行ループ）
 ```bash
