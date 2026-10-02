@@ -12,7 +12,7 @@ BtoBは検討期間が長く、複数人が意思決定に関わります。そ�
 | 収録物 | 場所 |
 |---|---|
 | ツール定義（JSON Schema・7本） | `schemas/`（OpenAI / LangChain 形式と Claude API 形式は `schemas/export/`） |
-| Claude Code 用エージェントと Skill | `.claude/agents/btob-marketing-agent.md`, `.claude/skills/`（9本） |
+| Claude Code 用エージェントと Skill | `.claude/agents/btob-marketing-agent.md`, `.claude/agents/website-improvement-agent.md`, `.claude/skills/`（9本） |
 | 実行基盤（Python） | `src/dm_agent/` |
 | クライアント別設定 | `config/clients/<client_id>.json` |
 | ガードレール | `config/policy.json` |
@@ -103,6 +103,7 @@ python -m dm_agent call analyze_marketing_funnel '{"period_start":"2026-09-01","
 
 `website-improvement-proposal` は、URLを渡すとサイトを分析し、改善提案（3〜5点）を確認したうえで、1提案1枚のミニマルな提案書（.pptx）を作成します。
 例:「https://example.co.jp/ の改善提案書を作って」
+エージェントとして単体で動かす場合は `.claude/agents/website-improvement-agent.md` を使います（チェックリスト・デザイン仕様・生成コードを1ファイルに同梱）。
 
 ### B. Claude API（自律実行ループ）
 ```bash
