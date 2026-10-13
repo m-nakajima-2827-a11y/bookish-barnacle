@@ -12,7 +12,7 @@ BtoBは検討期間が長く、複数人が意思決定に関わります。そ�
 | 収録物 | 場所 |
 |---|---|
 | ツール定義（JSON Schema・7本） | `schemas/`（OpenAI / LangChain 形式と Claude API 形式は `schemas/export/`） |
-| Claude Code 用エージェントと Skill | `.claude/agents/btob-marketing-agent.md`, `.claude/skills/`（8本） |
+| Claude Code 用エージェントと Skill | `.claude/agents/btob-marketing-agent.md`, `.claude/skills/`（9本。うち `line-segment-delivery-mazda-odawara` はマツダ小田原のLINEセグメント配信用） |
 | 実行基盤（Python） | `src/dm_agent/` |
 | クライアント別設定 | `config/clients/<client_id>.json` |
 | ガードレール | `config/policy.json` |
