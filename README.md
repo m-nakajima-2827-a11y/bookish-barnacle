@@ -12,7 +12,7 @@ BtoBは検討期間が長く、複数人が意思決定に関わります。そ�
 | 収録物 | 場所 |
 |---|---|
 | ツール定義（JSON Schema・7本） | `schemas/`（OpenAI / LangChain 形式と Claude API 形式は `schemas/export/`） |
-| Claude Code 用エージェントと Skill | `.claude/agents/btob-marketing-agent.md`, `.claude/skills/`（8本） |
+| Claude Code 用エージェントと Skill | `.claude/agents/btob-marketing-agent.md`, `.claude/skills/`（9本。うち1本はマツダ販売店向けLINEセグメント配信） |
 | 実行基盤（Python） | `src/dm_agent/` |
 | クライアント別設定 | `config/clients/<client_id>.json` |
 | ガードレール | `config/policy.json` |
@@ -98,7 +98,7 @@ python -m dm_agent call analyze_marketing_funnel '{"period_start":"2026-09-01","
 ## 4. エージェントとして使う
 
 ### A. Claude Code
-このリポジトリを開くと、`btob-marketing-agent` と8つの Skill が読み込まれます。
+このリポジトリを開くと、`btob-marketing-agent` と9つの Skill が読み込まれます。
 例:「btob-marketing-agent で、先月のファネルを分析して、商談化しない原因と改善策をまとめて」
 
 ### B. Claude API（自律実行ループ）
