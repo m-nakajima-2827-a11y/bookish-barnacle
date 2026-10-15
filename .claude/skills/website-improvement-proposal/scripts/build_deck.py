@@ -130,7 +130,7 @@ def navy_bg(slide):
 
 
 def header(slide, label, title, lead=None):
-    text(slide, ML, 0.50, 8.0, 0.30, label, 11, GOLD, spc=300)
+    text(slide, ML, 0.50, CW, 0.30, label, 11, GOLD, spc=300)
     text(slide, ML, 0.85, 12.0, 0.80, title, 29)
     if lead:
         text(slide, ML, 1.70, CW, 0.95, lead, 20, spacing=1.2)
@@ -333,20 +333,16 @@ def slide_next(prs, d, no, page):
     footer(s, d, page)
 
 
-def slide_appendix(prs, d, ap, no, page):
-    s = prs.slides.add_slide(prs.slide_layouts[6])
-    header(s, section_label(no, "APPENDIX"), ap["title"])
-    head, *rows = ap["rows"]
-    widths = ap.get("widths") or [CW / len(head)] * len(head)
-    row_h = 0.4
-    gt = s.shapes.add_table(len(rows) + 1, len(head), Inches(ML), Inches(1.7),
-                            Inches(sum(widths)), Inches(row_h * (len(rows) + 1)))
+def table(slide, x, y, widths, rows, row_h=0.4, size=11):
+    """紺の見出し行＋罫線0.5ptの表。rows の1行目が見出し。"""
+    gt = slide.shapes.add_table(len(rows), len(widths), Inches(x), Inches(y),
+                                Inches(sum(widths)), Inches(row_h * len(rows)))
     tbl = gt.table
     tbl.first_row = False
     tbl.horz_banding = False
     for j, w in enumerate(widths):
         tbl.columns[j].width = Inches(w)
-    for i, row in enumerate([head] + rows):
+    for i, row in enumerate(rows):
         tbl.rows[i].height = Inches(row_h)
         for j, v in enumerate(row):
             cell = tbl.cell(i, j)
@@ -358,7 +354,7 @@ def slide_appendix(prs, d, ap, no, page):
             tf.word_wrap = True
             p = tf.paragraphs[0]
             p.alignment = PP_ALIGN.CENTER if i == 0 else PP_ALIGN.LEFT
-            _runs(p, v, 12 if i == 0 else 11, WHITE if i == 0 else INK)
+            _runs(p, v, size + 1 if i == 0 else size, WHITE if i == 0 else INK)
             tcPr = cell._tc.get_or_add_tcPr()
             for k, tag in enumerate(("a:lnL", "a:lnR", "a:lnT", "a:lnB")):
                 ln = tcPr.makeelement(qn(tag), {"w": "6350"})
@@ -366,9 +362,171 @@ def slide_appendix(prs, d, ap, no, page):
                 sf.append(sf.makeelement(qn("a:srgbClr"), {"val": "DCDCDC"}))
                 ln.append(sf)
                 tcPr.insert(k, ln)  # 罫線は塗りより前に置く（スキーマ順）
+    return row_h * len(rows)
+
+
+def slide_appendix(prs, d, ap, no, page):
+    s = prs.slides.add_slide(prs.slide_layouts[6])
+    header(s, section_label(no, "APPENDIX"), ap["title"])
+    head = ap["rows"][0]
+    table(s, ML, 1.7, ap.get("widths") or [CW / len(head)] * len(head), ap["rows"])
     if ap.get("note"):
         text(s, ML, 6.75, CW, 0.3, ap["note"], 9, SUB)
     footer(s, d, page)
+
+
+# ── 提案の詳細スライド（現状課題 → 改善方針 → 改善案 → まとめ） ──────────────
+
+DETAIL_LABEL = {"issue": "現状課題", "policy": "改善方針", "idea": "改善案", "summary": "改善案まとめ"}
+TOP = 2.45      # リード文の下から本文を始める位置
+BANNER_Y = 6.05
+
+
+def arrow(slide, x, y, w, h, color=GOLD):
+    sh = slide.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW, Inches(x), Inches(y), Inches(w), Inches(h))
+    sh.fill.solid()
+    sh.fill.fore_color.rgb = color
+    sh.line.fill.background()
+    _flat(sh)
+
+
+def banner(slide, msg, y=BANNER_Y, h=0.75):
+    """結論を1文で示す紺の帯。**...** はクリーム色。"""
+    sh = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(ML), Inches(y), Inches(CW), Inches(h))
+    sh.adjustments[0] = 0.08
+    sh.fill.solid()
+    sh.fill.fore_color.rgb = NAVY
+    sh.line.fill.background()
+    _flat(sh)
+    text(slide, ML + 0.3, y, CW - 0.6, h, msg, 18, WHITE, anchor=MSO_ANCHOR.MIDDLE, accent=CREAM)
+
+
+def item_line(t):
+    """「見出し｜説明」は見出しを金色にする。"""
+    if "｜" in t and "**" not in t:
+        a, b = t.split("｜", 1)
+        return f"**{a}**｜{b}"
+    return t
+
+
+def flow_lines(steps, size=14):
+    """縦の流れを段落のリストにする。5段以下は間に ↓、6段以上は行頭に ↓ を付けて詰める。"""
+    if len(steps) > 5:
+        return [[(("" if i == 0 else "↓ ") + st, size, INK)] for i, st in enumerate(steps)]
+    out = []
+    for i, st in enumerate(steps):
+        if i:
+            out.append([("↓", 10, SUB)])
+        out.append([(st, size, INK)])
+    return out
+
+
+def slide_detail(prs, d, p, dt, idx, no, page):
+    s = prs.slides.add_slide(prs.slide_layouts[6])
+    kind = dt["type"]
+    name = dt.get("label") or DETAIL_LABEL[kind]
+    header(s, f'{no:02d} ─ PROPOSAL {idx:02d}｜{p["title"]}｜{name}', dt["title"], dt.get("lead"))
+    has_banner = bool(dt.get("banner"))
+    bottom = (BANNER_Y - 0.2) if has_banner or kind == "policy" else 6.85
+    {"issue": detail_issue, "policy": detail_policy,
+     "idea": detail_idea, "summary": detail_summary}[kind](s, dt, bottom)
+    if has_banner:
+        banner(s, dt["banner"])
+    footer(s, d, page)
+
+
+def detail_issue(s, dt, bottom):
+    lw = 7.35
+    y = TOP
+    if dt.get("data"):
+        rows = dt["data"]["rows"]
+        widths = dt["data"].get("widths") or [lw / len(rows[0])] * len(rows[0])
+        y += table(s, ML, y, widths, rows, row_h=0.33) + 0.08
+        if dt["data"].get("note"):
+            text(s, ML, y, lw, 0.25, dt["data"]["note"], 10.5, SUB)
+            y += 0.32
+    card(s, ML, y, lw, bottom - y)
+    text(s, ML + 0.25, y + 0.15, lw - 0.5, 0.3, dt.get("facts_label", "現状のページ（確認した事実）"), 11, NAVY, spc=300)
+    size = 13 if dt.get("data") else 14  # 数値表がある場合は本文を1段小さく
+    text(s, ML + 0.25, y + 0.42, lw - 0.5, bottom - y - 0.5, bullets_all(dt["facts"]), size, spacing=1.12, after=2)
+    rx = ML + lw + 0.2
+    rw = ML + CW - rx
+    card(s, rx, TOP, rw, bottom - TOP, CREAM_CARD)
+    text(s, rx + 0.3, TOP + 0.25, rw - 0.6, 0.3, "課題の本質", 11, GOLD, spc=300)
+    text(s, rx + 0.3, TOP + 0.65, rw - 0.6, bottom - TOP - 0.8, dt["essence"], 19, spacing=1.3)
+
+
+def bullets_all(items):
+    return [f"・{item_line(t)}" for t in items]
+
+
+def detail_policy(s, dt, bottom):
+    cw = 5.45
+    for k, (side, fill, color) in enumerate([("before", CARD, SUB), ("after", CREAM_CARD, GOLD)]):
+        x = ML if k == 0 else ML + CW - cw
+        blk = dt[side]
+        card(s, x, TOP, cw, bottom - TOP, fill)
+        text(s, x + 0.3, TOP + 0.18, cw - 0.6, 0.3, "現状" if k == 0 else "改善後", 11, color, spc=300)
+        text(s, x + 0.3, TOP + 0.45, cw - 0.6, 0.45, blk["label"], 17, NAVY if k else INK)
+        text(s, x + 0.3, TOP + 1.0, cw - 0.6, bottom - TOP - 1.1, flow_lines(blk["steps"]), 14,
+             spacing=1.0 if len(blk["steps"]) <= 5 else 1.2)
+    arrow(s, ML + cw + 0.2, (TOP + bottom) / 2 - 0.4, CW - 2 * cw - 0.4, 0.8)
+    concepts = dt.get("concepts", [])[:3]
+    if concepts:
+        n = len(concepts)
+        gap = 0.15
+        w = (CW - gap * (n - 1)) / n
+        for i, (a, b) in enumerate(concepts):
+            x = ML + i * (w + gap)
+            card(s, x, BANNER_Y - 0.05, w, 0.9)
+            text(s, x + 0.2, BANNER_Y + 0.02, w - 0.4, 0.3, f"「{a}」", 12, SUB)
+            text(s, x + 0.2, BANNER_Y + 0.33, w - 0.4, 0.45, f"→「{b}」", 15, ACCENTS[i % 3])
+
+
+def detail_idea(s, dt, bottom):
+    lw, rw = 4.85, 6.35
+    b, a = dt["before"], dt["after"]
+    card(s, ML, TOP, lw, bottom - TOP)
+    text(s, ML + 0.25, TOP + 0.18, lw - 0.5, 0.3, b.get("label", "現状課題"), 11, SUB, spc=300)
+    text(s, ML + 0.25, TOP + 0.5, lw - 0.5, bottom - TOP - 0.6, bullets_all(b["items"]), 14, spacing=1.15, after=3)
+    arrow(s, ML + lw + 0.15, (TOP + bottom) / 2 - 0.35, CW - lw - rw - 0.3, 0.7)
+    rx = ML + CW - rw
+    card(s, rx, TOP, rw, bottom - TOP, CREAM_CARD)
+    text(s, rx + 0.3, TOP + 0.18, rw - 0.6, 0.3, a.get("label", "改善後"), 11, GOLD, spc=300)
+    y = TOP + 0.5
+    if a.get("heading"):
+        text(s, rx + 0.3, y, rw - 0.6, 0.45, a["heading"], 17, NAVY, spacing=1.1)
+        y += 0.5 if len(a["heading"]) <= 24 else 0.85
+    lines = [item_line(t) for t in a["items"]] if a.get("plain") else bullets_all(a["items"])
+    text(s, rx + 0.3, y + 0.05, rw - 0.6, bottom - y - 0.15, lines, 14, spacing=1.15, after=4)
+
+
+def detail_summary(s, dt, bottom):
+    lw = 7.55
+    card(s, ML, TOP, lw, bottom - TOP)
+    text(s, ML + 0.3, TOP + 0.18, lw - 0.6, 0.3, dt.get("steps_label", "改善後のページ構成"), 11, NAVY, spc=300)
+    lines = []
+    for i, st in enumerate(dt["steps"]):
+        if i:
+            lines.append([("↓", 11, SUB)])
+        seg = [(st["title"], 16, INK)]
+        if st.get("sub"):
+            seg.append(("　" + st["sub"], 12, SUB))
+        lines.append(seg)
+    text(s, ML + 0.3, TOP + 0.55, lw - 0.6, bottom - TOP - 0.65, lines, 16, spacing=1.08)
+    e = dt["effect"]
+    rx = ML + lw + 0.2
+    rw = ML + CW - rx
+    card(s, rx, TOP, rw, bottom - TOP, CREAM_CARD)
+    text(s, rx + 0.3, TOP + 0.25, rw - 0.6, 0.3, "改善効果予測", 11, GOLD, spc=300)
+    text(s, rx + 0.3, TOP + 0.6, rw - 0.6, 0.4, e["label"], 16, align=PP_ALIGN.CENTER)
+    text(s, rx + 0.3, TOP + 1.1, rw - 0.6, 0.3, "現状", 11, SUB, align=PP_ALIGN.CENTER, spc=300)
+    text(s, rx + 0.3, TOP + 1.35, rw - 0.6, 0.6, e["before"], 28, SUB, align=PP_ALIGN.CENTER)
+    text(s, rx + 0.3, TOP + 1.95, rw - 0.6, 0.4, "↓", 18, SUB, align=PP_ALIGN.CENTER)
+    text(s, rx + 0.3, TOP + 2.35, rw - 0.6, 0.3, "目標", 11, GOLD, align=PP_ALIGN.CENTER, spc=300)
+    text(s, rx + 0.3, TOP + 2.6, rw - 0.6, 0.8, e["after"], 40, GOLD, align=PP_ALIGN.CENTER)
+    if e.get("note"):
+        text(s, rx + 0.3, bottom - 0.75, rw - 0.6, 0.6, e["note"], 10.5, SUB, align=PP_ALIGN.CENTER, spacing=1.1)
 
 
 def slide_closing(prs, d):
@@ -392,6 +550,9 @@ def build(d, out):
     for idx, p in enumerate(d["proposals"][:5], 1):
         page += 1; no += 1
         slide_proposal(prs, d, p, idx, no, page)
+        for dt in p.get("details", []):
+            page += 1
+            slide_detail(prs, d, p, dt, idx, no, page)
     if d.get("next_actions"):
         page += 1; no += 1
         slide_next(prs, d, no, page)
@@ -411,7 +572,9 @@ if __name__ == "__main__":
     with open(sys.argv[1], encoding="utf-8") as f:
         deck = json.load(f)
     n = len(deck.get("proposals", []))
-    if not 3 <= n <= 5:
-        sys.exit(f"提案は3〜5点にしてください（現在 {n} 点）")
+    if not 1 <= n <= 5:
+        sys.exit(f"提案は5点以内にしてください（現在 {n} 点）")
+    if n < 3:
+        print(f"注意: 提案が{n}点です（推奨は3〜5点）", file=sys.stderr)
     pages = build(deck, sys.argv[2])
     print(f"saved {sys.argv[2]} ({pages} slides)")

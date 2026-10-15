@@ -21,16 +21,17 @@ desc = skill.split('description: ', 1)[1].split('\n', 1)[0]
 body = skill.split('---\n', 2)[2].replace('# WEBサイト改善提案（website-improvement-proposal）\n\n', '', 1)
 subs = [
     ('`references/analysis-checklist.md` の8観点', '**付録A「サイト分析チェックリスト」**の8観点'),
-    ('原稿は `examples/sample-deck.json` と同じ構造の JSON', '原稿は**付録C「原稿JSONの記入例」**と同じ構造の JSON'),
-    ('PowerPointの見せ方（書体・級数・配色・配置）は `references/design-rules.md` に固定します。', 'PowerPointの見せ方（書体・級数・配色・配置）は**付録B**に固定します。'),
+    ('（書き方と型は `references/proposal-writing.md`）', '（書き方と型は**付録B「改善提案の書き方」**）'),
+    ('原稿は `examples/sample-deck.json` と同じ構造の JSON', '原稿は**付録D「原稿JSONの記入例」**と同じ構造の JSON'),
+    ('PowerPointの見せ方（書体・級数・配色・配置）は `references/design-rules.md` に固定します。', 'PowerPointの見せ方（書体・級数・配色・配置）は**付録C**に固定します。'),
     ('   python .claude/skills/website-improvement-proposal/scripts/build_deck.py <原稿.json> <出力.pptx>', '   python build_deck.py <原稿.json> <出力.pptx>'),
-    ('2. 生成スクリプトを実行。', '2. 生成スクリプトを用意して実行。`.claude/skills/website-improvement-proposal/scripts/build_deck.py` があればそれを使い、なければ**付録D**のコードを作業ディレクトリに `build_deck.py` として保存してから実行する。'),
-    ('デザイン仕様の詳細は `references/design-rules.md` を参照。', 'デザイン仕様の詳細は**付録B「PowerPointデザイン仕様」**を参照。'),
+    ('2. 生成スクリプトを実行。', '2. 生成スクリプトを用意して実行。`.claude/skills/website-improvement-proposal/scripts/build_deck.py` があればそれを使い、なければ**付録E**のコードを作業ディレクトリに `build_deck.py` として保存してから実行する。'),
+    ('デザイン仕様の詳細は `references/design-rules.md` を参照。', 'デザイン仕様の詳細は**付録C「PowerPointデザイン仕様」**を参照。'),
     ('確認は1回にまとめ、最大3問までにします（AskUserQuestion が使える場合はそれを使う）。', '確認は1回にまとめ、最大3問までにします。'),
     ('- 「なし」「OK」「進めて」等 → Step 5 へ。', '- サブエージェントとして実行中でユーザーに直接質問できない場合は、この確認ブロックを最終出力として返して**いったん終了**する。呼び出し元から回答付きで再開されたら続きを行う。\n- 「なし」「OK」「進めて」等 → Step 5 へ。'),
     ('4. `.pptx` をユーザーへ送付（SendUserFile が使える場合はそれを使う）。', '4. `.pptx` の保存先パスを報告する（ファイル送付ツールが使える場合は送付する）。'),
     ('1. 原稿 JSON を作業ディレクトリ（スクラッチパッド推奨）に保存。', '1. 原稿 JSON を作業ディレクトリに保存。'),
-    ('`scripts/build_deck.py` はこの仕様どおりに出力します。', '付録Dの生成コードはこの仕様どおりに出力します。'),
+    ('`scripts/build_deck.py` はこの仕様どおりに出力します。', '付録Eの生成コードはこの仕様どおりに出力します。'),
 ]
 for a, b in subs:
     assert a in body or a.startswith('`scripts/'), a
@@ -38,7 +39,7 @@ for a, b in subs:
 
 def appendix(p):
     t = re.sub(r'^# .*\n\n?', '', r(p), count=1)
-    t = t.replace('`scripts/build_deck.py` はこの仕様どおりに出力します。', '付録Dの生成コードはこの仕様どおりに出力します。')
+    t = t.replace('`scripts/build_deck.py` はこの仕様どおりに出力します。', '付録Eの生成コードはこの仕様どおりに出力します。')
     return fence_map(t, lambda l: re.sub(r'^(#{2,5}) ', r'#\1 ', l))
 
 leftover = [l for l in body.splitlines() if 'references/' in l or 'examples/' in l]
@@ -52,7 +53,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch
 
 # WEBサイト改善提案エージェント
 
-このファイルだけで動くように、スキル本体・分析チェックリスト・デザイン仕様・原稿の記入例・PowerPoint生成コードをまとめています。
+このファイルだけで動くように、スキル本体・分析チェックリスト・改善提案の書き方・デザイン仕様・原稿の記入例・PowerPoint生成コードをまとめています。
 
 ## 実行環境
 - 必要なもの: Python 3、`python-pptx`（未導入なら `pip install python-pptx`）
@@ -78,14 +79,19 @@ tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch
 {appendix('references/analysis-checklist.md')}
 ---
 
-## 付録B. PowerPointデザイン仕様
+## 付録B. 改善提案の書き方
+{appendix('references/proposal-writing.md')}
+---
+
+## 付録C. PowerPointデザイン仕様
 {appendix('references/design-rules.md')}
 ---
 
-## 付録C. 原稿JSONの記入例
+## 付録D. 原稿JSONの記入例
 - 文字列中の `**...**` は金色（アクセント色）で強調される。
 - `proposals` は3〜5件。各提案の右側は `chart`（棒/折れ線）か `metric`（大きな数字1つ）のどちらか。
 - `metric.value` は数字だけを入れ、単位は `unit` に分ける（例: `"value": "4.8", "unit": "秒"`）。
+- 各提案の `details` に、現状課題（`issue`）・改善方針（`policy`）・改善案（`idea`）・まとめ（`summary`）のスライドを並べる（中身は Step 5 の表と付録B）。
 - 以下の数値はすべて記入例。実案件では実測値に置き換える。
 
 ```json
@@ -94,7 +100,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch
 
 ---
 
-## 付録D. PowerPoint生成コード（build_deck.py）
+## 付録E. PowerPoint生成コード（build_deck.py）
 作業ディレクトリに `build_deck.py` として保存し、`python build_deck.py <原稿.json> <出力.pptx>` で実行する。
 
 ```python

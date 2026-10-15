@@ -5,14 +5,15 @@ URLを渡すと、サイトを分析して改善提案（3〜5点）を作りま
 ## 同梱ファイル
 | ファイル | 用途 |
 |---|---|
-| `.claude/agents/website-improvement-agent.md` | **エージェント用の1ファイル版**。手順・チェックリスト・デザイン仕様・記入例・生成コードをすべて含む |
+| `.claude/agents/website-improvement-agent.md` | **エージェント用の1ファイル版**。手順・チェックリスト・提案の書き方・デザイン仕様・記入例・生成コードをすべて含む |
 | `.claude/skills/website-improvement-proposal/SKILL.md` | スキル本体（手順・出力ルール・固定フォーマット・品質チェック） |
 | `.claude/skills/website-improvement-proposal/references/analysis-checklist.md` | サイト分析の8観点とコマンド例 |
+| `.claude/skills/website-improvement-proposal/references/proposal-writing.md` | 改善提案の書き方（現状課題→改善方針→改善案→まとめの型と例） |
 | `.claude/skills/website-improvement-proposal/references/design-rules.md` | PowerPointのデザイン仕様（書体・級数・配色・配置） |
 | `.claude/skills/website-improvement-proposal/scripts/build_deck.py` | 原稿JSONから .pptx を作る生成コード |
 | `.claude/skills/website-improvement-proposal/examples/sample-deck.json` | 原稿JSONの記入例 |
 | `.claude/skills/website-improvement-proposal/scripts/build_agent.py` | スキル側の更新をエージェント用1ファイル版に反映するスクリプト |
-| `.claude/skills/website-improvement-proposal/examples/sample.pptx` | 記入例から生成したサンプル（8枚） |
+| `.claude/skills/website-improvement-proposal/examples/sample.pptx` | 記入例から生成したサンプル（12枚） |
 | `.claude/skills/website-improvement-proposal/examples/sample-preview.pdf` | サンプルのPDFプレビュー（代替フォントで表示） |
 
 エージェントとして使う場合は `website-improvement-agent.md` だけで動きます。スキルとして使う場合は `.claude/skills/website-improvement-proposal/` フォルダを使います。
