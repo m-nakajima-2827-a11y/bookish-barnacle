@@ -1,0 +1,70 @@
+{
+  "name": "ma_track_activity",
+  "description": "Webサイトに設置した計測タグ相当の機能。匿名客（Cookie）・実名客のWebアクセス、メール開封・クリック、配信停止、ポップアップ表示・クリック、Webプッシュ許諾・クリックを記録し、スコア加算・セグメント判定・シナリオ起動を行う。ページ表示時に出すべきポップアップも返す",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "visitor_id": {
+        "type": "string",
+        "description": "計測CookieのID（匿名客の識別子）。メール起点のイベントでは省略可"
+      },
+      "events": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "web_access",
+                "email_open",
+                "email_click",
+                "unsubscribe",
+                "popup_view",
+                "popup_click",
+                "push_permission",
+                "push_click"
+              ]
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "url": {
+              "type": "string",
+              "description": "アクセスしたページURL（クエリにUTMがあれば自動抽出）"
+            },
+            "referrer": {
+              "type": "string"
+            },
+            "email_token": {
+              "type": "string",
+              "description": "メール内リンク・開封画像・配信停止リンクのトークン"
+            },
+            "popup_id": {
+              "type": "string"
+            },
+            "push_id": {
+              "type": "string"
+            },
+            "granted": {
+              "type": "boolean",
+              "description": "push_permission の許諾結果"
+            }
+          },
+          "required": [
+            "type",
+            "timestamp"
+          ]
+        }
+      },
+      "return_popup": {
+        "type": "boolean",
+        "description": "最後の web_access の URL に対して表示すべきポップアップを返すか（既定: true）"
+      }
+    },
+    "required": [
+      "events"
+    ]
+  }
+}

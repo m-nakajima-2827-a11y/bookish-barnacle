@@ -1,0 +1,43 @@
+{
+  "name": "ma_send_email",
+  "description": "実名客1名またはセグメントに対してメールを即時配信・予約配信・テスト確認する（メルマガ・お知らせ・セミナー案内）。配信同意・配信停止・頻度上限・営業時間のチェック、差し込み（{{company_name}} {{name}}）、クリック・開封計測、配信停止リンクを自動で付与する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "customer_id": {
+        "type": "string"
+      },
+      "segment_id": {
+        "type": "string"
+      },
+      "subject": {
+        "type": "string"
+      },
+      "body": {
+        "type": "string"
+      },
+      "asset_id": {
+        "type": "string",
+        "description": "案内する資料・セミナーのID（リンクとUTMを自動生成）"
+      },
+      "link_url": {
+        "type": "string"
+      },
+      "campaign": {
+        "type": "string",
+        "description": "utm_campaign（半角英小文字）"
+      },
+      "schedule_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "test_only": {
+        "type": "boolean",
+        "description": "true なら送信せず、対象者数とプレビューのみ返す"
+      }
+    },
+    "required": [
+      "subject"
+    ]
+  }
+}

@@ -383,5 +383,858 @@
       ]
     },
     "_comment": "allowed_mediums_by_source の先頭がオーガニック投稿・通常配信での推奨値です。organic は検索エンジンの自然流入でGA4が自動付与する値です。"
+  },
+  "ma": {
+    "_comment": "自社開発MA（SATORIの公開機能構成をもとにした独自実装）の初期設定。点数・条件は初期仮説です。",
+    "tracking_domain": "https://mk.example.com",
+    "url_event_map": [
+      {
+        "contains": "/price",
+        "event_type": "pricing_page_view"
+      },
+      {
+        "contains": "/case/",
+        "event_type": "case_study_view"
+      }
+    ],
+    "score_common": {},
+    "score_rules": [
+      {
+        "rule_id": "R-PRICE",
+        "name": "料金ページ閲覧",
+        "target": "web_access",
+        "url_filter": "/price",
+        "points": 20
+      },
+      {
+        "rule_id": "R-CASE",
+        "name": "事例ページ閲覧",
+        "target": "web_access",
+        "url_filter": "/case/",
+        "points": 10
+      },
+      {
+        "rule_id": "R-CONTACT",
+        "name": "問い合わせフォーム送信",
+        "target": "form_submit",
+        "form_id": "F-CONTACT",
+        "points": 50
+      },
+      {
+        "rule_id": "R-SEMINAR",
+        "name": "セミナー申込",
+        "target": "form_submit",
+        "form_id": "F-SEMINAR",
+        "points": 30
+      },
+      {
+        "rule_id": "R-WP",
+        "name": "資料DL",
+        "target": "form_submit",
+        "form_id": "F-WP-MFG",
+        "points": 20
+      },
+      {
+        "rule_id": "R-WP-IT",
+        "name": "資料DL",
+        "target": "form_submit",
+        "form_id": "F-WP-IT",
+        "points": 20
+      }
+    ],
+    "forms": [
+      {
+        "form_id": "F-WP-MFG",
+        "name": "製造業向け 営業仕組み化チェックシート DL",
+        "fields": [
+          {
+            "key": "company",
+            "label": "会社名",
+            "type": "text",
+            "required": true,
+            "maps_to": "attributes.company_name"
+          },
+          {
+            "key": "name",
+            "label": "お名前",
+            "type": "text",
+            "required": true,
+            "maps_to": "contact.name"
+          },
+          {
+            "key": "email",
+            "label": "メールアドレス（会社）",
+            "type": "email",
+            "required": true,
+            "maps_to": "contact.email"
+          },
+          {
+            "key": "industry",
+            "label": "業種",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "it_saas",
+                "label": "IT・ソフトウェア"
+              },
+              {
+                "value": "manufacturing",
+                "label": "製造業"
+              },
+              {
+                "value": "professional_services",
+                "label": "専門サービス"
+              },
+              {
+                "value": "retail",
+                "label": "小売・流通"
+              },
+              {
+                "value": "construction",
+                "label": "建設・不動産"
+              },
+              {
+                "value": "other",
+                "label": "その他"
+              }
+            ],
+            "maps_to": "attributes.industry"
+          },
+          {
+            "key": "employees",
+            "label": "従業員数",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "1-9",
+                "label": "1〜9名"
+              },
+              {
+                "value": "10-49",
+                "label": "10〜49名"
+              },
+              {
+                "value": "50-299",
+                "label": "50〜299名"
+              },
+              {
+                "value": "300-999",
+                "label": "300〜999名"
+              },
+              {
+                "value": "1000+",
+                "label": "1,000名以上"
+              }
+            ],
+            "maps_to": "attributes.employee_band"
+          },
+          {
+            "key": "role",
+            "label": "役職・立場",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "executive",
+                "label": "経営者・役員"
+              },
+              {
+                "value": "sales_manager",
+                "label": "営業部門の責任者・管理職"
+              },
+              {
+                "value": "sales_rep",
+                "label": "営業担当"
+              },
+              {
+                "value": "marketing",
+                "label": "マーケティング"
+              },
+              {
+                "value": "other",
+                "label": "その他"
+              },
+              {
+                "value": "student",
+                "label": "学生"
+              },
+              {
+                "value": "job_seeker",
+                "label": "求職中"
+              }
+            ],
+            "maps_to": "attributes.job_role"
+          },
+          {
+            "key": "optin",
+            "label": "お役立ち情報・セミナー案内のメールを受け取る",
+            "type": "checkbox",
+            "required": false
+          }
+        ],
+        "consent_field": "optin",
+        "lead_event": "whitepaper_download",
+        "asset_id": "WP-MFG-01",
+        "tags_on_submit": [
+          "dl_wp_mfg"
+        ],
+        "auto_reply": {
+          "subject": "【資料送付】営業仕組み化チェックシート",
+          "body": "{{company_name}} {{name}} 様\nお申し込みありがとうございます。資料は以下からダウンロードいただけます。",
+          "asset_id": "WP-MFG-01"
+        },
+        "notify": [
+          {
+            "channel": "webhook",
+            "to": "https://hooks.example.com/slack/marketing",
+            "message": "資料DL（製造業）"
+          }
+        ]
+      },
+      {
+        "form_id": "F-WP-IT",
+        "name": "IT企業向け トス上げ基準テンプレート DL",
+        "fields": [
+          {
+            "key": "company",
+            "label": "会社名",
+            "type": "text",
+            "required": true,
+            "maps_to": "attributes.company_name"
+          },
+          {
+            "key": "name",
+            "label": "お名前",
+            "type": "text",
+            "required": true,
+            "maps_to": "contact.name"
+          },
+          {
+            "key": "email",
+            "label": "メールアドレス（会社）",
+            "type": "email",
+            "required": true,
+            "maps_to": "contact.email"
+          },
+          {
+            "key": "industry",
+            "label": "業種",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "it_saas",
+                "label": "IT・ソフトウェア"
+              },
+              {
+                "value": "manufacturing",
+                "label": "製造業"
+              },
+              {
+                "value": "professional_services",
+                "label": "専門サービス"
+              },
+              {
+                "value": "retail",
+                "label": "小売・流通"
+              },
+              {
+                "value": "construction",
+                "label": "建設・不動産"
+              },
+              {
+                "value": "other",
+                "label": "その他"
+              }
+            ],
+            "maps_to": "attributes.industry"
+          },
+          {
+            "key": "employees",
+            "label": "従業員数",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "1-9",
+                "label": "1〜9名"
+              },
+              {
+                "value": "10-49",
+                "label": "10〜49名"
+              },
+              {
+                "value": "50-299",
+                "label": "50〜299名"
+              },
+              {
+                "value": "300-999",
+                "label": "300〜999名"
+              },
+              {
+                "value": "1000+",
+                "label": "1,000名以上"
+              }
+            ],
+            "maps_to": "attributes.employee_band"
+          },
+          {
+            "key": "role",
+            "label": "役職・立場",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "executive",
+                "label": "経営者・役員"
+              },
+              {
+                "value": "sales_manager",
+                "label": "営業部門の責任者・管理職"
+              },
+              {
+                "value": "sales_rep",
+                "label": "営業担当"
+              },
+              {
+                "value": "marketing",
+                "label": "マーケティング"
+              },
+              {
+                "value": "other",
+                "label": "その他"
+              },
+              {
+                "value": "student",
+                "label": "学生"
+              },
+              {
+                "value": "job_seeker",
+                "label": "求職中"
+              }
+            ],
+            "maps_to": "attributes.job_role"
+          },
+          {
+            "key": "optin",
+            "label": "お役立ち情報・セミナー案内のメールを受け取る",
+            "type": "checkbox",
+            "required": false
+          }
+        ],
+        "consent_field": "optin",
+        "lead_event": "whitepaper_download",
+        "asset_id": "WP-IT-01",
+        "tags_on_submit": [
+          "dl_wp_it"
+        ],
+        "auto_reply": {
+          "subject": "【資料送付】トス上げ基準テンプレート",
+          "body": "{{company_name}} {{name}} 様\nお申し込みありがとうございます。資料は以下からダウンロードいただけます。",
+          "asset_id": "WP-IT-01"
+        },
+        "notify": [
+          {
+            "channel": "webhook",
+            "to": "https://hooks.example.com/slack/marketing",
+            "message": "資料DL（IT）"
+          }
+        ]
+      },
+      {
+        "form_id": "F-SEMINAR",
+        "name": "セミナー申込",
+        "fields": [
+          {
+            "key": "company",
+            "label": "会社名",
+            "type": "text",
+            "required": true,
+            "maps_to": "attributes.company_name"
+          },
+          {
+            "key": "name",
+            "label": "お名前",
+            "type": "text",
+            "required": true,
+            "maps_to": "contact.name"
+          },
+          {
+            "key": "email",
+            "label": "メールアドレス（会社）",
+            "type": "email",
+            "required": true,
+            "maps_to": "contact.email"
+          },
+          {
+            "key": "industry",
+            "label": "業種",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "it_saas",
+                "label": "IT・ソフトウェア"
+              },
+              {
+                "value": "manufacturing",
+                "label": "製造業"
+              },
+              {
+                "value": "professional_services",
+                "label": "専門サービス"
+              },
+              {
+                "value": "retail",
+                "label": "小売・流通"
+              },
+              {
+                "value": "construction",
+                "label": "建設・不動産"
+              },
+              {
+                "value": "other",
+                "label": "その他"
+              }
+            ],
+            "maps_to": "attributes.industry"
+          },
+          {
+            "key": "employees",
+            "label": "従業員数",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "1-9",
+                "label": "1〜9名"
+              },
+              {
+                "value": "10-49",
+                "label": "10〜49名"
+              },
+              {
+                "value": "50-299",
+                "label": "50〜299名"
+              },
+              {
+                "value": "300-999",
+                "label": "300〜999名"
+              },
+              {
+                "value": "1000+",
+                "label": "1,000名以上"
+              }
+            ],
+            "maps_to": "attributes.employee_band"
+          },
+          {
+            "key": "role",
+            "label": "役職・立場",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "executive",
+                "label": "経営者・役員"
+              },
+              {
+                "value": "sales_manager",
+                "label": "営業部門の責任者・管理職"
+              },
+              {
+                "value": "sales_rep",
+                "label": "営業担当"
+              },
+              {
+                "value": "marketing",
+                "label": "マーケティング"
+              },
+              {
+                "value": "other",
+                "label": "その他"
+              },
+              {
+                "value": "student",
+                "label": "学生"
+              },
+              {
+                "value": "job_seeker",
+                "label": "求職中"
+              }
+            ],
+            "maps_to": "attributes.job_role"
+          },
+          {
+            "key": "optin",
+            "label": "お役立ち情報・セミナー案内のメールを受け取る",
+            "type": "checkbox",
+            "required": false
+          }
+        ],
+        "consent_field": "optin",
+        "lead_event": "webinar_registration",
+        "asset_id": "WB-GEN-01",
+        "tags_on_submit": [
+          "seminar_registered"
+        ],
+        "auto_reply": {
+          "subject": "【受付完了】オンラインセミナーお申し込み",
+          "body": "{{name}} 様\nお申し込みを受け付けました。視聴URLは開催前日にお送りします。",
+          "asset_id": "WB-GEN-01"
+        }
+      },
+      {
+        "form_id": "F-CONTACT",
+        "name": "お問い合わせ・無料診断申込",
+        "fields": [
+          {
+            "key": "company",
+            "label": "会社名",
+            "type": "text",
+            "required": true,
+            "maps_to": "attributes.company_name"
+          },
+          {
+            "key": "name",
+            "label": "お名前",
+            "type": "text",
+            "required": true,
+            "maps_to": "contact.name"
+          },
+          {
+            "key": "email",
+            "label": "メールアドレス（会社）",
+            "type": "email",
+            "required": true,
+            "maps_to": "contact.email"
+          },
+          {
+            "key": "industry",
+            "label": "業種",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "it_saas",
+                "label": "IT・ソフトウェア"
+              },
+              {
+                "value": "manufacturing",
+                "label": "製造業"
+              },
+              {
+                "value": "professional_services",
+                "label": "専門サービス"
+              },
+              {
+                "value": "retail",
+                "label": "小売・流通"
+              },
+              {
+                "value": "construction",
+                "label": "建設・不動産"
+              },
+              {
+                "value": "other",
+                "label": "その他"
+              }
+            ],
+            "maps_to": "attributes.industry"
+          },
+          {
+            "key": "employees",
+            "label": "従業員数",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "1-9",
+                "label": "1〜9名"
+              },
+              {
+                "value": "10-49",
+                "label": "10〜49名"
+              },
+              {
+                "value": "50-299",
+                "label": "50〜299名"
+              },
+              {
+                "value": "300-999",
+                "label": "300〜999名"
+              },
+              {
+                "value": "1000+",
+                "label": "1,000名以上"
+              }
+            ],
+            "maps_to": "attributes.employee_band"
+          },
+          {
+            "key": "role",
+            "label": "役職・立場",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "executive",
+                "label": "経営者・役員"
+              },
+              {
+                "value": "sales_manager",
+                "label": "営業部門の責任者・管理職"
+              },
+              {
+                "value": "sales_rep",
+                "label": "営業担当"
+              },
+              {
+                "value": "marketing",
+                "label": "マーケティング"
+              },
+              {
+                "value": "other",
+                "label": "その他"
+              },
+              {
+                "value": "student",
+                "label": "学生"
+              },
+              {
+                "value": "job_seeker",
+                "label": "求職中"
+              }
+            ],
+            "maps_to": "attributes.job_role"
+          },
+          {
+            "key": "message",
+            "label": "ご相談内容",
+            "type": "text",
+            "required": false,
+            "maps_to": "attributes.inquiry"
+          },
+          {
+            "key": "optin",
+            "label": "お役立ち情報・セミナー案内のメールを受け取る",
+            "type": "checkbox",
+            "required": false
+          }
+        ],
+        "consent_field": "optin",
+        "lead_event": "contact_request",
+        "asset_id": "DC-GEN-01",
+        "tags_on_submit": [
+          "contact"
+        ],
+        "auto_reply": {
+          "subject": "【受付完了】お問い合わせありがとうございます",
+          "body": "{{name}} 様\n担当者より1営業日以内にご連絡します。"
+        },
+        "notify": [
+          {
+            "channel": "webhook",
+            "to": "https://hooks.example.com/slack/sales",
+            "message": "問い合わせ（即対応）"
+          }
+        ]
+      }
+    ],
+    "segments": [
+      {
+        "segment_id": "SEG-ANON-LP-REVISIT",
+        "name": "匿名でLPを2回以上閲覧（14日以内）",
+        "conditions": {
+          "all": [
+            {
+              "type": "identified",
+              "value": false
+            },
+            {
+              "type": "page_view",
+              "url_contains": "/lp/",
+              "min_count": 2,
+              "within_days": 14
+            }
+          ]
+        }
+      },
+      {
+        "segment_id": "SEG-PRICE-30D",
+        "name": "料金ページ閲覧（30日以内）",
+        "conditions": {
+          "all": [
+            {
+              "type": "page_view",
+              "url_contains": "/price",
+              "within_days": 30
+            }
+          ]
+        }
+      },
+      {
+        "segment_id": "SEG-SCORE-100",
+        "name": "実名客かつスコア100以上",
+        "conditions": {
+          "all": [
+            {
+              "type": "identified",
+              "value": true
+            },
+            {
+              "type": "score",
+              "gte": 100
+            }
+          ]
+        }
+      },
+      {
+        "segment_id": "SEG-MFG-OPTIN",
+        "name": "製造業・メール配信可",
+        "conditions": {
+          "all": [
+            {
+              "type": "attribute",
+              "field": "industry",
+              "equals": "manufacturing"
+            },
+            {
+              "type": "email_opt_in"
+            }
+          ]
+        }
+      },
+      {
+        "segment_id": "SEG-IT-OPTIN",
+        "name": "IT・メール配信可",
+        "conditions": {
+          "all": [
+            {
+              "type": "attribute",
+              "field": "industry",
+              "equals": "it_saas"
+            },
+            {
+              "type": "email_opt_in"
+            }
+          ]
+        }
+      },
+      {
+        "segment_id": "SEG-PUSH",
+        "name": "Webプッシュ許諾者",
+        "conditions": {
+          "type": "push_subscribed",
+          "value": true
+        }
+      }
+    ],
+    "popups": [
+      {
+        "popup_id": "P-MFG-DL",
+        "name": "製造業LP再訪者に資料DLフォーム",
+        "type": "form",
+        "priority": 10,
+        "content": {
+          "title": "営業の属人化、チェックシートで見える化しませんか",
+          "body": "製造業の営業組織向けチェックシートを無料でお送りします。",
+          "cta_text": "無料でダウンロード",
+          "form_id": "F-WP-MFG"
+        },
+        "conditions": {
+          "segment_id": "SEG-ANON-LP-REVISIT",
+          "url_contains": [
+            "/lp/mfg"
+          ],
+          "audience": "anonymous",
+          "frequency": "once_per_day",
+          "max_impressions": 3,
+          "show_after_seconds": 15
+        }
+      },
+      {
+        "popup_id": "P-SEMINAR",
+        "name": "料金ページ閲覧者にセミナー案内",
+        "type": "banner",
+        "priority": 5,
+        "content": {
+          "title": "導入前に、オンラインセミナーで進め方をご確認ください",
+          "cta_text": "セミナーに申し込む",
+          "link_url": "https://example.com/seminar/sales-org"
+        },
+        "conditions": {
+          "url_contains": [
+            "/price"
+          ],
+          "frequency": "once_per_visitor",
+          "show_after_seconds": 5
+        }
+      }
+    ],
+    "scenarios": [
+      {
+        "scenario_id": "SC-SCORE-ALERT",
+        "name": "スコア100到達で営業に通知",
+        "trigger": {
+          "type": "segment_entered",
+          "key": "SEG-SCORE-100"
+        },
+        "steps": [
+          {
+            "day": 0,
+            "action": "add_tag",
+            "tag": "score_100"
+          },
+          {
+            "day": 0,
+            "action": "notify",
+            "notify": {
+              "channel": "webhook",
+              "to": "https://hooks.example.com/slack/sales",
+              "message": "スコア100到達。架電候補です"
+            }
+          }
+        ],
+        "exit_conditions": {
+          "lead_stages": [
+            "sql",
+            "opportunity",
+            "customer",
+            "disqualified"
+          ]
+        },
+        "allow_reentry": false
+      },
+      {
+        "scenario_id": "SC-SEMINAR-FOLLOW",
+        "name": "セミナー申込者フォロー",
+        "trigger": {
+          "type": "form_submitted",
+          "key": "F-SEMINAR"
+        },
+        "steps": [
+          {
+            "day": 1,
+            "action": "send_email",
+            "email": {
+              "subject": "セミナー前にご覧ください：導入事例",
+              "asset_id": "CS-MFG-01"
+            }
+          }
+        ],
+        "exit_conditions": {
+          "lead_stages": [
+            "sql",
+            "opportunity",
+            "customer",
+            "disqualified"
+          ]
+        },
+        "allow_reentry": false
+      }
+    ]
   }
 }

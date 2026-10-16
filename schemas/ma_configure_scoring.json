@@ -1,0 +1,46 @@
+{
+  "name": "ma_configure_scoring",
+  "description": "スコア定義を設定する。共通設定（アクション種別ごとの加減点: Webアクセス、メール開封、メール内リンククリック、配信停止、フォーム送信等）と、個別設定（特定URL・パラメータのアクセス、特定フォーム送信、タグ付与時、セグメント該当時）を管理する。点数は±100,000以内の整数",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": [
+          "get",
+          "set_common",
+          "add_rule",
+          "remove_rule",
+          "distribution"
+        ]
+      },
+      "action_type": {
+        "type": "string",
+        "enum": [
+          "web_access",
+          "email_open",
+          "email_click",
+          "unsubscribe",
+          "form_submit",
+          "popup_click",
+          "push_click"
+        ]
+      },
+      "points": {
+        "type": "integer",
+        "minimum": -100000,
+        "maximum": 100000
+      },
+      "rule": {
+        "type": "object",
+        "description": "add_rule 用。target(web_access|form_submit|tag_added|segment_entered), url_filter, param_filter(例 utm_campaign=mfg_paper), form_id, key(タグ名/セグメントID), points, name"
+      },
+      "rule_id": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "action"
+    ]
+  }
+}

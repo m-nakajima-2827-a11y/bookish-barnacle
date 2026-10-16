@@ -19,6 +19,18 @@ TOOL_ORDER = [
     "build_utm_tracking_url",
     "plan_social_content_calendar",
     "analyze_marketing_funnel",
+    # In-house MA (SATORI の公開機能構成をもとにした独自実装)
+    "ma_track_activity",
+    "ma_manage_customer",
+    "ma_manage_form",
+    "ma_create_landing_page",
+    "ma_manage_segment",
+    "ma_configure_scoring",
+    "ma_manage_scenario",
+    "ma_send_email",
+    "ma_manage_popup",
+    "ma_send_web_push",
+    "ma_get_report",
 ]
 
 

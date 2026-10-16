@@ -73,7 +73,6 @@ class LeadStore:
         self.leads: dict[str, Lead] = {}
         self.events: dict[str, list[dict[str, Any]]] = {}
         self._seen: set[str] = set()
-        self.email_log: list[dict[str, Any]] = []
         self.utm_registry: dict[str, dict[str, Any]] = {}
         self.ad_stats: list[dict[str, Any]] = []      # {date, platform, campaign_id, utm_campaign, cost, impressions, clicks, platform_leads}
         self.ga4_sessions: list[dict[str, Any]] = []  # {date, source, medium, campaign, landing_page, sessions, engaged_sessions, key_events}
@@ -158,7 +157,7 @@ class LeadStore:
 
     def save(self, path: Path) -> None:
         data = {"leads": {k: asdict(v) for k, v in self.leads.items()}, "events": self.events,
-                "email_log": self.email_log, "utm_registry": self.utm_registry, "ad_stats": self.ad_stats,
+                "utm_registry": self.utm_registry, "ad_stats": self.ad_stats,
                 "ga4_sessions": self.ga4_sessions, "gsc_queries": self.gsc_queries}
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -172,6 +171,6 @@ class LeadStore:
         s.leads = {k: Lead(**v) for k, v in data["leads"].items()}
         s.events = data["events"]
         s._seen = {e["event_id"] for evs in s.events.values() for e in evs}
-        for k in ("email_log", "utm_registry", "ad_stats", "ga4_sessions", "gsc_queries"):
+        for k in ("utm_registry", "ad_stats", "ga4_sessions", "gsc_queries"):
             setattr(s, k, data.get(k, getattr(s, k)))
         return s

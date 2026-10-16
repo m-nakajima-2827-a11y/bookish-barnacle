@@ -7,7 +7,7 @@ from dm_agent.registry import SCHEMA_DIR, TOOL_ORDER, ToolValidationError, load_
 
 def test_all_schemas_load_and_export():
     schemas = load_schemas()
-    assert list(schemas) == TOOL_ORDER and len(TOOL_ORDER) == 7
+    assert list(schemas) == TOOL_ORDER and len(TOOL_ORDER) == 18
     assert [t["function"]["name"] for t in to_openai(schemas)] == TOOL_ORDER
     assert all("input_schema" in t for t in to_anthropic(schemas))
 

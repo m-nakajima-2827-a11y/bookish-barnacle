@@ -1,7 +1,7 @@
 [project]
 name = "dm-agent"
 version = "0.1.0"
-description = "BtoB digital marketing AI agent: lead capture, scoring, nurturing, sales handoff, UTM design, Instagram planning, GA4/Search Console/CRM funnel analysis"
+description = "BtoB digital marketing AI agent with an in-house MA (SATORI-style feature set): lead capture, scoring, nurturing, sales handoff, UTM, Instagram planning, funnel analysis"
 requires-python = ">=3.10"
 dependencies = ["jsonschema>=4.0"]
 

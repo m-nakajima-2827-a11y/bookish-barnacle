@@ -2,8 +2,9 @@
 
 `Mock*` classes keep state in memory and record every call so workflows can be
 tested end-to-end without touching real accounts. Implement the same methods
-against Google Ads / Yahoo! 広告 / Meta Marketing / LinkedIn Marketing APIs, the MA tool
-(HubSpot, Marketo, SATORI, etc.) and the CRM (Salesforce, HubSpot CRM, etc.) to go live.
+against Google Ads / Yahoo! 広告 / Meta Marketing / LinkedIn Marketing APIs, an email
+delivery service, a Web Push sender, webhooks, and the CRM (Salesforce, HubSpot CRM, etc.) to go live.
+MA itself is implemented in-house (dm_agent.ma).
 IDs sent to ad platforms are hashed (SHA-256).
 """
 
@@ -51,14 +52,38 @@ class MockAdPlatform:
 
 
 class MockEmail:
-    """MA tool email sender."""
+    """Email transport used by the in-house MA (replace with SMTP / Amazon SES / SendGrid).
+
+    Sending domains need SPF・DKIM・DMARC configured before going live."""
 
     def __init__(self):
         self.sent: list[dict[str, Any]] = []
 
-    def send(self, lead_id: str, message: dict[str, Any]) -> dict[str, Any]:
-        self.sent.append({"lead_id": lead_id, "message": message})
+    def send(self, to: str, message: dict[str, Any]) -> dict[str, Any]:
+        self.sent.append({"to": to, "message": message})
         return {"status": "accepted", "message_id": f"mail-{len(self.sent):06d}"}
+
+
+class MockWebPush:
+    """Web Push transport (replace with a VAPID-based Web Push sender)."""
+
+    def __init__(self):
+        self.sent: list[dict[str, Any]] = []
+
+    def send(self, profile_id: str, message: dict[str, Any]) -> dict[str, Any]:
+        self.sent.append({"profile_id": profile_id, "message": message})
+        return {"status": "accepted"}
+
+
+class MockWebhook:
+    """Outbound webhook (Slack / Teams / CRM). Payloads carry no raw contact details."""
+
+    def __init__(self):
+        self.posts: list[dict[str, Any]] = []
+
+    def post(self, url: str | None, body: dict[str, Any]) -> dict[str, Any]:
+        self.posts.append({"url": url, "body": body})
+        return {"status": 200}
 
 
 class MockCRM:

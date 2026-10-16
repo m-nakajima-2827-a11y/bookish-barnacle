@@ -9,11 +9,14 @@ BtoBは検討期間が長く、複数人が意思決定に関わります。そ�
 - ホットリードは**30分以内に営業へ引き渡します**。
 - 失注したリードには、**予算編成時期に合わせて再アプローチ**します。
 
+MA（マーケティングオートメーション）は外部ツールを使わず、**SATORIの機能構成に準拠した自社開発のMA**をSkillとして内蔵しています。SATORI機能との対応は [`docs/ma_spec_satori_based.md`](docs/ma_spec_satori_based.md) を参照してください。
+
 | 収録物 | 場所 |
 |---|---|
-| ツール定義（JSON Schema・7本） | `schemas/`（OpenAI / LangChain 形式と Claude API 形式は `schemas/export/`） |
-| Claude Code 用エージェントと Skill | `.claude/agents/btob-marketing-agent.md`, `.claude/skills/`（8本） |
-| 実行基盤（Python） | `src/dm_agent/` |
+| ツール定義（JSON Schema・18本＝BtoB 7本＋MA 11本） | `schemas/`（OpenAI / LangChain 形式と Claude API 形式は `schemas/export/`） |
+| Claude Code 用エージェントと Skill | `.claude/agents/btob-marketing-agent.md`, `.claude/skills/`（14本） |
+| 実行基盤（Python） | `src/dm_agent/`（MAは `src/dm_agent/ma/` と `src/dm_agent/skills/ma.py`） |
+| MA機能仕様書 | `docs/ma_spec_satori_based.md` |
 | クライアント別設定 | `config/clients/<client_id>.json` |
 | ガードレール | `config/policy.json` |
 
@@ -27,6 +30,22 @@ BtoBは検討期間が長く、複数人が意思決定に関わります。そ�
 | リード育成（リードナーチャリング） | 業界別のメール・セミナーで検討度を高める | `trigger_nurture_action`（育成シナリオ・メール・セミナー招待・資料推奨） |
 | リードの見極め（リードクオリフィケーション） | 行動データからホットリードを見極め、営業へ引き渡す | `score_and_qualify_leads`, `trigger_nurture_action`（sales_handoff） |
 | 共通（データ・分析） | 行動データの統合と、流入からファネルまでの分析 | `sync_lead_activity`, `analyze_marketing_funnel` |
+
+### 自社開発MA（SATORIの機能構成に準拠）
+
+| 機能 | ツール | 主な内容 |
+|---|---|---|
+| 計測（匿名客・実名客） | `ma_track_activity` | Webアクセス・UTM、メール開封/クリック/配信停止、ポップアップ、プッシュを記録し、スコア・セグメント・シナリオに反映 |
+| カスタマー管理 | `ma_manage_customer` | 参照・検索・属性・タグ・配信停止・同意記録（連絡先は常にマスク） |
+| フォーム | `ma_manage_form` | 名寄せ・実名化（匿名時代の行動を引き継ぐ）、同意記録、自動返信、Slack等への通知、リード登録 |
+| LP | `ma_create_landing_page` | フォーム・計測タグ入りのキャンペーンLP（HTML） |
+| セグメント | `ma_manage_segment` | 閲覧・UTM・メール反応・フォーム・タグ・スコア・属性・匿名/実名などの条件で自動抽出 |
+| スコア定義 | `ma_configure_scoring` | 共通設定（Webアクセス+5・クリック+10・開封+1・配信停止−30）と個別設定（URL・パラメータ・フォーム・タグ・セグメント） |
+| シナリオ | `ma_manage_scenario` | トリガー → ステップメール・タグ・社内通知（Webhook・CRMタスク）、離脱条件 |
+| メール | `ma_send_email` | 個別・一斉・予約・テスト、差し込み、計測、配信停止リンク |
+| ポップアップ | `ma_manage_popup` | 表示条件（セグメント・URL・匿名/実名・頻度・秒数・期間） |
+| Webプッシュ | `ma_send_web_push` | 許諾者（匿名客を含む）へのセグメント配信 |
+| レポート | `ma_get_report` | 実名化率・スコア分布、メール・ポップアップ・フォーム・プッシュ・シナリオの実績 |
 
 ```mermaid
 flowchart LR
@@ -74,31 +93,35 @@ pip install -e ".[dev,llm]"
 
 python -m dm_agent demo              # BtoBシナリオを実行（メール・CRM・広告はモック接続に反映）
 python -m dm_agent demo --dry-run    # 反映せず計画のみ
-python -m pytest                     # テスト（29件）
+python -m pytest                     # テスト（44件）
 ```
 
-`demo` では、サンプルデータを使って次の流れを再現します。
+`demo` では、サンプルデータ（架空）を使って次の流れを再現します。
 
-0. Instagramプロフィール用のUTM付きURLを作成し、命名ルール違反の例（`Instagram`、日本語のキャンペーン名）も検出します。
-1. 9/7(月) 20:30、Instagram経由で製造業の営業責任者が資料をDLします。自動でスコアリングされてMQLになり、製造業向けの育成シナリオに登録されます。
-2. 営業時間外のため、初回メールは翌日9:00に送信されます（配信停止リンク・UTMつき）。
-3. 9/10、セミナー参加と料金ページ閲覧でホットリードになります。CRMに初回接触タスク（期限は30分後）が作られます。同じ企業の役員の閲覧も加味されます。
-4. 商談設定を受けて、Google・Metaの配信から商談中・既存顧客を除外します。
-5. 別リードの失注（理由: 時期）を受けて、2027年1月4日（予算編成時期と仮定。年末年始を避けています）に再アプローチのタスクを作ります。
-6. Meta広告の予算を減らす案（承認待ち）と低成果クリエイティブの停止を出し、2週間分の投稿カレンダーとファネル分析レポートを作成します。
+0. Instagramプロフィール用のUTM付きURLと、MAでキャンペーンLP（フォーム・計測タグ入り）を作成します。
+1. 9/2、匿名の訪問者がInstagram経由でLPと事例を閲覧します。MAが匿名のまま行動とスコアを記録します。
+2. 9/7 20:25、LPを再訪してセグメント「匿名でLPを2回以上閲覧」に該当し、資料DLポップアップが表示されます。
+3. 20:30、ポップアップのフォームから資料をDLします。実名化され（匿名時代の行動5件と流入元Instagramを引き継ぎ）、資料が自動返信で届き、Slackに通知されます。リード登録 → MQL → MAの製造業向け育成シナリオへと進みます。同じ会社ドメインの役員の閲覧も加味されます。
+4. 別の匿名訪問者がWebプッシュを許諾し、セミナー告知を配信します。
+5. 9/10、セミナー参加と料金ページ閲覧でホットリードになり、CRMに初回接触タスク（30分後期限）が作られます。育成シナリオはここで自動で離脱します。
+6. 9/11、MAから「製造業・配信可」セグメントへセミナー案内を配信します（テスト確認 → 配信）。
+7. 商談設定で広告から除外し、別リードの失注（時期）では2027年1月4日（予算編成時期と仮定）に再アプローチのタスクを作ります。
+8. MAレポート（概要・メール・シナリオ・ポップアップ）とファネル分析を出力し、LPのHTMLを `reports/` に保存します。
 
-### スキルを個別に実行する
+### スキルを個別に実行する（MAの例を含む）
 
 ```bash
 python -m dm_agent call build_utm_tracking_url '{"base_url":"https://example.com/lp/it-toss-criteria","utm_source":"instagram","utm_medium":"social","utm_campaign":"it_paper","placement":"instagram_story","target_industry":"it_saas"}'
 python -m dm_agent call analyze_marketing_funnel '{"period_start":"2026-09-01","period_end":"2026-09-30","group_by":"landing_page"}' --client sample_sales_consulting
+python -m dm_agent call ma_manage_segment '{"action":"preview","conditions":{"all":[{"type":"page_view","url_contains":"/price","within_days":30},{"type":"identified","value":true}]}}'
+python -m dm_agent call ma_get_report '{"report_type":"overview"}'
 ```
-状態は `state/<client_id>.json` に保存されます。
+状態は `state/<client_id>.json`（リード）と `state/<client_id>_ma.json`（MA）に保存されます。
 
 ## 4. エージェントとして使う
 
 ### A. Claude Code
-このリポジトリを開くと、`btob-marketing-agent` と8つの Skill が読み込まれます。
+このリポジトリを開くと、`btob-marketing-agent` と14の Skill（MA用6つを含む）が読み込まれます。
 例:「btob-marketing-agent で、先月のファネルを分析して、商談化しない原因と改善策をまとめて」
 
 ### B. Claude API（自律実行ループ）
@@ -119,8 +142,10 @@ python -m dm_agent agent "Instagram経由のリードが商談化しているか
 |---|---|---|---|
 | 全体 | execution_mode | `dry_run` | `live` のときだけメール・CRM・広告へ反映 |
 | 全体 | 営業時間 | 平日9:00〜18:00（年末年始休業） | メール配信・初回接触期限の計算に使用。祝日は未対応 |
-| メール | 配信同意・配信停止 | 必須 | `blocked`（特定電子メール法。配信停止リンク・送信者情報は自動付与） |
+| メール | 配信同意・配信停止 | 必須 | `blocked`（特定電子メール法。配信停止リンク・送信者情報は自動付与）。フォームへの自動返信（請求資料の送付）は対象外（要法務確認） |
 | メール | 頻度上限／同一資料の再送 | 7日で2通／30日 | `blocked` |
+| Webプッシュ | 頻度上限・配信時間 | 7日3回・営業時間内 | 超過分は除外、時間外は翌営業日に予約 |
+| 個人情報 | 連絡先の扱い | MA内のみ保持 | 出力・監査ログ・Webhookではマスク |
 | 営業連携 | 引き渡し条件 | ホットリードのみ | それ以外は `blocked` |
 | 営業連携 | 初回接触期限 | 営業時間内30分 | CRMタスクの期限に設定し、分析で達成状況を確認 |
 | 広告 | 予算変更幅／承認 | ±20%／±10%超は承認待ち | 補正・`pending_approval` |
@@ -133,7 +158,9 @@ python -m dm_agent agent "Instagram経由のリードが商談化しているか
 
 | 項目 | 現状 | 本番での対応 |
 |---|---|---|
-| MA・メール配信 | `MockEmail` | HubSpot / Marketo / SATORI 等のAPIに接続 |
+| MA（自社開発） | 機能ロジックは実装済み。保存はJSONファイル | 計測タグ（tag.js）とトラッキング用エンドポイント、データベース移行、管理画面（詳細は `docs/ma_spec_satori_based.md`） |
+| メール配信基盤 | `MockEmail` | Amazon SES / SendGrid 等。SPF・DKIM・DMARC、バウンス処理 |
+| Webプッシュ | `MockWebPush` | Service Worker と VAPID 鍵による送信 |
 | CRM（営業タスク・商談） | `MockCRM` | Salesforce / HubSpot CRM 等に接続。商談・受注・失注を `sync_lead_activity` に連携 |
 | 広告媒体 | `MockAdPlatform` | Google広告 / Yahoo!広告 / Meta Marketing / LinkedIn Marketing API。SQLのオフラインコンバージョン送信も設定 |
 | GA4 | サンプルJSON | GA4 Data API または BigQuery エクスポートから `ga4_sessions` を取得 |

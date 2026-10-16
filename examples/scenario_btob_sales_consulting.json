@@ -1,15 +1,16 @@
 {
  "_comment": "デモ用の架空データです。企業・数値はすべて動作確認用のサンプルであり、実績ではありません。",
  "client_id": "sample_sales_consulting",
- "start_at": "2026-09-07T09:00:00+09:00",
+ "start_at": "2026-09-01T09:00:00+09:00",
  "history": [
   {
    "lead_id": "L102",
    "account": {
-    "account_id": "A-MFG-01",
+    "account_id": "dom:sample-seiki.example",
     "industry": "manufacturing",
     "employee_band": "50-299",
-    "job_role": "executive"
+    "job_role": "executive",
+    "company_name": "サンプル精機株式会社"
    },
    "touchpoints": [
     {
@@ -29,57 +30,10 @@
       "asset_id": "CS-MFG-01"
      }
     }
-   ]
-  },
-  {
-   "lead_id": "L101",
-   "account": {
-    "account_id": "A-MFG-01",
-    "industry": "manufacturing",
-    "employee_band": "50-299",
-    "job_role": "sales_manager"
-   },
-   "touchpoints": [
-    {
-     "channel": "instagram",
-     "timestamp": "2026-08-28T12:10:00+09:00",
-     "event_type": "social_engagement",
-     "payload": {
-      "action": "save"
-     }
-    },
-    {
-     "channel": "instagram",
-     "timestamp": "2026-09-01T12:15:00+09:00",
-     "event_type": "social_engagement",
-     "payload": {
-      "action": "profile_visit"
-     }
-    },
-    {
-     "channel": "landing_page",
-     "timestamp": "2026-09-02T21:00:00+09:00",
-     "event_type": "page_view",
-     "payload": {
-      "landing_page": "/lp/mfg-checksheet",
-      "utm": {
-       "source": "instagram",
-       "medium": "social",
-       "campaign": "mfg_paper",
-       "content": "profile_link_manufacturing"
-      }
-     }
-    },
-    {
-     "channel": "website",
-     "timestamp": "2026-09-02T21:05:00+09:00",
-     "event_type": "case_study_view",
-     "payload": {
-      "url": "/case/mfg-01",
-      "asset_id": "CS-MFG-01"
-     }
-    }
-   ]
+   ],
+   "contact": {
+    "email": "l102@sample-seiki.example"
+   }
   },
   {
    "lead_id": "L103",
@@ -150,7 +104,10 @@
       "amount": 1200000
      }
     }
-   ]
+   ],
+   "contact": {
+    "email": "l103@a-it-07.example"
+   }
   },
   {
    "lead_id": "L104",
@@ -179,7 +136,10 @@
       }
      }
     }
-   ]
+   ],
+   "contact": {
+    "email": "l104@a-uni-01.example"
+   }
   },
   {
    "lead_id": "L105",
@@ -243,7 +203,10 @@
       "amount": 900000
      }
     }
-   ]
+   ],
+   "contact": {
+    "email": "l105@a-it-03.example"
+   }
   },
   {
    "lead_id": "L110",
@@ -272,7 +235,10 @@
       }
      }
     }
-   ]
+   ],
+   "contact": {
+    "email": "l110@a-smb-10.example"
+   }
   },
   {
    "lead_id": "L111",
@@ -301,7 +267,10 @@
       }
      }
     }
-   ]
+   ],
+   "contact": {
+    "email": "l111@a-smb-11.example"
+   }
   },
   {
    "lead_id": "L112",
@@ -330,7 +299,10 @@
       }
      }
     }
-   ]
+   ],
+   "contact": {
+    "email": "l112@a-smb-12.example"
+   }
   },
   {
    "lead_id": "L113",
@@ -359,7 +331,10 @@
       }
      }
     }
-   ]
+   ],
+   "contact": {
+    "email": "l113@a-smb-13.example"
+   }
   },
   {
    "lead_id": "L114",
@@ -388,7 +363,10 @@
       }
      }
     }
-   ]
+   ],
+   "contact": {
+    "email": "l114@a-smb-14.example"
+   }
   }
  ],
  "campaigns": {
@@ -2576,31 +2554,65 @@
   }
  ],
  "live": {
-  "step1_download": {
-   "lead_id": "L101",
-   "consent": {
-    "email_opt_in": true
-   },
-   "touchpoints": [
+  "anon_first_visit": {
+   "visitor_id": "ck-101",
+   "events": [
     {
-     "channel": "landing_page",
-     "timestamp": "2026-09-07T20:30:00+09:00",
-     "event_type": "whitepaper_download",
-     "payload": {
-      "asset_id": "WP-MFG-01",
-      "landing_page": "/lp/mfg-checksheet",
-      "utm": {
-       "source": "instagram",
-       "medium": "social",
-       "campaign": "mfg_paper",
-       "content": "profile_link_manufacturing"
-      }
-     }
+     "type": "web_access",
+     "timestamp": "2026-09-02T21:00:00+09:00",
+     "url": "https://example.com/lp/mfg-checksheet?utm_source=instagram&utm_medium=social&utm_campaign=mfg_paper&utm_content=profile_link_manufacturing"
+    },
+    {
+     "type": "web_access",
+     "timestamp": "2026-09-02T21:05:00+09:00",
+     "url": "https://example.com/case/mfg-01"
     }
    ]
   },
-  "step3_high_intent": {
-   "lead_id": "L101",
+  "anon_revisit": {
+   "visitor_id": "ck-101",
+   "events": [
+    {
+     "type": "web_access",
+     "timestamp": "2026-09-07T20:25:00+09:00",
+     "url": "https://example.com/lp/mfg-checksheet"
+    }
+   ]
+  },
+  "popup_interaction": {
+   "visitor_id": "ck-101",
+   "events": [
+    {
+     "type": "popup_view",
+     "timestamp": "2026-09-07T20:26:00+09:00",
+     "popup_id": "P-MFG-DL"
+    },
+    {
+     "type": "popup_click",
+     "timestamp": "2026-09-07T20:27:00+09:00",
+     "popup_id": "P-MFG-DL"
+    }
+   ]
+  },
+  "form_submit": {
+   "action": "submit",
+   "form_id": "F-WP-MFG",
+   "submission": {
+    "visitor_id": "ck-101",
+    "timestamp": "2026-09-07T20:30:00+09:00",
+    "page_url": "https://example.com/lp/mfg-checksheet",
+    "values": {
+     "company": "サンプル精機株式会社",
+     "name": "山田 太郎",
+     "email": "yamada@sample-seiki.example",
+     "industry": "manufacturing",
+     "employees": "50-299",
+     "role": "sales_manager",
+     "optin": "1"
+    }
+   }
+  },
+  "webinar_attendance": {
    "touchpoints": [
     {
      "channel": "webinar",
@@ -2609,19 +2621,20 @@
      "payload": {
       "asset_id": "WB-GEN-01"
      }
-    },
-    {
-     "channel": "website",
-     "timestamp": "2026-09-10T15:05:00+09:00",
-     "event_type": "pricing_page_view",
-     "payload": {
-      "url": "/price"
-     }
     }
    ]
   },
-  "step4_first_contact": {
-   "lead_id": "L101",
+  "pricing_visit": {
+   "visitor_id": "ck-101",
+   "events": [
+    {
+     "type": "web_access",
+     "timestamp": "2026-09-10T15:05:00+09:00",
+     "url": "https://example.com/price"
+    }
+   ]
+  },
+  "first_contact": {
    "touchpoints": [
     {
      "channel": "inside_sales",
@@ -2630,8 +2643,7 @@
     }
    ]
   },
-  "step5_meeting": {
-   "lead_id": "L101",
+  "meeting": {
    "touchpoints": [
     {
      "channel": "inside_sales",
@@ -2643,7 +2655,7 @@
     }
    ]
   },
-  "step6_lost": {
+  "lost": {
    "lead_id": "L105",
    "touchpoints": [
     {
@@ -2653,6 +2665,21 @@
      "payload": {
       "lost_reason": "timing"
      }
+    }
+   ]
+  },
+  "push_permission": {
+   "visitor_id": "ck-201",
+   "events": [
+    {
+     "type": "web_access",
+     "timestamp": "2026-09-08T12:00:00+09:00",
+     "url": "https://example.com/lp/it-toss-criteria?utm_source=google&utm_medium=cpc&utm_campaign=it_paper_search"
+    },
+    {
+     "type": "push_permission",
+     "timestamp": "2026-09-08T12:01:00+09:00",
+     "granted": true
     }
    ]
   }

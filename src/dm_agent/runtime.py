@@ -9,8 +9,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
-from .connectors import MockAdPlatform, MockCRM, MockEmail
+from .connectors import MockAdPlatform, MockCRM, MockEmail, MockWebhook, MockWebPush
 from .guardrails import Guardrails
+from .ma import engine as ma_engine
+from .ma.email import deliver as ma_deliver
+from .ma.seed import seed_ma
+from .ma.store import MAStore, mask_pii
 from .registry import ROOT, ToolValidationError, load_schemas, validate_input
 from .skills import HANDLERS
 from .store import LeadStore
@@ -22,6 +26,11 @@ DEFAULT_CLIENT = "sample_sales_consulting"
 def load_client(client_id: str) -> dict[str, Any]:
     """Per-client settings (ICP, scoring, content, UTM dictionary) — one file per client."""
     return json.loads((CONFIG_DIR / "clients" / f"{client_id}.json").read_text(encoding="utf-8"))
+
+
+def _deferred_email(rt: "AgentRuntime", profile_id: str, spec: dict[str, Any]) -> dict[str, Any]:
+    p = rt.ma.profiles.get(profile_id) or rt.ma.profiles.get(rt.ma.cookie_index.get(profile_id.removeprefix("anon:"), ""))
+    return ma_deliver(rt, p, spec) if p else {"status": "skipped", "reason": "customer_not_found"}
 
 
 class AgentRuntime:
@@ -37,6 +46,9 @@ class AgentRuntime:
             n: MockAdPlatform(n) for n in ("google_ads", "yahoo_ads", "meta_ads", "linkedin_ads")}
         self.email = email or MockEmail()
         self.crm = crm or MockCRM()
+        self.push = MockWebPush()
+        self.webhook = MockWebhook()
+        self.ma = MAStore()
         self.schemas = load_schemas()
         self._clock = now
         self._jobs: list[tuple[datetime, int, str, dict[str, Any]]] = []
@@ -45,6 +57,14 @@ class AgentRuntime:
         self.approvals: list[dict[str, Any]] = []
         self.audit_log: list[dict[str, Any]] = []
         self._origins: list[str] = []
+        # Internal jobs (not exposed as tools): scenario steps, deferred emails / pushes.
+        self.internal: dict[str, Callable[..., dict[str, Any]]] = {
+            "_ma_scenario_step": lambda rt, scenario_id, profile_id, step_index: ma_engine.run_step(rt, scenario_id, profile_id, step_index),
+            "_ma_deliver_email": _deferred_email,
+            "_ma_bulk_send": lambda rt, args: HANDLERS["ma_send_email"](rt, **args),
+            "_ma_push": lambda rt, args: HANDLERS["ma_send_web_push"](rt, **args),
+        }
+        seed_ma(self)
 
     # --- clock / scheduler ---------------------------------------------------
     def now(self) -> datetime:
@@ -53,7 +73,7 @@ class AgentRuntime:
     def schedule(self, at: datetime, tool: str, args: dict[str, Any]) -> None:
         heapq.heappush(self._jobs, (at, next(self._seq), tool, args))
         self.audit_log.append({"at": self.now().isoformat(), "type": "scheduled", "tool": tool,
-                               "run_at": at.isoformat(), "args": args})
+                               "run_at": at.isoformat(), "args": mask_pii(args)})
 
     def pending_jobs(self) -> list[dict[str, Any]]:
         return [{"run_at": at.isoformat(), "tool": t, "args": a} for at, _, t, a in sorted(self._jobs)]
@@ -99,7 +119,17 @@ class AgentRuntime:
 
     # --- tool dispatch ------------------------------------------------------
     def execute(self, tool: str, args: dict[str, Any], origin: str = "direct") -> dict[str, Any]:
-        entry = {"at": self.now().isoformat(), "type": "tool_call", "tool": tool, "origin": origin, "args": args}
+        entry = {"at": self.now().isoformat(), "type": "tool_call", "tool": tool, "origin": origin, "args": mask_pii(args)}
+        if tool in self.internal:
+            self._origins.append(origin)
+            try:
+                result = self.internal[tool](self, **args)
+            finally:
+                self._origins.pop()
+            entry["type"] = "internal_job"
+            entry["result_summary"] = {k: result[k] for k in ("status", "error", "reason") if k in result}
+            self.audit_log.append(entry)
+            return result
         if tool not in HANDLERS:
             result = {"error": f"unknown tool {tool}"}
         else:

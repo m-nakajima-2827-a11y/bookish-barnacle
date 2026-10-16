@@ -1,12 +1,14 @@
-"""③ trigger_nurture_action — nurturing emails, content recommendation, sales handoff, recontact."""
+"""③ trigger_nurture_action — nurturing (via the in-house MA scenarios / email), content recommendation,
+sales handoff, recontact."""
 
 from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
 from typing import TYPE_CHECKING, Any
 
-from ..store import parse_ts
-from ..utm import build_url
+from ..ma import engine
+from ..ma.email import deliver
+from ..ma.seed import nurture_scenario_id
 
 if TYPE_CHECKING:
     from ..runtime import AgentRuntime
@@ -32,45 +34,6 @@ def _recommend(rt: "AgentRuntime", ld) -> list[dict[str, Any]]:
             and a["industry"] in {ld.industry, "general"}]
     return sorted(pool, key=lambda a: (abs(FUNNEL_ORDER.index(a["stage"]) - FUNNEL_ORDER.index(target)),
                                        a["industry"] == "general"))[:3]
-
-
-def _send_email(rt, ld, base, asset, details, origin_step: str | None):
-    g, now = rt.guardrails, rt.now()
-    if origin_step and ld.stage in STOP_NURTURE_STAGES:
-        return {**base, "status": "skipped", "reason": f"ステージが {ld.stage} のため育成メールを停止（営業対応を優先）"}
-    if origin_step and not origin_step.endswith("#0") and asset and asset["asset_id"] in ld.consumed_assets:
-        return {**base, "status": "skipped", "reason": f"{asset['asset_id']} は閲覧・DL済みのため送信不要"}
-    v = g.check_email(rt.store, ld, asset and asset["asset_id"], now)
-    if v:
-        rt.store.email_log.append({"lead_id": ld.lead_id, "status": "blocked", "reasons": v, "sent_at": now.isoformat(),
-                                   "asset_id": asset and asset["asset_id"]})
-        return {**base, "status": "blocked", "reasons": v}
-    if rt.policy["email"]["send_in_business_hours_only"] and not g.in_business_hours(now):
-        at = g.next_business_open(now)
-        rt.schedule(at, "trigger_nurture_action", {"lead_id": ld.lead_id, "action": base["action"],
-                                                   **({"content_asset_id": asset["asset_id"]} if asset else {}),
-                                                   "payload_details": details})
-        return {**base, "status": "scheduled", "scheduled_at": at.isoformat(), "reason": "営業時間外のため翌営業日の配信に予約"}
-    sender = rt.client["sender"]
-    link = None
-    if asset:
-        link = build_url(asset["url"], {"utm_source": "ma_email", "utm_medium": "email",
-                                        "utm_campaign": f"nurture_{details.get('track', 'adhoc')}",
-                                        "utm_content": asset["asset_id"].lower()})
-    body = details.get("body") or (f"{asset['title']}をご案内します。\n{link}" if asset else "")
-    footer = rt.policy["email"]["required_footer"].format(unsubscribe_url=sender["unsubscribe_url"],
-                                                         sender_name=sender["name"], sender_address=sender["address"])
-    message = {"subject": details.get("subject") or (asset["title"] if asset else "ご案内"),
-               "body": f"{body}\n\n--\n{footer}", "link": link}
-    rec = {"lead_id": ld.lead_id, "asset_id": asset and asset["asset_id"], "sent_at": now.isoformat(),
-           "track_step": origin_step, "message": message}
-    if g.dry_run:
-        rec["status"] = "planned"
-    else:
-        rec["delivery"] = rt.email.send(ld.lead_id, message)
-        rec["status"] = "sent"
-    rt.store.email_log.append(rec)
-    return {**base, **rec}
 
 
 def _budget_planning_date(rt: "AgentRuntime", ld, today: date) -> tuple[date, str]:
@@ -101,30 +64,27 @@ def trigger_nurture_action(rt: "AgentRuntime", lead_id: str, action: str, nurtur
     if action == "enroll_nurture_track":
         if ld.stage in STOP_NURTURE_STAGES:
             return {**base, "status": "blocked", "reasons": [f"ステージ {ld.stage} のリードは育成シナリオに登録できません"]}
-        if ld.nurture and ld.nurture.get("status") == "active":
-            return {**base, "status": "skipped", "reason": f"登録済み（{ld.nurture['track']}）"}
         track = _track_for(rt, ld.industry, nurture_track)
-        steps = rt.client["nurture_tracks"][track]
-        ld.nurture = {"track": track, "enrolled_at": now.isoformat(), "status": "active"}
-        planned = []
-        for i, step in enumerate(steps):
-            args = {"lead_id": lead_id, "action": "send_email", "content_asset_id": step["asset_id"],
-                    "payload_details": {"subject": step["subject"], "track": track, "track_step": f"{track}#{i}"}}
-            if step["day"] == 0:
-                first = rt.execute("trigger_nurture_action", args, origin="nurture_track")
-                planned.append({"day": 0, "asset_id": step["asset_id"], "status": first.get("status"),
-                                "reason": first.get("reason") or first.get("reasons")})
-            else:
-                at = g.next_business_open(now + timedelta(days=step["day"]))
-                rt.schedule(at, "trigger_nurture_action", args)
-                planned.append({"day": step["day"], "asset_id": step["asset_id"], "status": "scheduled", "at": at.isoformat()})
-        return {**base, "status": "enrolled", "nurture_track": track, "steps": planned,
-                "note": "営業対応ステージ（SQL以降）に進んだ時点で残りの配信は自動停止します"}
+        sid = nurture_scenario_id(track)
+        profile = engine.ensure_customer(rt, lead_id)
+        res = engine.enroll(rt, sid, profile, source="trigger_nurture_action")
+        if res["status"] == "enrolled":
+            ld.nurture = {"track": track, "scenario_id": sid, "enrolled_at": now.isoformat(), "status": "active"}
+        steps = rt.ma.scenarios[sid]["steps"]
+        return {**base, "status": res["status"], "reason": res.get("reason"), "nurture_track": track, "ma_scenario_id": sid,
+                "steps": [{"day": st["day"], "asset_id": st["email"]["asset_id"], "subject": st["email"]["subject"]} for st in steps],
+                "note": "MAのシナリオで配信します。SQL以降に進んだ時点、または資料が閲覧済みのステップは自動で停止・スキップします"}
 
     if action in {"send_email", "invite_webinar"}:
         if action == "invite_webinar" and asset is None:
             asset = _asset(rt, rt.client["social"]["webinar_asset_id"])
-        return _send_email(rt, ld, base, asset, details, details.get("track_step"))
+        profile = rt.ma.by_customer(lead_id)
+        if profile is None:
+            return {**base, "status": "blocked", "reasons": ["no_email_address: MAにカスタマー（連絡先）が登録されていません"]}
+        res = deliver(rt, profile, {"subject": details.get("subject"), "body": details.get("body"),
+                                    "asset_id": asset and asset["asset_id"], "campaign": details.get("campaign"),
+                                    "category": "single"})
+        return {**base, **{k: v for k, v in res.items() if k not in {"token"}}}
 
     if action == "recommend_content":
         recs = _recommend(rt, ld)

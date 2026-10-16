@@ -1,0 +1,37 @@
+{
+  "name": "ma_manage_popup",
+  "description": "サイト訪問者に表示するポップアップ（資料DLフォーム・バナー・セミナー告知）を作成・停止・一覧し、表示条件（対象セグメント、URL、匿名客/実名客、表示頻度、最大表示回数、期間、表示までの秒数）を管理する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": [
+          "create",
+          "pause",
+          "activate",
+          "list",
+          "decide"
+        ]
+      },
+      "popup_id": {
+        "type": "string"
+      },
+      "definition": {
+        "type": "object",
+        "description": "create 用。name, type(form|banner), priority, content{title, body, cta_text, link_url, form_id, image_url}, conditions{segment_id, url_contains[], url_excludes[], audience(all|anonymous|identified), frequency(once_per_visitor|once_per_day|every_visit), max_impressions, show_after_seconds, start_at, end_at, hide_after_click}"
+      },
+      "visitor_id": {
+        "type": "string",
+        "description": "decide 用"
+      },
+      "url": {
+        "type": "string",
+        "description": "decide 用"
+      }
+    },
+    "required": [
+      "action"
+    ]
+  }
+}

@@ -27,7 +27,8 @@
     "frequency_cap_per_lead_per_7days": 2,
     "same_asset_resend_block_days": 30,
     "send_in_business_hours_only": true,
-    "required_footer": "配信停止はこちら: {unsubscribe_url}\n送信者: {sender_name}（{sender_address}）"
+    "required_footer": "配信停止はこちら: {unsubscribe_url}\n送信者: {sender_name}（{sender_address}）",
+    "_comment": "フォーム送信への自動返信（請求資料の送付）は取引メールとして同意・頻度上限の対象外にしています。運用前に法務確認してください。"
   },
   "sales_handoff": {
     "first_contact_sla_minutes": 30,
@@ -49,5 +50,9 @@
     "lp_min_sessions": 100,
     "lp_low_cvr": 0.01,
     "brand_search_growth_alert": 0.2
+  },
+  "push": {
+    "frequency_cap_per_7days": 3,
+    "send_in_business_hours_only": true
   }
 }

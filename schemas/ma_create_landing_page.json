@@ -1,0 +1,50 @@
+{
+  "name": "ma_create_landing_page",
+  "description": "キャンペーン用の簡易ランディングページ（LP）を作成する。見出し・訴求ポイント・フォームを組み込んだHTMLを生成し、計測タグとフォームを設定済みの公開用ファイルとURLを返す",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "slug": {
+        "type": "string",
+        "description": "URLパス（/lp/<slug>）。半角英小文字・数字・ハイフン"
+      },
+      "title": {
+        "type": "string"
+      },
+      "headline": {
+        "type": "string"
+      },
+      "subheadline": {
+        "type": "string"
+      },
+      "benefits": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "訴求ポイント（3つ程度）"
+      },
+      "form_id": {
+        "type": "string"
+      },
+      "target_industry": {
+        "type": "string",
+        "enum": [
+          "it_saas",
+          "manufacturing",
+          "general"
+        ]
+      },
+      "theme_color": {
+        "type": "string",
+        "description": "Instagram投稿のトーンに合わせたメインカラー（例: #1F3A5F）"
+      }
+    },
+    "required": [
+      "slug",
+      "title",
+      "headline",
+      "form_id"
+    ]
+  }
+}

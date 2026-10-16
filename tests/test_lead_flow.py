@@ -1,55 +1,47 @@
-"""End-to-end: Instagram → 資料DL → MQL/育成 → ホットリード → 営業引き渡し → 商談 → 広告除外 / 失注 → 再アプローチ."""
+"""End-to-end: 匿名訪問 → ポップアップ → フォーム（実名化）→ MQL・育成 → ホットリード → 引き渡し → 商談 → 広告除外 / 失注 → 再アプローチ."""
 
-from conftest import at
+from conftest import at, run_live
+
+PRE_FORM = ("anon_first_visit", "anon_revisit", "popup_interaction")
 
 
-def test_download_makes_mql_and_enrolls_industry_track(live_rt, scenario):
-    at(live_rt, "2026-09-07T20:30:00+09:00")
-    live_rt.execute("sync_lead_activity", scenario["live"]["step1_download"])
-    ld = live_rt.store.leads["L101"]
-    assert ld.stage == "mql"
-    assert ld.nurture["track"] == "manufacturing"
-    # 20:30 is outside business hours → first email waits for 09:00 next business day
-    jobs = live_rt.pending_jobs()
-    assert jobs[0]["run_at"].startswith("2026-09-08T09:00")
-    assert live_rt.email.sent == []
-    at(live_rt, "2026-09-08T09:01:00+09:00")
+def test_form_identifies_visitor_and_creates_mql(live_rt, scenario):
+    out = run_live(live_rt, scenario, *PRE_FORM, "form_submit")
+    r = out["form_submit"]
+    cid = r["customer_id"]
+    assert r["new_customer"] and r["merged_anonymous_activities"] == 5 and r["email"] == "y***@sample-seiki.example"
+    ld = live_rt.store.leads[cid]
+    assert ld.stage == "mql" and ld.nurture["scenario_id"] == "nurture_manufacturing"
+    assert ld.first_touch["campaign"] == "mfg_paper"          # inherited from the anonymous LP visit
+    assert ld.account_id == "dom:sample-seiki.example"         # same company as L102 → buying committee
+    # auto-reply goes out immediately (transactional) even at 20:30; marketing steps wait for business hours
     assert live_rt.email.sent[0]["message"]["subject"].startswith("【資料送付】")
-    body = live_rt.email.sent[0]["message"]["body"]
-    assert "配信停止" in body and "utm_medium=email" in body
+    assert live_rt.webhook.posts and "email" not in str(live_rt.webhook.posts[0]["body"])
 
 
-def test_high_intent_hands_off_with_sla_and_stops_nurture(live_rt, scenario):
-    at(live_rt, "2026-09-07T20:30:00+09:00")
-    live_rt.execute("sync_lead_activity", scenario["live"]["step1_download"])
-    at(live_rt, "2026-09-10T15:05:00+09:00")
-    live_rt.execute("sync_lead_activity", scenario["live"]["step3_high_intent"])
-    ld = live_rt.store.leads["L101"]
+def test_high_intent_hands_off_and_nurture_exits(live_rt, scenario):
+    run_live(live_rt, scenario, *PRE_FORM, "form_submit", "webinar_attendance", "pricing_visit")
+    ld = live_rt.store.leads["C00001"]
     assert ld.stage == "sql"
-    task = live_rt.crm.tasks[-1]
-    assert task["type"] == "first_contact" and task["due_at"].startswith("2026-09-10T15:35")
+    task = next(t for t in live_rt.crm.tasks if t["type"] == "first_contact")
+    assert task["due_at"].startswith("2026-09-10T15:35")
     assert task["context"]["account_contacts"] == 2
-    # remaining nurture steps are skipped once sales owns the lead
-    at(live_rt, "2026-09-30T10:00:00+09:00")
-    later = [r for r in live_rt.store.email_log if r.get("track_step") and r["track_step"] != "manufacturing#0"]
-    assert later == []
-    assert len(live_rt.email.sent) == 1
+    at(live_rt, "2026-10-15T10:00:00+09:00")
+    enr = live_rt.ma.enrollments["nurture_manufacturing|C00001"]
+    assert enr["status"] == "exited" and "sql" in enr["exit_reason"]
+    assert [m["message"]["subject"] for m in live_rt.email.sent] == ["【資料送付】営業仕組み化チェックシート"]
 
 
 def test_meeting_syncs_ad_exclusion(live_rt, scenario):
-    at(live_rt, "2026-09-14T11:00:00+09:00")
-    live_rt.execute("sync_lead_activity", scenario["live"]["step5_meeting"])
+    run_live(live_rt, scenario, *PRE_FORM, "form_submit", "meeting")
     for p in ("google_ads", "meta_ads"):
-        assert "open_opportunities" in live_rt.ad_platforms[p].audiences
-        assert "customers" in live_rt.ad_platforms[p].audiences  # L103 won earlier
+        assert {"open_opportunities", "customers"} <= set(live_rt.ad_platforms[p].audiences)
 
 
-def test_lost_on_timing_schedules_recontact_at_budget_planning(live_rt, scenario):
-    at(live_rt, "2026-09-14T16:00:00+09:00")
-    live_rt.execute("sync_lead_activity", scenario["live"]["step6_lost"])
+def test_lost_on_timing_schedules_recontact(live_rt, scenario):
+    run_live(live_rt, scenario, "lost")
     task = live_rt.crm.tasks[-1]
-    assert task["type"] == "recontact"
-    assert task["due_at"].startswith("2027-01-04T09:00")  # Jan (3 months before April FY start), after year-end closure
+    assert task["type"] == "recontact" and task["due_at"].startswith("2027-01-04T09:00")
     assert live_rt.store.leads["L105"].stage == "recycled"
 
 
@@ -60,8 +52,6 @@ def test_student_is_disqualified_and_not_emailed(live_rt):
 
 
 def test_dry_run_touches_nothing_external(dry_rt, scenario):
-    at(dry_rt, "2026-09-10T15:05:00+09:00")
-    dry_rt.execute("sync_lead_activity", scenario["live"]["step1_download"])
-    dry_rt.execute("sync_lead_activity", scenario["live"]["step3_high_intent"])
-    assert dry_rt.email.sent == [] and dry_rt.crm.tasks == []
+    run_live(dry_rt, scenario, *PRE_FORM, "form_submit", "webinar_attendance", "pricing_visit")
+    assert dry_rt.email.sent == [] and dry_rt.crm.tasks == [] and dry_rt.webhook.posts == []
     assert all(not ad.calls for ad in dry_rt.ad_platforms.values())

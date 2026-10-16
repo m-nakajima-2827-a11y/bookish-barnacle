@@ -1,14 +1,14 @@
-from conftest import at
+from conftest import at, run_live
 
 
-def test_scores_and_account_view(live_rt):
-    at(live_rt, "2026-09-07T12:00:00+09:00")
-    r = live_rt.execute("score_and_qualify_leads", {"lead_ids": ["L101", "L102", "L999"]})
+def test_scores_and_account_view(live_rt, scenario):
+    run_live(live_rt, scenario, "anon_first_visit", "anon_revisit", "form_submit")
+    r = live_rt.execute("score_and_qualify_leads", {"lead_ids": ["C00001", "L102", "L999"]})
     by = {x["lead_id"]: x for x in r["leads"]}
-    assert by["L101"]["fit"] == 47 and by["L101"]["fit_breakdown"] == {"industry": 20, "employee_band": 15, "job_role": 12}
+    assert by["C00001"]["fit"] == 47 and by["C00001"]["fit_breakdown"] == {"industry": 20, "employee_band": 15, "job_role": 12}
     acct = r["accounts"][0]
-    assert acct["account_id"] == "A-MFG-01" and acct["engaged_contacts"] == 2 and acct["buying_committee"]
-    assert any("同一企業" in s for s in by["L101"]["signals"])
+    assert acct["account_id"] == "dom:sample-seiki.example" and acct["engaged_contacts"] == 2 and acct["buying_committee"]
+    assert any("同一企業" in s for s in by["C00001"]["signals"])
     assert r["unknown_lead_ids"] == ["L999"]
 
 

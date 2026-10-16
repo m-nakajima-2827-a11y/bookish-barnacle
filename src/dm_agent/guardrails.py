@@ -6,7 +6,7 @@ from datetime import datetime, time, timedelta
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from .store import Lead, LeadStore, parse_ts
+from .store import parse_ts
 
 DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
@@ -60,16 +60,21 @@ class Guardrails:
         return t
 
     # --- email ---------------------------------------------------------------
-    def check_email(self, store: LeadStore, lead: Lead, asset_id: str | None, now: datetime) -> list[str]:
+    def check_email(self, log: list[dict[str, Any]], profile_id: str, *, opted_in: bool, unsubscribed: bool,
+                    stage: str | None, asset_id: str | None, now: datetime, transactional: bool = False) -> list[str]:
+        """transactional = フォーム送信への自動返信（請求された資料の送付）。同意・頻度の対象外として扱う（要法務確認）。"""
         cfg = self.policy["email"]
+        if transactional:
+            return []
         v = []
-        if lead.unsubscribed:
-            v.append("unsubscribed: 配信停止済みのリードです")
-        elif cfg["require_opt_in"] and not lead.email_opt_in:
+        if unsubscribed:
+            v.append("unsubscribed: 配信停止済みです")
+        elif cfg["require_opt_in"] and not opted_in:
             v.append("no_opt_in: メール配信の同意がありません（特定電子メール法）")
-        if lead.stage in {"disqualified"}:
+        if stage == "disqualified":
             v.append("disqualified: 対象外リードです")
-        sent = [r for r in store.email_log if r["lead_id"] == lead.lead_id and r["status"] == "sent"]
+        sent = [r for r in log if r.get("profile_id") == profile_id and r.get("status") == "sent"
+                and r.get("category") not in {"auto_reply"}]
         if sum(now - parse_ts(r["sent_at"]) < timedelta(days=7) for r in sent) >= cfg["frequency_cap_per_lead_per_7days"]:
             v.append("frequency_cap: 直近7日の配信上限に到達しています")
         if asset_id and any(r.get("asset_id") == asset_id and now - parse_ts(r["sent_at"]) < timedelta(days=cfg["same_asset_resend_block_days"]) for r in sent):

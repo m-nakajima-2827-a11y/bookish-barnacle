@@ -1,0 +1,32 @@
+{
+  "name": "ma_manage_form",
+  "description": "フォームの作成・取得・送信処理を行う。送信時はメールアドレスで名寄せして実名化し、匿名時代の行動履歴を引き継ぎ、同意・属性・タグ・スコアを反映、自動返信メールと社内通知を送り、リード（資料DL・セミナー申込・問い合わせ）として登録する",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": [
+          "create",
+          "get",
+          "list",
+          "submit"
+        ]
+      },
+      "form_id": {
+        "type": "string"
+      },
+      "definition": {
+        "type": "object",
+        "description": "create 用。name, fields[{key,label,type(text|email|tel|select|checkbox),required,options,maps_to}], lead_event(whitepaper_download|webinar_registration|contact_request), asset_id, tags_on_submit[], auto_reply{subject,body,asset_id}, notify[{channel(webhook|crm_task),to,message}], consent_field, thanks_url"
+      },
+      "submission": {
+        "type": "object",
+        "description": "submit 用。visitor_id, values{項目キー: 値}, page_url, timestamp"
+      }
+    },
+    "required": [
+      "action"
+    ]
+  }
+}

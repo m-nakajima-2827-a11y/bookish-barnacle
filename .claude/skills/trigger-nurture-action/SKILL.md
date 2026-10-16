@@ -8,8 +8,8 @@ description: BtoBリードの育成と営業連携を実行する。業界別（
 ## action 一覧
 | action | 用途 | 主な入力 |
 |---|---|---|
-| enroll_nurture_track | MQLを業界別シナリオへ登録（例：製造業は 資料送付→3日後 事例→10日後 セミナー→20日後 診断案内） | `nurture_track`（省略時は業界から自動選択） |
-| send_email | 単発メール | `content_asset_id`, `payload_details.subject / body` |
+| enroll_nurture_track | MQLを自社MAの業界別シナリオ（`nurture_<track>`）へ登録（例：製造業は 資料→3日後 事例→10日後 セミナー→20日後 診断案内） | `nurture_track`（省略時は業界から自動選択） |
+| send_email | 自社MAから単発メール（クリック・開封計測、配信停止リンク付き） | `content_asset_id`, `payload_details.subject / body` |
 | invite_webinar | セミナー招待 | `content_asset_id`（省略時は既定セミナー） |
 | recommend_content | 未読資料から次に案内すべきものを提案（送信はしない） | - |
 | sales_handoff | ホットリードをインサイドセールスへ（CRMタスク） | `payload_details.handoff_note` |
@@ -36,5 +36,6 @@ python -m dm_agent call trigger_nurture_action '{"lead_id":"L101","action":"sale
 決算月（未登録なら3月）から期初を求め、その3か月前の月初を「予算編成時期」と**仮定**してタスクを作成します。顧客から時期を聞けている場合は `recontact_date` を指定してください。
 
 ## 注意
-- SQL以降に進んだリードの育成メールは自動で停止します（営業と二重に接触しないため）。
+- メール配信は自社MA（`ma-scenarios` / `ma-delivery-email-popup-push`）で行います。MAにカスタマー（連絡先）がないリードには送れません（`no_email_address`）。
+- SQL以降に進んだリードはシナリオから離脱し、育成メールは止まります（営業と二重に接触しないため）。閲覧・DL済みの資料のステップは飛ばします。
 - メール本文のテンプレートは下書きです。本番前にクライアントの確認を受けてください。

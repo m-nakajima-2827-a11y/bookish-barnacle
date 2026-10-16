@@ -1,0 +1,34 @@
+{
+  "name": "ma_manage_scenario",
+  "description": "トリガー（セグメント該当・フォーム送信・タグ付与）を起点に、ステップメール、タグ付与・削除、社内通知（Webhook・CRMタスク）を日数指定で自動実行するシナリオを作成・開始・停止・一覧・手動登録する。リードのステージやタグによる途中離脱条件も設定できる",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": [
+          "create",
+          "activate",
+          "pause",
+          "list",
+          "get",
+          "enroll"
+        ]
+      },
+      "scenario_id": {
+        "type": "string"
+      },
+      "definition": {
+        "type": "object",
+        "description": "create 用。name, trigger{type(segment_entered|form_submitted|tag_added), key}, steps[{day, hour, action(send_email|add_tag|remove_tag|notify), email{subject,body,asset_id,link_url}, tag, notify{channel,to,message}}], exit_conditions{lead_stages[],tags[],segments[]}, allow_reentry"
+      },
+      "customer_id": {
+        "type": "string",
+        "description": "enroll 用"
+      }
+    },
+    "required": [
+      "action"
+    ]
+  }
+}

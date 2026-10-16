@@ -1,0 +1,32 @@
+{
+  "name": "ma_get_report",
+  "description": "MAの実績レポートを出力する。概要（カスタマー数・実名化率・スコア分布）、メール（配信・開封率・クリック率・配信停止）、ポップアップ（表示・クリック率）、フォーム（送信数・実名化数）、Webプッシュ、シナリオ（登録・完了・離脱）、セグメント人数",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "report_type": {
+        "type": "string",
+        "enum": [
+          "overview",
+          "email",
+          "popup",
+          "form",
+          "push",
+          "scenario",
+          "segment"
+        ]
+      },
+      "period_start": {
+        "type": "string",
+        "format": "date"
+      },
+      "period_end": {
+        "type": "string",
+        "format": "date"
+      }
+    },
+    "required": [
+      "report_type"
+    ]
+  }
+}

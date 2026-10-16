@@ -1,0 +1,36 @@
+{
+  "name": "ma_manage_segment",
+  "description": "条件に合うカスタマー（匿名客を含む）を自動で抽出するセグメントを作成・更新・試算・一覧・メンバー取得する。条件はページ閲覧（URL・回数・期間）、UTM、メール開封・クリック、フォーム送信、タグ、スコア、属性、実名/匿名、プッシュ許諾、配信同意、リードステージを all/any/not で組み合わせる",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": [
+          "create",
+          "update",
+          "preview",
+          "list",
+          "members",
+          "pause"
+        ]
+      },
+      "segment_id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "conditions": {
+        "type": "object",
+        "description": "例: {\"all\":[{\"type\":\"page_view\",\"url_contains\":\"/price\",\"within_days\":30},{\"type\":\"identified\",\"value\":true}]}"
+      },
+      "limit": {
+        "type": "integer"
+      }
+    },
+    "required": [
+      "action"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "ma_manage_customer",
+  "description": "カスタマー（匿名客・実名客）の参照・検索・属性更新・タグ付与/削除・配信停止・同意記録を行う。連絡先（メールアドレス等）は出力時に常にマスクされる",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": [
+          "get",
+          "search",
+          "update_attributes",
+          "add_tag",
+          "remove_tag",
+          "unsubscribe",
+          "record_opt_in"
+        ]
+      },
+      "customer_id": {
+        "type": "string",
+        "description": "実名客のID（匿名客は visitor_id で指定）"
+      },
+      "visitor_id": {
+        "type": "string"
+      },
+      "attributes": {
+        "type": "object",
+        "description": "company_name, industry, employee_band, job_role, department, fiscal_year_end_month 等"
+      },
+      "tag": {
+        "type": "string"
+      },
+      "opt_in_evidence": {
+        "type": "string",
+        "description": "record_opt_in 時の同意取得の根拠（例: 名刺交換時の書面同意、展示会フォーム）"
+      },
+      "query": {
+        "type": "object",
+        "description": "search 用。tag / segment_id / min_score / identified / limit"
+      }
+    },
+    "required": [
+      "action"
+    ]
+  }
+}

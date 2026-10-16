@@ -445,5 +445,497 @@
         ]
       }
     }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_track_activity",
+      "description": "Webサイトに設置した計測タグ相当の機能。匿名客（Cookie）・実名客のWebアクセス、メール開封・クリック、配信停止、ポップアップ表示・クリック、Webプッシュ許諾・クリックを記録し、スコア加算・セグメント判定・シナリオ起動を行う。ページ表示時に出すべきポップアップも返す",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "visitor_id": {
+            "type": "string",
+            "description": "計測CookieのID（匿名客の識別子）。メール起点のイベントでは省略可"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "web_access",
+                    "email_open",
+                    "email_click",
+                    "unsubscribe",
+                    "popup_view",
+                    "popup_click",
+                    "push_permission",
+                    "push_click"
+                  ]
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "アクセスしたページURL（クエリにUTMがあれば自動抽出）"
+                },
+                "referrer": {
+                  "type": "string"
+                },
+                "email_token": {
+                  "type": "string",
+                  "description": "メール内リンク・開封画像・配信停止リンクのトークン"
+                },
+                "popup_id": {
+                  "type": "string"
+                },
+                "push_id": {
+                  "type": "string"
+                },
+                "granted": {
+                  "type": "boolean",
+                  "description": "push_permission の許諾結果"
+                }
+              },
+              "required": [
+                "type",
+                "timestamp"
+              ]
+            }
+          },
+          "return_popup": {
+            "type": "boolean",
+            "description": "最後の web_access の URL に対して表示すべきポップアップを返すか（既定: true）"
+          }
+        },
+        "required": [
+          "events"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_manage_customer",
+      "description": "カスタマー（匿名客・実名客）の参照・検索・属性更新・タグ付与/削除・配信停止・同意記録を行う。連絡先（メールアドレス等）は出力時に常にマスクされる",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "get",
+              "search",
+              "update_attributes",
+              "add_tag",
+              "remove_tag",
+              "unsubscribe",
+              "record_opt_in"
+            ]
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "実名客のID（匿名客は visitor_id で指定）"
+          },
+          "visitor_id": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "object",
+            "description": "company_name, industry, employee_band, job_role, department, fiscal_year_end_month 等"
+          },
+          "tag": {
+            "type": "string"
+          },
+          "opt_in_evidence": {
+            "type": "string",
+            "description": "record_opt_in 時の同意取得の根拠（例: 名刺交換時の書面同意、展示会フォーム）"
+          },
+          "query": {
+            "type": "object",
+            "description": "search 用。tag / segment_id / min_score / identified / limit"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_manage_form",
+      "description": "フォームの作成・取得・送信処理を行う。送信時はメールアドレスで名寄せして実名化し、匿名時代の行動履歴を引き継ぎ、同意・属性・タグ・スコアを反映、自動返信メールと社内通知を送り、リード（資料DL・セミナー申込・問い合わせ）として登録する",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "submit"
+            ]
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "definition": {
+            "type": "object",
+            "description": "create 用。name, fields[{key,label,type(text|email|tel|select|checkbox),required,options,maps_to}], lead_event(whitepaper_download|webinar_registration|contact_request), asset_id, tags_on_submit[], auto_reply{subject,body,asset_id}, notify[{channel(webhook|crm_task),to,message}], consent_field, thanks_url"
+          },
+          "submission": {
+            "type": "object",
+            "description": "submit 用。visitor_id, values{項目キー: 値}, page_url, timestamp"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_create_landing_page",
+      "description": "キャンペーン用の簡易ランディングページ（LP）を作成する。見出し・訴求ポイント・フォームを組み込んだHTMLを生成し、計測タグとフォームを設定済みの公開用ファイルとURLを返す",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "URLパス（/lp/<slug>）。半角英小文字・数字・ハイフン"
+          },
+          "title": {
+            "type": "string"
+          },
+          "headline": {
+            "type": "string"
+          },
+          "subheadline": {
+            "type": "string"
+          },
+          "benefits": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "訴求ポイント（3つ程度）"
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "target_industry": {
+            "type": "string",
+            "enum": [
+              "it_saas",
+              "manufacturing",
+              "general"
+            ]
+          },
+          "theme_color": {
+            "type": "string",
+            "description": "Instagram投稿のトーンに合わせたメインカラー（例: #1F3A5F）"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "headline",
+          "form_id"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_manage_segment",
+      "description": "条件に合うカスタマー（匿名客を含む）を自動で抽出するセグメントを作成・更新・試算・一覧・メンバー取得する。条件はページ閲覧（URL・回数・期間）、UTM、メール開封・クリック、フォーム送信、タグ、スコア、属性、実名/匿名、プッシュ許諾、配信同意、リードステージを all/any/not で組み合わせる",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "update",
+              "preview",
+              "list",
+              "members",
+              "pause"
+            ]
+          },
+          "segment_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "conditions": {
+            "type": "object",
+            "description": "例: {\"all\":[{\"type\":\"page_view\",\"url_contains\":\"/price\",\"within_days\":30},{\"type\":\"identified\",\"value\":true}]}"
+          },
+          "limit": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_configure_scoring",
+      "description": "スコア定義を設定する。共通設定（アクション種別ごとの加減点: Webアクセス、メール開封、メール内リンククリック、配信停止、フォーム送信等）と、個別設定（特定URL・パラメータのアクセス、特定フォーム送信、タグ付与時、セグメント該当時）を管理する。点数は±100,000以内の整数",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "get",
+              "set_common",
+              "add_rule",
+              "remove_rule",
+              "distribution"
+            ]
+          },
+          "action_type": {
+            "type": "string",
+            "enum": [
+              "web_access",
+              "email_open",
+              "email_click",
+              "unsubscribe",
+              "form_submit",
+              "popup_click",
+              "push_click"
+            ]
+          },
+          "points": {
+            "type": "integer",
+            "minimum": -100000,
+            "maximum": 100000
+          },
+          "rule": {
+            "type": "object",
+            "description": "add_rule 用。target(web_access|form_submit|tag_added|segment_entered), url_filter, param_filter(例 utm_campaign=mfg_paper), form_id, key(タグ名/セグメントID), points, name"
+          },
+          "rule_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_manage_scenario",
+      "description": "トリガー（セグメント該当・フォーム送信・タグ付与）を起点に、ステップメール、タグ付与・削除、社内通知（Webhook・CRMタスク）を日数指定で自動実行するシナリオを作成・開始・停止・一覧・手動登録する。リードのステージやタグによる途中離脱条件も設定できる",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "activate",
+              "pause",
+              "list",
+              "get",
+              "enroll"
+            ]
+          },
+          "scenario_id": {
+            "type": "string"
+          },
+          "definition": {
+            "type": "object",
+            "description": "create 用。name, trigger{type(segment_entered|form_submitted|tag_added), key}, steps[{day, hour, action(send_email|add_tag|remove_tag|notify), email{subject,body,asset_id,link_url}, tag, notify{channel,to,message}}], exit_conditions{lead_stages[],tags[],segments[]}, allow_reentry"
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "enroll 用"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_send_email",
+      "description": "実名客1名またはセグメントに対してメールを即時配信・予約配信・テスト確認する（メルマガ・お知らせ・セミナー案内）。配信同意・配信停止・頻度上限・営業時間のチェック、差し込み（{{company_name}} {{name}}）、クリック・開封計測、配信停止リンクを自動で付与する",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          },
+          "segment_id": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "asset_id": {
+            "type": "string",
+            "description": "案内する資料・セミナーのID（リンクとUTMを自動生成）"
+          },
+          "link_url": {
+            "type": "string"
+          },
+          "campaign": {
+            "type": "string",
+            "description": "utm_campaign（半角英小文字）"
+          },
+          "schedule_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "test_only": {
+            "type": "boolean",
+            "description": "true なら送信せず、対象者数とプレビューのみ返す"
+          }
+        },
+        "required": [
+          "subject"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_manage_popup",
+      "description": "サイト訪問者に表示するポップアップ（資料DLフォーム・バナー・セミナー告知）を作成・停止・一覧し、表示条件（対象セグメント、URL、匿名客/実名客、表示頻度、最大表示回数、期間、表示までの秒数）を管理する",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "pause",
+              "activate",
+              "list",
+              "decide"
+            ]
+          },
+          "popup_id": {
+            "type": "string"
+          },
+          "definition": {
+            "type": "object",
+            "description": "create 用。name, type(form|banner), priority, content{title, body, cta_text, link_url, form_id, image_url}, conditions{segment_id, url_contains[], url_excludes[], audience(all|anonymous|identified), frequency(once_per_visitor|once_per_day|every_visit), max_impressions, show_after_seconds, start_at, end_at, hide_after_click}"
+          },
+          "visitor_id": {
+            "type": "string",
+            "description": "decide 用"
+          },
+          "url": {
+            "type": "string",
+            "description": "decide 用"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_send_web_push",
+      "description": "ブラウザのプッシュ通知を許諾した訪問者（匿名客を含む）に、セグメント単位でWebプッシュ通知を即時・予約配信する。再訪促進やセミナー告知に使う",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "segment_id": {
+            "type": "string",
+            "description": "省略時は許諾済み全員"
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "schedule_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "test_only": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "url"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ma_get_report",
+      "description": "MAの実績レポートを出力する。概要（カスタマー数・実名化率・スコア分布）、メール（配信・開封率・クリック率・配信停止）、ポップアップ（表示・クリック率）、フォーム（送信数・実名化数）、Webプッシュ、シナリオ（登録・完了・離脱）、セグメント人数",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "report_type": {
+            "type": "string",
+            "enum": [
+              "overview",
+              "email",
+              "popup",
+              "form",
+              "push",
+              "scenario",
+              "segment"
+            ]
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date"
+          },
+          "period_end": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "report_type"
+        ]
+      }
+    }
   }
 ]

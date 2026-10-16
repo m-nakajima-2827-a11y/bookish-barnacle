@@ -1,0 +1,33 @@
+{
+  "name": "ma_send_web_push",
+  "description": "ブラウザのプッシュ通知を許諾した訪問者（匿名客を含む）に、セグメント単位でWebプッシュ通知を即時・予約配信する。再訪促進やセミナー告知に使う",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "segment_id": {
+        "type": "string",
+        "description": "省略時は許諾済み全員"
+      },
+      "title": {
+        "type": "string"
+      },
+      "body": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      },
+      "schedule_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "test_only": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "title",
+      "url"
+    ]
+  }
+}
