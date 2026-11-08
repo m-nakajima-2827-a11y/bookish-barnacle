@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -12,6 +13,7 @@ from pathlib import Path
 from .connectors import MockAdPlatform
 from .ma import engine as ma_engine
 from .ma.store import MAStore
+from .obsidian import DEFAULT_FOLDER, export_to_obsidian
 from .registry import ROOT, load_schemas, to_anthropic, to_openai
 from .runtime import DEFAULT_CLIENT, AgentRuntime
 from .store import LeadStore
@@ -147,6 +149,9 @@ def cmd_demo(args) -> None:
     (out / "lp_mfg-checksheet.html").write_text(lp["html"], encoding="utf-8")
     rt.save_audit_log(out / "demo_audit_log.jsonl")
     print(f"\nファネル分析レポート・LP（HTML）・監査ログを {out}/ に保存しました。")
+    if args.obsidian_vault:
+        res = export_to_obsidian(rt, args.obsidian_vault, args.obsidian_folder, funnel_reports=[rep])
+        _p("Obsidian に書き出し", res.summary())
 
 
 def _state_path(client_id: str) -> Path:
@@ -191,6 +196,21 @@ def cmd_agent(args) -> None:
         _save_state(rt, args.client)
 
 
+def cmd_obsidian(args) -> None:
+    if not args.vault:
+        sys.exit("Vault のパスを --vault または環境変数 OBSIDIAN_VAULT で指定してください")
+    if args.scenario:
+        rt = build_runtime(json.loads(SCENARIO.read_text(encoding="utf-8")), live_mocks=False)
+    else:
+        rt = _runtime_from_state(args.client)
+    reports = []
+    if args.period_start and args.period_end:
+        reports.append(rt.execute("analyze_marketing_funnel", {"period_start": args.period_start,
+                                                               "period_end": args.period_end, "group_by": args.group_by}))
+    res = export_to_obsidian(rt, args.vault, args.folder, funnel_reports=reports)
+    print(json.dumps(res.summary(), ensure_ascii=False, indent=2))
+
+
 def cmd_export(args) -> None:
     schemas = load_schemas()
     data = list(schemas.values()) if args.format == "raw" else {"openai": to_openai, "anthropic": to_anthropic}[args.format](schemas)
@@ -202,6 +222,9 @@ def main(argv: list[str] | None = None) -> None:
     sub = ap.add_subparsers(dest="cmd", required=True)
     d = sub.add_parser("demo", help="匿名訪問→MA（ポップアップ・フォーム・シナリオ）→ホットリード→商談化をシミュレーション実行")
     d.add_argument("--dry-run", action="store_true", help="メール・CRM・広告への反映を行わず計画のみ出力")
+    d.add_argument("--obsidian-vault", default=os.environ.get("OBSIDIAN_VAULT"),
+                   help="実行結果を Obsidian の Vault に書き出す（既定: 環境変数 OBSIDIAN_VAULT）")
+    d.add_argument("--obsidian-folder", default=DEFAULT_FOLDER, help=f"Vault 内の書き出し先フォルダ（既定: {DEFAULT_FOLDER}）")
     d.set_defaults(fn=cmd_demo)
     c = sub.add_parser("call", help="スキルを1回実行（state/<client>.json に永続化）")
     c.add_argument("tool")
@@ -214,6 +237,15 @@ def main(argv: list[str] | None = None) -> None:
     a.add_argument("--client", default=DEFAULT_CLIENT)
     a.add_argument("--scenario", action="store_true", help="デモ用サンプルデータで実行（dry_run）")
     a.set_defaults(fn=cmd_agent)
+    o = sub.add_parser("obsidian-export", help="リード・企業・キャンペーン・レポートを Obsidian の Vault に書き出す")
+    o.add_argument("--vault", default=os.environ.get("OBSIDIAN_VAULT"), help="Vault のパス（既定: 環境変数 OBSIDIAN_VAULT）")
+    o.add_argument("--folder", default=DEFAULT_FOLDER, help=f"Vault 内の書き出し先フォルダ（既定: {DEFAULT_FOLDER}）")
+    o.add_argument("--client", default=DEFAULT_CLIENT)
+    o.add_argument("--scenario", action="store_true", help="デモ用サンプルデータを書き出す")
+    o.add_argument("--period-start", help="ファネル分析レポートも書き出す場合の開始日（YYYY-MM-DD）")
+    o.add_argument("--period-end", help="同 終了日（YYYY-MM-DD）")
+    o.add_argument("--group-by", default="source_medium")
+    o.set_defaults(fn=cmd_obsidian)
     e = sub.add_parser("export-tools", help="ツール定義を各フレームワーク形式で出力")
     e.add_argument("--format", choices=["openai", "anthropic", "raw"], default="openai")
     e.set_defaults(fn=cmd_export)

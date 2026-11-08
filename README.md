@@ -19,6 +19,7 @@ MA（マーケティングオートメーション）は外部ツールを使わ
 | MA機能仕様書 | `docs/ma_spec_satori_based.md` |
 | クライアント別設定 | `config/clients/<client_id>.json` |
 | ガードレール | `config/policy.json` |
+| Obsidian 連携 | `src/dm_agent/obsidian.py`, [`docs/obsidian.md`](docs/obsidian.md) |
 
 ---
 
@@ -93,7 +94,7 @@ pip install -e ".[dev,llm]"
 
 python -m dm_agent demo              # BtoBシナリオを実行（メール・CRM・広告はモック接続に反映）
 python -m dm_agent demo --dry-run    # 反映せず計画のみ
-python -m pytest                     # テスト（44件）
+python -m pytest                     # テスト（50件）
 ```
 
 `demo` では、サンプルデータ（架空）を使って次の流れを再現します。
@@ -133,7 +134,17 @@ python -m dm_agent agent "Instagram経由のリードが商談化しているか
 - 拒否応答時に代替モデルへ切り替えるサーバー側フォールバック（`fallbacks="default"`）を有効にしています。
 - Claude が選んだツール呼び出しにも、スキーマ検証・ガードレール・監査ログが同じように適用されます。
 
-### C. OpenAI Functions / LangChain など
+### C. Obsidian に書き出す
+リード・企業・キャンペーン・タスク・ファネル分析を、Obsidian の Vault に相互リンク付きのノートとして書き出します。
+```bash
+python -m dm_agent demo --obsidian-vault ~/Obsidian/MyVault
+```
+```bash
+python -m dm_agent obsidian-export --vault ~/Obsidian/MyVault --period-start 2026-09-01 --period-end 2026-09-30
+```
+Vault 内の `DM Agent/` フォルダにだけ書き込み、各ノートの「メモ」欄は再エクスポートしても保持されます。詳細は [`docs/obsidian.md`](docs/obsidian.md) を参照してください。
+
+### D. OpenAI Functions / LangChain など
 `schemas/export/tools.openai.json` を読み込み、ツール呼び出しを `AgentRuntime(client_id=...).execute(name, args)` に渡してください。
 
 ## 5. ガードレール（`config/policy.json`。数値は初期値の仮置きです）
