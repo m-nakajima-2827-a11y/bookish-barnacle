@@ -1,0 +1,52 @@
+---
+name: growcross-ads-operation
+description: グロウクロス（https://www.grow-cross.com）のWeb広告（Google・Yahoo!検索広告、Meta／Instagram広告、LinkedIn広告）の設計と運用を行う。キャンペーン構成・キーワード・除外キーワード・広告文・予算配分の案を作り、週次で成果を確認して、予算調整・入札変更・低成果クリエイティブの停止・既存顧客の除外を承認制で実行する。
+---
+
+# 広告運用
+
+## 入力
+- `profile.md`（サービス・対象顧客・対象エリア・表現ルール）
+- `growcross/keyword-map.md` の広告向けキーワードと除外キーワード案
+- 月額予算・目標（問い合わせ単価・商談化単価）: **ご担当者の指定が必要です**（指定がない場合は設計案までにとどめます）
+
+## 手順
+### 1. 初期設計（出稿前）
+| 項目 | 設計内容 |
+|---|---|
+| 目的 | 問い合わせ・資料DL・相談予約のどれを成果にするか |
+| キャンペーン構成 | 指名（社名・サービス名）／一般（購買に近い語）／リマーケティング を分ける |
+| キーワード | キーワードマップの「比較・検討」「指名」から選定。マッチタイプはフレーズ一致・完全一致から開始 |
+| 除外キーワード | 「求人」「採用」「無料 ダウンロード（目的外）」「やり方 自分で」など、目的と合わない語 |
+| 広告文 | 見出しに対象顧客と提供価値、説明文に根拠と次の行動。根拠のない最上級表現は使わない |
+| リンク先 | 訴求ごとのLP。URLは `build_utm_tracking_url` で発行 |
+| 計測 | GA4のキーイベントと広告のコンバージョンを連携。商談化（SQL）をオフラインCVとして送れると最適 |
+| 予算 | 指名に必要額を確保し、残りを一般に配分。学習に必要なCV数が集まるまで大きく動かさない |
+
+設計案は `growcross/ads/plan_YYYY-MM.md` に出力し、承認後に出稿します。
+
+### 2. 週次運用（毎週月曜の想定）
+```bash
+python -m dm_agent call optimize_lead_gen_campaigns '{"platform":"google_ads","action":"update_budget","optimization_metrics":{"target_cost_per_sql":<目標>}}'
+python -m dm_agent call optimize_lead_gen_campaigns '{"platform":"google_ads","action":"pause_underperforming_creative"}'
+python -m dm_agent call optimize_lead_gen_campaigns '{"platform":"google_ads","action":"sync_audience_exclusion","target_segment_id":"customers"}'
+```
+| 確認項目 | 判断 |
+|---|---|
+| 検索語句レポート | 目的外の語を除外キーワードに追加（案として提示） |
+| CV・商談化 | 問い合わせ単価だけでなく、商談化したかで評価 |
+| 予算消化 | 日予算の変更は1日±20%以内。±10%を超える変更は承認待ち |
+| クリエイティブ | 十分な表示回数があり、CTRが平均の半分未満のものを停止候補に |
+| 除外 | 既存顧客・商談中の企業への配信を除外 |
+
+### 3. 月次の見直し
+キャンペーン別の費用・CV・商談化・単価を `growcross-reporting` に渡し、翌月の予算配分案を作ります。
+
+## 出力
+- 初期設計: `growcross/ads/plan_YYYY-MM.md`
+- 週次の運用記録: `growcross/ads/weekly_YYYY-MM-DD.md`（実施内容／保留・承認待ち／次週の確認事項）
+
+## 守ること
+- 予算・入札の変更、キャンペーンの開始・停止は承認後に実行します（既定は計画のみの dry_run）。
+- 景品表示法に配慮し、「No.1」「最安」などは根拠資料がある場合のみ使います。
+- 競合の社名・商標をキーワードや広告文に使う場合は、事前に方針を確認します。

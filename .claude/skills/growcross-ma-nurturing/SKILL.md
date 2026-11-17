@@ -1,0 +1,45 @@
+---
+name: growcross-ma-nurturing
+description: グロウクロス（https://www.grow-cross.com）のサイト訪問者と問い合わせ・資料DLのリードを、自社開発MA（SATORIの機能構成に準拠）で育成し、営業へ引き渡す。フォーム・ポップアップ・セグメント・スコア定義・ステップメール（シナリオ）・ホットリード通知の設計と設定、メルマガ配信に使う。
+---
+
+# MA（育成・営業引き渡し）
+
+自社開発MAのツール（`ma_*`）とリード管理のツールを使います。各ツールの詳細は `ma-*` の各Skillと `docs/ma_spec_satori_based.md` を参照してください。
+
+## 前提
+- グロウクロス用のクライアント設定 `config/clients/growcross.json` が必要です。`profile.md` の確定後、`config/clients/sample_sales_consulting.json` を複製して作成し、次の項目をグロウクロスの内容に置き換えます。
+
+| 設定 | 置き換える内容 |
+|---|---|
+| `site_base_url` / `sender` / `brand_queries` | グロウクロスのURL・送信者情報・会社名やサービス名 |
+| `icp` | 対象顧客の業種・規模・役職ごとの配点 |
+| `content_library` | 実際に配布する資料・事例・セミナー・相談メニュー |
+| `nurture_tracks` | 対象顧客ごとのステップメール |
+| `ma.forms` / `ma.popups` / `ma.segments` / `ma.scenarios` | 実際のフォーム・表示条件・セグメント・シナリオ |
+
+> 実在しない資料や事例を設定しないでください。用意がない場合は「資料の制作」を先にタスク化します。
+
+## 設計の型（初期案）
+| 段階 | 仕組み | 使うツール |
+|---|---|---|
+| 匿名の訪問 | サイト訪問をスコア化。サービスページを2回以上見た匿名客に、資料DLのポップアップ | `ma_track_activity`, `ma_manage_segment`, `ma_manage_popup` |
+| 資料DL・問い合わせ | フォーム送信で実名化、自動返信、担当者への通知 | `ma_manage_form` |
+| 育成 | 対象顧客別のステップメール（例: 資料 → 3日後 事例 → 10日後 セミナー・相談案内） | `ma_manage_scenario` |
+| 見極め | 料金・事例ページの閲覧やセミナー参加でスコア加点。基準を超えたら営業へ通知 | `ma_configure_scoring`, `score_and_qualify_leads` |
+| 営業引き渡し | 営業時間内30分以内の初回接触タスク | `trigger_nurture_action`（sales_handoff） |
+| 再アプローチ | 失注・保留は、予算編成時期などに合わせて再連絡 | `trigger_nurture_action`（schedule_recontact） |
+
+## 設定変更の手順（毎回この順で）
+1. セグメントは `preview` で人数を確認してから `create` します。
+2. シナリオは下書きで作成し、件名・本文・日数・離脱条件を承認者が確認してから `activate` します。
+3. 一斉メールは `test_only` で対象人数を確認してから配信します。
+4. 実行モードは既定で `dry_run`（計画のみ）です。本番配信への切り替えは承認者の指示がある場合のみ行います。
+
+## 出力
+- MA設計書: `growcross/ma/design.md`（フォーム・セグメント・スコア・シナリオ・ポップアップの一覧と目的）
+- 月次のMA実績: `ma_get_report` の結果を `growcross-reporting` に渡します。
+
+## 守ること
+- メール配信は、配信同意のある相手だけに行います。配信停止リンクと送信者情報は自動で付きます。
+- メールアドレス・氏名などの連絡先は、出力・レポートではマスクされた値だけを使います。

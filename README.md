@@ -174,3 +174,21 @@ python -m dm_agent agent "Instagram経由のリードが商談化しているか
 ## 7. 前バージョン（BtoC・オムニチャネル版）からの変更
 
 店舗POS・クーポン配信を中心としたBtoC版を、BtoBのリード獲得から商談化までのファネル向けに作り替えました。前バージョンは Git の履歴から参照できます。
+
+## 8. グロウクロス Web集客 自動化Skill
+
+https://www.grow-cross.com のWeb集客を自動化するSkill群です（`.claude/skills/growcross-*`、成果物は `growcross/`）。
+
+| Skill | 役割 |
+|---|---|
+| growcross-web-marketing | 統括（実行順・頻度・承認ルール、会社プロファイル `references/profile.md`） |
+| growcross-site-audit | サイト読み取り、プロファイル作成、SEO・CV導線・計測の診断 |
+| growcross-keyword-strategy | ラッコキーワードMCPでのキーワード調査とキーワードマップ |
+| growcross-seo-content | 記事・ページの構成案、下書き、公開前チェック、リライト |
+| growcross-lp-conversion | LP・フォーム・CV導線の改善、A/Bテスト、キャンペーンLP |
+| growcross-ads-operation | 検索・SNS広告の設計と週次運用（承認制） |
+| growcross-sns-operation | SNSの投稿計画・投稿文・導線 |
+| growcross-ma-nurturing | 自社MAでの育成・スコアリング・営業引き渡し |
+| growcross-reporting | 週次チェック・月次レポート（提案書構成） |
+
+最初に `growcross-site-audit` を実行し、`profile.md` の「要確認」を解消してから他のSkillを使います。
