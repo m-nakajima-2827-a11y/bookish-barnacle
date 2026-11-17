@@ -41,12 +41,21 @@
 | Googleカレンダーの予約スケジュール | 追加ツール不要。個人アカウントは予約ページ1つ。リマインダーメール等は有料のWorkspace/Google Oneプランで利用可 | 既存のGoogle契約による | 予約完了後のリダイレクト・GA4計測の可否、質問項目の柔軟さ |
 | Calendly | 海外で広く使われる。公式の日本語対応がない点が指摘されている | 有料は月8〜10ドル程度との記載 | 日本語での利用感（顧客側の画面） |
 
-### 決定事項と推奨（2026-11-17 更新）
-| 項目 | 結論 | 根拠 |
+### 比較と推奨（2026-11-17 再更新：Google Workspace 契約ありを反映）
+Google Workspace（grow-cross.com ドメイン）の契約がある（ご担当者回答）ため、Googleカレンダーの予約スケジュールを候補に戻して比較します。
+
+| 判断軸 | Googleカレンダーの予約スケジュール | Jicoo（Proプラン） |
 |---|---|---|
-| Googleカレンダーの予約スケジュール | **候補から除外** | Google Workspace の契約なし（ご担当者回答）。無料の個人アカウントではリマインダーメール等の機能が使えない（Googleの公開情報） |
-| **Jicoo** | **第一候補** | 予約完了後に任意のページへリダイレクトでき、パラメータも付与できると公式に案内されている（Proプラン、2022年の案内）。自社の完了ページ `/consultation/thanks/` でGA4のキーイベントを計測できる |
-| TimeRex | 次点 | 予約完了後のリダイレクト・GA4計測について、公開情報では確認できなかった |
+| 追加費用 | なし（既存のWorkspace契約内） | 月額費用あり（公式の料金ページで要確認） |
+| Googleカレンダー・Meet連携 | 標準（同じGoogleの機能） | 対応 |
+| リマインダー・質問項目 | 対象のWorkspaceプランで利用可。**Business Starter で使えるかは公開情報で確認できず**（有料予約の対象は Business Standard 以上と案内） | 対応（プランは要確認） |
+| 予約完了のGA4計測 | **予約完了後に任意のページへ移動する設定は、公開情報では確認できず**。予約数はカレンダーで数えられるが、どの流入元（Instagram・検索など）から予約されたかは分からない | 予約完了後に任意のページへ移動できると公式に案内あり → `/consultation/thanks/` で流入元別に計測できる |
+| 向いている場合 | 費用をかけずにすぐ始めたい。予約数だけ分かればよい | 集客施策ごとの成果（どの投稿・記事から予約されたか）を測りたい |
+
+**推奨: Jicoo**（Web集客の自動化では、施策ごとの予約数を測ることが改善の前提になるため）。
+費用を優先する場合は、Googleの予約スケジュールで始め、予約数はGoogleカレンダーの予約イベントを週次で数えて補います（流入元別の分析はできません）。
+
+> どちらにするかはご担当者の判断事項です。Workspaceのプラン（Business Starter／Standard／Plus など）を確認したうえで決めてください。
 
 **契約前に確認すること（Jicoo公式ヘルプ・料金ページ）**
 1. 予約完了後のリダイレクトが、現在もProプランで利用できるか（プラン名・月額料金）
@@ -130,8 +139,10 @@
 | 相談からの商談化率 | CRM・営業記録 | 要設定 |
 
 ## 9. 確認が必要な事項
-1. Jicooの現在のプラン・料金（上記「契約前に確認すること」）
-2. 相談予約ページに載せる担当者のプロフィール（氏名・経歴・写真の掲載可否）
+1. Google Workspace のプラン名（Business Starter／Standard／Plus 等）
+2. 予約ツールの最終決定（Jicoo か Googleの予約スケジュールか）
+3. Jicooにする場合、現在のプラン・料金（上記「契約前に確認すること」）
+4. 相談予約ページに載せる担当者のプロフィール（氏名・経歴・写真の掲載可否）
 
 ページの文章案: `growcross/content/consultation-page-draft.md`
 
@@ -146,3 +157,4 @@
 - [Google カレンダーで有料予約スケジュールを許可する（Google Workspace 管理者ヘルプ）](https://knowledge.workspace.google.com/admin/calendar/allow-paid-appointment-schedules-in-calendar?hl=ja)
 - [Jicoo アップデート情報（予約完了後のリダイレクト）](https://www.jicoo.com/magazine/blog/product-updates-22)
 - [埋め込み予約ページのGA4・UTM計測（Jicoo）](https://www.jicoo.com/magazine/blog/embedded-booking-ga4-utm-tracking)
+- [Google Workspace 予約スケジュール（日本語）](https://workspace.google.com/intl/ja_ALL/resources/appointment-scheduling)

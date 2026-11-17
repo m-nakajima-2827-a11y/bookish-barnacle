@@ -64,8 +64,8 @@
 | GA4 | 設定済み（ご担当者回答）。キーイベントの設定内容は要確認 |
 | Googleタグマネージャー | 要確認 |
 | サーチコンソール | 設定済み（ご担当者回答） |
-| 利用ツール | Googleカレンダー、Google Meet（ご担当者回答）。Google Workspace の契約なし |
-| 相談予約ツール | Jicoo を第一候補として導入予定（`/consultation/` に埋め込み、完了ページ `/consultation/thanks/` でGA4計測） |
+| 利用ツール | Google Workspace（grow-cross.com ドメイン、プラン名は要確認）、Googleカレンダー、Google Meet（ご担当者回答） |
+| 相談予約ツール | 検討中：Jicoo（推奨・流入元別に計測可）か Googleの予約スケジュール（追加費用なし・予約完了のGA4計測は未確認）。`growcross/cvr/booking-tool-plan.md` |
 | CMS | WordPress（ご担当者回答） |
 | データの受け渡し | 未定。GA4・サーチコンソールの閲覧権限の付与、またはGoogleスプレッドシートへの定期エクスポートを想定 |
 | 広告タグ | 該当なし（広告出稿なし） |
