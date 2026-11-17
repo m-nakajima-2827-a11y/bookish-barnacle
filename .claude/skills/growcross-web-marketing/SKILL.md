@@ -52,6 +52,10 @@ description: グロウクロス（https://www.grow-cross.com）のWeb集客を�
 
 Claude Code の `/loop` や、クラウドの定期実行（ルーティン）にこの依頼文を設定すると、自動で回せます。
 
+**設定済みの定期実行**（AI社員 `growx-ai-employee`／Skill `growx-web-automation`）:
+- 毎週月曜 7:43 JST: 週次コンテンツ企画（`growcross/runbooks/weekly-content-planning.md`）
+- 毎月3日 8:47 JST: 月次SEO分析（`growcross/runbooks/monthly-seo-analysis.md`）
+
 ## 承認が必要な操作（自動で実行しない）
 - サイトへの記事・ページの公開、既存ページの書き換え
 - 広告の予算・入札の変更、新規キャンペーンの開始
