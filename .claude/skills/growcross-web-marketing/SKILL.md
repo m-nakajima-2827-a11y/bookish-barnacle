@@ -50,6 +50,7 @@ description: グロウクロス（https://www.grow-cross.com）のWeb集客を�
 |---|---|---|---|
 | 1週目 | サイト診断、プロファイル作成、計測（GA4・サーチコンソール）の確認 | growcross-site-audit | `profile.md` の必須項目が埋まり、インデックス状況が分かっている |
 | 1〜2週目 | キーワードマップ作成、記事テーマの優先順位付け | growcross-keyword-strategy | 優先キーワード20件以上と担当ページが決まっている |
+| 1〜3週目 | 相談予約ツールの選定・設定、相談予約ページとGA4キーイベントの設定 | growcross-lp-conversion（`growcross/cvr/booking-tool-plan.md`） | テスト予約がGA4のキーイベントに記録される |
 | 2週目 | 主要ページのタイトル・説明文・見出しの改善案、CV導線の改善案 | growcross-seo-content / growcross-lp-conversion | 改善案を承認者が確認済み |
 | 3週目〜 | 記事制作（週1〜2本の想定）、Instagram・Facebook投稿 | 各Skill | 公開・配信のたびに計測用URL（UTM）を設定 |
 | 計測が整った後 | 検索広告の開始判断（少額での検証） | growcross-ads-operation | 開始する／しないを判断済み |

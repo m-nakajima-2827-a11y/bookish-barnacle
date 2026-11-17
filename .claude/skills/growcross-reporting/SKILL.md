@@ -11,7 +11,8 @@ description: グロウクロス（https://www.grow-cross.com）のWeb集客の�
 | 獲得キーワード数・推定流入 | ラッコキーワードMCP `influx-statistics` / `influx-trend` / `influx-keywords` |
 | 狙ったキーワードの順位 | `search-rank-history`（非同期） |
 | AIによる概要での引用 | `influx-aio` |
-| 流入・CV（GA4）・検索クエリ（サーチコンソール） | 管理画面からのエクスポート、またはAPI連携（未接続の場合は担当者からデータを受け取る） |
+| 流入・CV（GA4）・検索クエリ（サーチコンソール） | どちらも設定済み。Googleスプレッドシートへの定期エクスポート（Looker Studio やアドオン経由）を用意し、Google Sheets コネクタで読み取るのが手軽です。未準備の間は担当者からエクスポートを受け取ります |
+| 相談予約 | 予約ツール導入後は、GA4のキーイベント `consultation_booked` と予約ツールの予約数を照合 |
 | ファネル（流入→資料DL→MQL→SQL→商談→受注） | `python -m dm_agent call analyze_marketing_funnel '{...}' --client growcross` |
 | MAの実績 | `ma_get_report`（overview / email / popup / form / scenario） |
 | 広告 | 媒体の管理画面または `optimize_lead_gen_campaigns` の実績 |
