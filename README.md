@@ -192,3 +192,17 @@ https://www.grow-cross.com のWeb集客を自動化するSkill群です（`.clau
 | growcross-reporting | 週次チェック・月次レポート（提案書構成） |
 
 最初に `growcross-site-audit` を実行し、`profile.md` の「要確認」を解消してから他のSkillを使います。
+
+---
+
+## 付録：年末調整 一元管理WEBアプリ（Skill）
+
+国税庁「年末調整計算シート（令和８年用）」を踏襲した年末調整WEBアプリのSkillです。
+
+| 収録物 | 場所 |
+|---|---|
+| Skill本体（Claude Code） | `.claude/skills/nencho-webapp/`（`SKILL.md`・`references/`・`scripts/`） |
+| WEBアプリ | `.claude/skills/nencho-webapp/assets/app/`（1ファイル版：`dist/nencho-app.html`） |
+| claude.ai アップロード用 | `skills/nencho-webapp.skill` |
+
+給与明細PDF → 集計シート → 各申告書 → 計算シート（①〜㉞）→ 源泉徴収簿・確定申告チェック・Excel出力（関数連携・全シート編集可）を自動化します。

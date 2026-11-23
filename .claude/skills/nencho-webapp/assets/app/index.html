@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>年末調整 一元管理</title>
+<meta name="description" content="令和8年分の年末調整を、給与明細PDFの取込から各申告書・計算シート・源泉徴収簿・Excel出力まで一元管理するWEBアプリ">
+<link rel="stylesheet" href="css/app.css">
+<!-- 外部ライブラリ（未読込でも計算・入力は動作。PDF取込とExcel出力のみ停止） -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+</head>
+<body>
+<header class="appbar">
+  <div class="brand">
+    <strong>年末調整 一元管理</strong>
+    <span class="badge" id="yearBadge">令和8年分</span>
+  </div>
+  <div class="emp-switch">
+    <label for="empSelect" class="sr">従業員</label>
+    <select id="empSelect"></select>
+    <button class="btn" data-action="new-employee">＋ 従業員を追加</button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs" role="tablist"></nav>
+
+<div class="layout">
+  <main id="main" tabindex="-1"></main>
+  <aside class="summary" id="summary" aria-live="polite"></aside>
+</div>
+
+<footer class="foot">
+  入力データはこのブラウザ内（localStorage）にのみ保存されます。共有PCでは使用後に「データ管理」からバックアップを取り削除してください。
+  マイナンバー（個人番号）は入力しない設計です。計算は国税庁「令和8年分 年末調整のしかた」に基づきますが、最終確認は担当者が行ってください。
+</footer>
+
+<script src="js/engine.js"></script>
+<script src="js/payslip.js"></script>
+<script src="js/workbook.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
