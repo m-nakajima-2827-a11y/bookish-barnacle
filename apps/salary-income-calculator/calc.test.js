@@ -92,4 +92,56 @@ check('区分の境界で金額が連続する', () => {
   }
 });
 
+// 公的年金等に係る雑所得（速算表）
+const { pensionIncome, pensionRows } = require('./calc.js');
+const pensionCases = [
+  // [収入, 65歳以上, 年金以外の合計所得, 期待値]
+  [695065, true, 0, 0],
+  [500000, true, 0, 0],
+  [2500000, true, 0, 1400000],
+  [3299999, true, 0, 2199999],
+  [3300000, true, 0, 2200000],
+  [1000000, false, 0, 400000],
+  [1299999, false, 0, 699999],
+  [1300000, false, 0, 700000],
+  [2000000, false, 0, 1225000],
+  [4099999, false, 0, 2799999],
+  [4100000, false, 0, 2800000],
+  [7700000, false, 0, 5860000],
+  [10000000, false, 0, 8045000],
+  [2000000, true, 10000000, 900000],
+  [2000000, true, 10000001, 1000000],
+  [2000000, true, 20000000, 1000000],
+  [1000000, false, 25000000, 600000],
+  [5000000, true, 25000000, 3765000]
+];
+for (const [rev, age65, other, expected] of pensionCases) {
+  check(`年金 ${rev}（${age65 ? '65歳以上' : '65歳未満'}・他${other}）→ ${expected}`, () => {
+    assert.equal(pensionIncome(rev, age65, other).income, expected);
+  });
+}
+check('年金の表: 区分（2）（3）の控除額がユーザー提供の表と一致', () => {
+  assert.deepEqual(pensionRows(2, false).map(r => r.sub), [500000, 175000, 585000, 1355000, 1855000]);
+  assert.deepEqual(pensionRows(2, true).map(r => r.sub), [1000000, 175000, 585000, 1355000, 1855000]);
+  assert.deepEqual(pensionRows(3, false).map(r => r.sub), [400000, 75000, 485000, 1255000, 1755000]);
+  assert.deepEqual(pensionRows(3, true).map(r => r.sub), [900000, 75000, 485000, 1255000, 1755000]);
+});
+
+// 給与と年金の組み合わせ（所得金額調整控除②を年金収入から自動計算）
+check('給与150万円＋年金150万円（65歳以上）→ 合計所得1,060,000円', () => {
+  const r = calculate({ revenue: 1500000, pensionRevenue: 1500000, age65: true });
+  assert.equal(r.pensionIncome, 400000);
+  assert.equal(r.adjustment2, 100000);
+  assert.equal(r.salaryIncome, 660000);
+  assert.equal(r.totalIncome, 1060000);
+});
+check('年金のみ（給与0円）でも計算できる', () => {
+  const r = calculate({ revenue: 0, pensionRevenue: 695065, age65: true });
+  assert.equal(r.salaryIncome, 0);
+  assert.equal(r.totalIncome, 0);
+});
+check('事例: 給与3,061,715円のみ → 合計所得2,062,000円', () => {
+  assert.equal(calculate({ revenue: 3061715 }).totalIncome, 2062000);
+});
+
 console.log(`\n${passed} tests passed`);

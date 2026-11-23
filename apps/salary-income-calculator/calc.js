@@ -103,13 +103,93 @@
     return Math.max(0, Math.min(salaryIncomeAmount, 100000) + Math.min(pensionIncome, 100000) - 100000);
   }
 
+  /*
+   * 公的年金等に係る雑所得（ユーザー提供の速算表）
+   * 区分（1）他の合計所得1,000万円以下／（2）1,000万円超2,000万円以下／（3）2,000万円超
+   * （2）（3）は（1）の控除額をそれぞれ10万円・20万円減らした形（表の数値と一致）。
+   * rate は百分率の整数。所得 ＝ 収入 × rate ÷ 100（1円未満切捨て）− sub。
+   */
+  var PENSION_BASE = {
+    under65: [
+      { max: 1299999, rate: 100, sub: 600000, range: '130万円未満' },
+      { max: 4099999, rate: 75, sub: 275000, range: '130万円以上410万円未満' },
+      { max: 7699999, rate: 85, sub: 685000, range: '410万円以上770万円未満' },
+      { max: 9999999, rate: 95, sub: 1455000, range: '770万円以上1千万円未満' },
+      { max: Infinity, rate: 100, sub: 1955000, range: '1千万円以上' }
+    ],
+    over65: [
+      { max: 3299999, rate: 100, sub: 1100000, range: '330万円未満' },
+      { max: 4099999, rate: 75, sub: 275000, range: '330万円以上410万円未満' },
+      { max: 7699999, rate: 85, sub: 685000, range: '410万円以上770万円未満' },
+      { max: 9999999, rate: 95, sub: 1455000, range: '770万円以上1千万円未満' },
+      { max: Infinity, rate: 100, sub: 1955000, range: '1千万円以上' }
+    ]
+  };
+  var PENSION_BRACKETS = [
+    { no: 1, max: 10000000, shift: 0, label: '（1）公的年金等以外の合計所得金額が1,000万円以下' },
+    { no: 2, max: 20000000, shift: 100000, label: '（2）公的年金等以外の合計所得金額が1,000万円超2,000万円以下' },
+    { no: 3, max: Infinity, shift: 200000, label: '（3）公的年金等以外の合計所得金額が2,000万円超' }
+  ];
+
+  function pensionRows(bracketNo, age65) {
+    var br = PENSION_BRACKETS[bracketNo - 1];
+    return PENSION_BASE[age65 ? 'over65' : 'under65'].map(function (r, i) {
+      var sub = r.sub - br.shift;
+      var formula = r.rate === 100
+        ? '収入金額 − ' + yen(sub)
+        : '収入金額 × 0.' + r.rate + ' − ' + yen(sub);
+      return { row: i + 1, max: r.max, rate: r.rate, sub: sub, range: r.range, formula: formula };
+    });
+  }
+
+  function pensionBracket(otherIncome) {
+    for (var i = 0; i < PENSION_BRACKETS.length; i++) {
+      if (otherIncome <= PENSION_BRACKETS[i].max) return PENSION_BRACKETS[i];
+    }
+    return PENSION_BRACKETS[PENSION_BRACKETS.length - 1];
+  }
+
+  /** 公的年金等に係る雑所得の金額 */
+  function pensionIncome(revenue, age65, otherIncome) {
+    if (!Number.isInteger(revenue) || revenue < 0 || revenue > MAX_AMOUNT) {
+      throw new RangeError('公的年金等の収入金額は0円以上999,999,999円以下の整数で指定してください');
+    }
+    var bracket = pensionBracket(Math.max(0, otherIncome || 0));
+    if (revenue === 0) return { income: 0, bracket: bracket, row: null, steps: '' };
+    var rows = pensionRows(bracket.no, !!age65);
+    var row = rows.filter(function (r) { return revenue <= r.max; })[0];
+    var gross = Math.floor((revenue * row.rate) / 100);
+    var raw = gross - row.sub;
+    var income = Math.max(0, raw);
+    var steps = (row.rate === 100 ? num(revenue) : num(revenue) + ' × 0.' + row.rate) +
+      ' − ' + num(row.sub) + ' ＝ ' + (raw < 0 ? '0円（マイナスのため）' : yen(income));
+    return { income: income, bracket: bracket, row: row, steps: steps };
+  }
+
+  /**
+   * 所得金額の計算（給与所得＋公的年金等に係る雑所得）
+   * input: revenue（給与の収入金額）, adj1Eligible, specificExpense,
+   *        pensionRevenue（公的年金等の収入金額）, age65, otherIncome（給与・年金以外の合計所得金額）,
+   *        pensionIncome（年金の雑所得を直接指定する場合。pensionRevenue があればそちらを優先）
+   * 年金の区分判定に使う「公的年金等以外の合計所得金額」は、給与所得（所得金額調整控除①・特定支出控除の後、
+   * ②の前）＋ その他の所得 で求める（②は最大10万円のため、区分境界付近以外では結果に影響しない）。
+   */
   function calculate(input) {
-    var a = input.revenue;
-    var pension = input.pensionIncome || 0;
+    var a = input.revenue || 0;
     var specific = input.specificExpense || 0;
-    var base = salaryIncome(a);
+    var other = input.otherIncome || 0;
+    var base = a > 0 ? salaryIncome(a) : { income: 0, band: null, b: null, steps: '' };
     var adj1 = adjustment1(a, !!input.adj1Eligible);
-    var adj2 = adjustment2(base.income, pension);
+    var salaryBeforeAdj2 = Math.max(0, base.income - adj1 - specific);
+
+    var pension;
+    if (input.pensionRevenue != null && input.pensionRevenue > 0) {
+      pension = pensionIncome(input.pensionRevenue, !!input.age65, salaryBeforeAdj2 + other);
+    } else {
+      pension = { income: input.pensionIncome || 0, bracket: null, row: null, steps: '' };
+    }
+
+    var adj2 = adjustment2(base.income, pension.income);
     var final = Math.max(0, base.income - adj1 - adj2 - specific);
     return {
       tableVersion: TABLE_VERSION,
@@ -122,7 +202,15 @@
       adjustment1: adj1,
       adjustment2: adj2,
       specificExpense: specific,
-      salaryIncome: final
+      salaryIncome: final,
+      pensionRevenue: input.pensionRevenue || 0,
+      age65: !!input.age65,
+      pensionIncome: pension.income,
+      pensionBracket: pension.bracket,
+      pensionRow: pension.row,
+      pensionSteps: pension.steps,
+      otherIncome: other,
+      totalIncome: final + pension.income + other
     };
   }
 
@@ -157,6 +245,9 @@
     salaryIncome: salaryIncome,
     adjustment1: adjustment1,
     adjustment2: adjustment2,
+    PENSION_BRACKETS: PENSION_BRACKETS,
+    pensionRows: pensionRows,
+    pensionIncome: pensionIncome,
     calculate: calculate,
     parseYen: parseYen,
     formatNumber: num,

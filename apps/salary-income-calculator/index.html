@@ -275,6 +275,9 @@ button:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2p
 }
 .cell.minus .val::before { content: "− "; color: var(--muted); }
 .cell.wide { grid-column: 1 / -1; }
+.cell.strong .val { font-weight: 700; }
+fieldset.radios { gap: 6px; }
+.check input[type="radio"] { border-radius: 50%; }
 @media (max-width: 420px) { .slip { grid-template-columns: minmax(0, 1fr); } }
 
 .how {
@@ -338,8 +341,8 @@ tr.is-active td.no { color: var(--accent); }
 <div class="wrap">
   <header class="head">
     <span class="year">2026年（令和8年）分</span>
-    <h1>給与所得の計算</h1>
-    <p class="lead">給与の収入金額（源泉徴収票の「支払金額」）を入力すると、給与所得の金額を計算します。所得金額調整控除と特定支出控除にも対応しています。</p>
+    <h1>給与所得・年金所得の計算</h1>
+    <p class="lead">給与の収入金額（源泉徴収票の「支払金額」）と公的年金等の収入金額を入力すると、給与所得と公的年金等に係る雑所得、その合計を計算します。所得金額調整控除と特定支出控除にも対応しています。</p>
   </header>
 
   <div class="main">
@@ -352,12 +355,28 @@ tr.is-active td.no { color: var(--accent); }
           <input id="revenue" name="revenue" type="text" inputmode="numeric" autocomplete="off" value="5,000,000" aria-describedby="revenue-hint revenue-err">
           <span class="unit">円</span>
         </div>
-        <span class="hint" id="revenue-hint">年間の給与・賞与の合計（税金や社会保険料を引く前の金額）</span>
+        <span class="hint" id="revenue-hint">年間の給与・賞与の合計（通勤手当などの非課税分を除き、税金や社会保険料を引く前の金額）。給与がない場合は空欄。</span>
         <span class="err" id="revenue-err" hidden></span>
       </div>
 
+      <div class="field" id="field-pension-rev">
+        <label for="pension-rev">公的年金等の収入金額</label>
+        <div class="money">
+          <input id="pension-rev" name="pension-rev" type="text" inputmode="numeric" autocomplete="off" placeholder="0" aria-describedby="pension-rev-hint pension-rev-err">
+          <span class="unit">円</span>
+        </div>
+        <span class="hint" id="pension-rev-hint">国民年金・厚生年金・恩給などの年額の合計（介護保険料などが引かれる前の金額）。年金がない場合は空欄。</span>
+        <span class="err" id="pension-rev-err" hidden></span>
+      </div>
+
+      <fieldset class="radios" id="age-set">
+        <legend>年金を受け取る人の年齢（12月31日時点）</legend>
+        <label class="check"><input type="radio" name="age" id="age-over" value="over" checked>65歳以上（昭和37年1月1日以前生まれ）</label>
+        <label class="check"><input type="radio" name="age" id="age-under" value="under">65歳未満</label>
+      </fieldset>
+
       <details class="options" id="options">
-        <summary>所得金額調整控除・特定支出控除（該当する方のみ）</summary>
+        <summary>所得金額調整控除・特定支出控除・その他の所得（該当する方のみ）</summary>
         <div class="options-body">
           <fieldset id="adj1-set" disabled>
             <legend>所得金額調整控除①（子育て・介護）</legend>
@@ -367,15 +386,7 @@ tr.is-active td.no { color: var(--accent); }
             <p class="subnote" id="adj1-note">給与の収入金額が850万円を超える場合に選べます。</p>
           </fieldset>
 
-          <div class="field" id="field-pension">
-            <label for="pension">公的年金等に係る雑所得の金額</label>
-            <div class="money small">
-              <input id="pension" name="pension" type="text" inputmode="numeric" autocomplete="off" placeholder="0" aria-describedby="pension-hint pension-err">
-              <span class="unit">円</span>
-            </div>
-            <span class="hint" id="pension-hint">年金を受け取っている場合に入力します（所得金額調整控除②の計算に使います）。</span>
-            <span class="err" id="pension-err" hidden></span>
-          </div>
+          <p class="subnote">所得金額調整控除②（給与と年金の両方がある場合）は、上の公的年金等の収入金額から自動で計算します。</p>
 
           <div class="field" id="field-specific">
             <label for="specific">特定支出控除の額</label>
@@ -385,6 +396,16 @@ tr.is-active td.no { color: var(--accent); }
             </div>
             <span class="hint" id="specific-hint">別途計算した控除額を入力します。このツールでは特定支出控除の額は計算しません。</span>
             <span class="err" id="specific-err" hidden></span>
+          </div>
+
+          <div class="field" id="field-other">
+            <label for="other">給与・年金以外の合計所得金額</label>
+            <div class="money small">
+              <input id="other" name="other" type="text" inputmode="numeric" autocomplete="off" placeholder="0" aria-describedby="other-hint other-err">
+              <span class="unit">円</span>
+            </div>
+            <span class="hint" id="other-hint">事業所得・不動産所得などがある場合に入力します。年金の速算表の区分（1）〜（3）の判定と合計所得金額に使います。</span>
+            <span class="err" id="other-err" hidden></span>
           </div>
         </div>
       </details>
@@ -402,11 +423,12 @@ tr.is-active td.no { color: var(--accent); }
 
       <div id="result" style="display:grid;gap:16px">
         <div class="total">
-          <span class="cap">給与所得の金額</span>
-          <span class="val"><span id="r-final">3,560,000</span><small>円</small></span>
+          <span class="cap">合計所得金額（給与所得＋公的年金等に係る雑所得＋その他の所得）</span>
+          <span class="val"><span id="r-total">3,560,000</span><small>円</small></span>
         </div>
 
         <div class="slip">
+          <div class="cell wide strong"><span class="cap">給与所得の金額</span><span class="val" id="r-final">3,560,000</span></div>
           <div class="cell"><span class="cap">給与の収入金額</span><span class="val" id="r-revenue">5,000,000</span></div>
           <div class="cell minus"><span class="cap">給与所得控除額（相当額）</span><span class="val" id="r-deduction">1,440,000</span></div>
           <div class="cell wide"><span class="cap">給与所得の金額（調整前）</span><span class="val" id="r-base">3,560,000</span></div>
@@ -415,9 +437,21 @@ tr.is-active td.no { color: var(--accent); }
           <div class="cell minus wide"><span class="cap">特定支出控除</span><span class="val" id="r-specific">0</span></div>
         </div>
 
-        <div class="how">
+        <div class="how" id="r-how">
           <span class="tag" id="r-band">適用区分 No.7（3,600,000円以上 6,599,999円以下）</span>
           <span class="steps" id="r-steps">Ｂ ＝ 5,000,000 ÷ 4 ＝ 1,250,000円（千円未満切捨て） → 1,250,000 × 3.2 − 440,000 ＝ 3,560,000円</span>
+        </div>
+
+        <div id="r-pension-block" hidden>
+          <div class="slip">
+            <div class="cell"><span class="cap">公的年金等の収入金額</span><span class="val" id="r-pension-rev">0</span></div>
+            <div class="cell strong"><span class="cap">公的年金等に係る雑所得の金額</span><span class="val" id="r-pension">0</span></div>
+            <div class="cell wide" id="r-other-cell" hidden><span class="cap">給与・年金以外の合計所得金額</span><span class="val" id="r-other">0</span></div>
+          </div>
+          <div class="how" style="margin-top:10px">
+            <span class="tag" id="r-pension-band"></span>
+            <span class="steps" id="r-pension-steps"></span>
+          </div>
         </div>
 
         <ul class="msgs" id="r-msgs" hidden></ul>
@@ -441,6 +475,18 @@ tr.is-active td.no { color: var(--accent); }
     <p class="table-note">Ｂ ＝ Ａ ÷ 4（千円未満切捨て）。No.6・No.7の計算で使います。計算に当てはまった行を色付けしています。</p>
   </section>
 
+  <section class="panel" aria-labelledby="ptable-title">
+    <h2 id="ptable-title">公的年金等に係る雑所得の速算表</h2>
+    <p class="table-note" id="ptable-label">（1）公的年金等以外の合計所得金額が1,000万円以下 ／ 65歳以上の人</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>No</th><th>公的年金等の収入金額の合計額</th><th>公的年金等に係る雑所得の金額</th></tr></thead>
+        <tbody id="pension-table"></tbody>
+      </table>
+    </div>
+    <p class="table-note">区分（2）は1,000万円超2,000万円以下、（3）は2,000万円超のときの表に切り替わります。計算結果がマイナスのときは0円です。</p>
+  </section>
+
   <footer class="notes">
     <p>※所得金額調整控除や特定支出控除適用前の金額です。特に年収850万円超の方はご注意ください。</p>
     <p>（※）所得金額調整控除又は特定支出控除の適用がある場合には、上記所得金額からそれぞれの控除額を控除してください。なお、所得金額調整控除の適用がある場合の、所得金額調整控除の額の計算方法は、次の通りです（①②両方ある場合は、それらの合計額）。</p>
@@ -460,15 +506,17 @@ tr.is-active td.no { color: var(--accent); }
   var $ = function (id) { return document.getElementById(id); };
 
   var revenueEl = $('revenue');
-  var pensionEl = $('pension');
+  var pensionRevEl = $('pension-rev');
   var specificEl = $('specific');
+  var otherEl = $('other');
+  var ageOverEl = $('age-over');
   var adj1Set = $('adj1-set');
   var adj1Boxes = adj1Set.querySelectorAll('input[type="checkbox"]');
   var lastText = '';
 
   var ERRORS = {
     revenue: {
-      empty: '給与の収入金額を入力してください。',
+      empty: '給与または公的年金等の収入金額を入力してください。',
       nan: '数字で入力してください（例: 5000000）。',
       negative: '0以上の金額を入力してください。',
       max: '999,999,999円以下で入力してください。'
@@ -519,11 +567,26 @@ tr.is-active td.no { color: var(--accent); }
     });
   }
 
+  // 年金の速算表（区分・年齢に応じて描画し、該当行を色付け）
+  function renderPensionTable(bracketNo, age65, activeRow) {
+    var br = S.PENSION_BRACKETS[bracketNo - 1];
+    $('ptable-label').textContent = br.label + ' ／ ' + (age65 ? '65歳以上の人' : '65歳未満の人');
+    var tb = $('pension-table');
+    tb.innerHTML = '';
+    S.pensionRows(bracketNo, age65).forEach(function (r) {
+      var tr = document.createElement('tr');
+      if (r.row === activeRow) tr.className = 'is-active';
+      tr.innerHTML = '<td class="no">' + r.row + '</td><td>' + r.range + '</td><td>' + r.formula + '</td>';
+      tb.appendChild(tr);
+    });
+  }
+
   function showResult(r, msgs) {
     var n = S.formatNumber;
     $('result-empty').hidden = true;
     $('result').hidden = false;
     $('result').style.display = 'grid';
+    $('r-total').textContent = n(r.totalIncome);
     $('r-final').textContent = n(r.salaryIncome);
     $('r-revenue').textContent = n(r.revenue);
     $('r-deduction').textContent = n(r.deduction);
@@ -531,8 +594,29 @@ tr.is-active td.no { color: var(--accent); }
     $('r-adj1').textContent = n(r.adjustment1);
     $('r-adj2').textContent = n(r.adjustment2);
     $('r-specific').textContent = n(r.specificExpense);
-    $('r-band').textContent = '適用区分 No.' + r.band.no + '（' + r.band.range + '）';
-    $('r-steps').textContent = r.steps;
+    if (r.band) {
+      $('r-band').textContent = '給与：適用区分 No.' + r.band.no + '（' + r.band.range + '）';
+      $('r-steps').textContent = r.steps;
+    } else {
+      $('r-band').textContent = '給与：収入なし';
+      $('r-steps').textContent = '給与の収入金額が0円のため、給与所得は0円です。';
+    }
+    var hasPension = r.pensionRevenue > 0;
+    $('r-pension-block').hidden = !hasPension && r.otherIncome === 0;
+    $('r-pension-rev').textContent = n(r.pensionRevenue);
+    $('r-pension').textContent = n(r.pensionIncome);
+    $('r-other-cell').hidden = r.otherIncome === 0;
+    $('r-other').textContent = n(r.otherIncome);
+    if (hasPension) {
+      $('r-pension-band').textContent = '年金：区分' + ['（1）', '（2）', '（3）'][r.pensionBracket.no - 1] + '・' +
+        (r.age65 ? '65歳以上' : '65歳未満') + '・No.' + r.pensionRow.row + '（' + r.pensionRow.range + '）';
+      $('r-pension-steps').textContent = r.pensionSteps;
+      renderPensionTable(r.pensionBracket.no, r.age65, r.pensionRow.row);
+    } else {
+      $('r-pension-band').textContent = '年金：収入なし';
+      $('r-pension-steps').textContent = '';
+      renderPensionTable(1, ageOverEl.checked, 0);
+    }
     var ul = $('r-msgs');
     ul.innerHTML = '';
     msgs.forEach(function (m) {
@@ -541,10 +625,10 @@ tr.is-active td.no { color: var(--accent); }
       ul.appendChild(li);
     });
     ul.hidden = msgs.length === 0;
-    highlight(r.band.no);
+    highlight(r.band ? r.band.no : 0);
 
     lastText = [
-      '給与所得の計算（' + r.tableVersion + '）',
+      '所得金額の計算（' + r.tableVersion + '）',
       '給与の収入金額: ' + S.formatYen(r.revenue),
       '給与所得控除額（相当額）: ' + S.formatYen(r.deduction),
       '給与所得の金額（調整前）: ' + S.formatYen(r.baseIncome),
@@ -552,7 +636,11 @@ tr.is-active td.no { color: var(--accent); }
       '所得金額調整控除②: ' + S.formatYen(r.adjustment2),
       '特定支出控除: ' + S.formatYen(r.specificExpense),
       '給与所得の金額: ' + S.formatYen(r.salaryIncome),
-      '適用区分: No.' + r.band.no + '（' + r.band.range + '） ' + r.steps
+      '給与の計算: ' + (r.band ? 'No.' + r.band.no + '（' + r.band.range + '） ' + r.steps : '給与なし'),
+      '公的年金等の収入金額: ' + S.formatYen(r.pensionRevenue) + (r.pensionRevenue ? '（' + (r.age65 ? '65歳以上' : '65歳未満') + '）' : ''),
+      '公的年金等に係る雑所得の金額: ' + S.formatYen(r.pensionIncome) + (r.pensionSteps ? '（' + r.pensionSteps + '）' : ''),
+      '給与・年金以外の合計所得金額: ' + S.formatYen(r.otherIncome),
+      '合計所得金額: ' + S.formatYen(r.totalIncome)
     ].join('\n');
   }
 
@@ -561,38 +649,48 @@ tr.is-active td.no { color: var(--accent); }
     $('result').style.display = 'none';
     $('result-empty').hidden = false;
     highlight(0);
+    renderPensionTable(1, ageOverEl.checked, 0);
     lastText = '';
   }
 
   function run() {
     var msgs = [];
-    var rev = S.parseYen(revenueEl.value);
-    var pen = S.parseYen(pensionEl.value, { allowEmpty: true, allowZero: true });
-    var spe = S.parseYen(specificEl.value, { allowEmpty: true, allowZero: true });
+    var opt = { allowEmpty: true, allowZero: true };
+    var rev = S.parseYen(revenueEl.value, opt);
+    var pen = S.parseYen(pensionRevEl.value, opt);
+    var spe = S.parseYen(specificEl.value, opt);
+    var oth = S.parseYen(otherEl.value, opt);
+    var bothEmpty = !rev.error && !pen.error && rev.value === 0 && pen.value === 0;
 
-    setError('field-revenue', 'revenue-err', rev.error ? ERRORS.revenue[rev.error] : '');
-    setError('field-pension', 'pension-err', pen.error ? ERRORS.other[pen.error] : '');
+    setError('field-revenue', 'revenue-err', rev.error ? ERRORS.revenue[rev.error] : (bothEmpty ? ERRORS.revenue.empty : ''));
+    setError('field-pension-rev', 'pension-rev-err', pen.error ? ERRORS.other[pen.error] : '');
     setError('field-specific', 'specific-err', spe.error ? ERRORS.other[spe.error] : '');
+    setError('field-other', 'other-err', oth.error ? ERRORS.other[oth.error] : '');
 
-    if (rev.error || pen.error || spe.error) {
-      if (pen.error || spe.error) $('options').open = true;
+    if (rev.error || pen.error || spe.error || oth.error || bothEmpty) {
+      if (spe.error || oth.error) $('options').open = true;
       showEmpty();
       return;
     }
-    if (rev.truncated || pen.truncated || spe.truncated) msgs.push('円未満は切り捨てて計算しました。');
+    if (rev.truncated || pen.truncated || spe.truncated || oth.truncated) msgs.push('円未満は切り捨てて計算しました。');
 
     var eligible = Array.prototype.some.call(adj1Boxes, function (c) { return c.checked; });
     var r = S.calculate({
       revenue: rev.value,
       adj1Eligible: eligible,
-      pensionIncome: pen.value,
+      pensionRevenue: pen.value,
+      age65: ageOverEl.checked,
+      otherIncome: oth.value,
       specificExpense: spe.value
     });
     if (rev.value > S.ADJ1_THRESHOLD && !eligible) {
       msgs.push('年収850万円超のため、扶養親族などの条件に当てはまる場合は所得金額調整控除①の対象になります。');
     }
-    if (pen.value > 0 && r.adjustment2 === 0) {
+    if (rev.value > 0 && pen.value > 0 && r.adjustment2 === 0) {
       msgs.push('所得金額調整控除②は、給与所得と年金の雑所得の合計（各10万円上限）が10万円を超えないため0円です。');
+    }
+    if (r.adjustment2 > 0) {
+      msgs.push('給与と年金の両方があるため、所得金額調整控除②（' + S.formatYen(r.adjustment2) + '）を給与所得から差し引きました。');
     }
     if (spe.value > 0 && r.baseIncome - r.adjustment1 - r.adjustment2 - spe.value < 0) {
       msgs.push('控除額が所得金額を上回るため、給与所得の金額は0円としました。');
@@ -607,7 +705,7 @@ tr.is-active td.no { color: var(--accent); }
 
   $('calc-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    [revenueEl, pensionEl, specificEl].forEach(formatField);
+    [revenueEl, pensionRevEl, specificEl, otherEl].forEach(formatField);
     run();
   });
 
@@ -615,18 +713,21 @@ tr.is-active td.no { color: var(--accent); }
     $('sample-badge').hidden = true;
     updateAdj1State();
   });
-  [revenueEl, pensionEl, specificEl].forEach(function (el) {
+  [revenueEl, pensionRevEl, specificEl, otherEl].forEach(function (el) {
     el.addEventListener('blur', function () { formatField(el); });
   });
 
   $('btn-clear').addEventListener('click', function () {
     revenueEl.value = '';
-    pensionEl.value = '';
+    pensionRevEl.value = '';
     specificEl.value = '';
+    otherEl.value = '';
+    ageOverEl.checked = true;
     $('sample-badge').hidden = true;
     setError('field-revenue', 'revenue-err', '');
-    setError('field-pension', 'pension-err', '');
+    setError('field-pension-rev', 'pension-rev-err', '');
     setError('field-specific', 'specific-err', '');
+    setError('field-other', 'other-err', '');
     updateAdj1State();
     showEmpty();
     revenueEl.focus();

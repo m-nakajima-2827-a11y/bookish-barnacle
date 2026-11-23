@@ -1,6 +1,6 @@
-# 給与所得の計算（2026年（令和8年）分）
+# 給与所得・年金所得の計算（2026年（令和8年）分）
 
-`skills/salary-income-calculator/SKILL.md` の仕様で作った、給与所得の自動計算Webアプリです。
+`skills/salary-income-calculator/SKILL.md` の仕様で作った、給与所得と公的年金等に係る雑所得、合計所得金額を計算するWebアプリです。
 
 ## ファイル
 
