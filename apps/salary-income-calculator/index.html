@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>給与所得の計算 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+/* Layout: 源泉徴収票の罫線枠をモチーフに、左に入力・右に結果の2カラム（狭い画面では1カラム） */
+:root {
+  --paper: #f3f6f5;
+  --surface: #ffffff;
+  --ink: #17262a;
+  --muted: #566a6b;
+  --rule: #c9d6d4;
+  --accent: #0e6a5b;
+  --accent-ink: #ffffff;
+  --accent-soft: #e0efeb;
+  --warn: #8a5300;
+  --warn-soft: #fbf0dc;
+  --error: #b3261e;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+  --font-form: "BIZ UDPGothic", "Noto Sans JP", "Hiragino Sans", "Meiryo", sans-serif;
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f1716;
+    --surface: #172220;
+    --ink: #e4eeec;
+    --muted: #9bb0ad;
+    --rule: #2e3e3b;
+    --accent: #5cc2ad;
+    --accent-ink: #0b1513;
+    --accent-soft: #1b3330;
+    --warn: #e6ac52;
+    --warn-soft: #33270f;
+    --error: #ff8f86;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f1716;
+  --surface: #172220;
+  --ink: #e4eeec;
+  --muted: #9bb0ad;
+  --rule: #2e3e3b;
+  --accent: #5cc2ad;
+  --accent-ink: #0b1513;
+  --accent-soft: #1b3330;
+  --warn: #e6ac52;
+  --warn-soft: #33270f;
+  --error: #ff8f86;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.wrap {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding-block: 32px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 28px;
+}
+
+/* Header */
+.head { display: grid; gap: 6px; }
+.year {
+  justify-self: start;
+  font-family: var(--font-form);
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 1px 10px;
+}
+h1 {
+  margin: 0;
+  font-family: var(--font-form);
+  font-size: clamp(26px, 4.2vw, 34px);
+  font-weight: 700;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.lead { margin: 0; color: var(--muted); max-width: 46em; }
+
+/* Main grid */
+.main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 860px) { .main { grid-template-columns: minmax(0, 1fr); } }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 22px;
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.panel h2 {
+  margin: 0;
+  font-family: var(--font-form);
+  font-size: 13px;
+  letter-spacing: .1em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* Form */
+.field { display: grid; gap: 6px; }
+.field label, .field .label {
+  font-family: var(--font-form);
+  font-weight: 700;
+  font-size: 15px;
+}
+.field .hint { font-size: 13px; color: var(--muted); }
+.money {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+.money:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.money input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-form);
+  font-size: 22px;
+  text-align: right;
+  padding: 10px 12px;
+  font-variant-numeric: tabular-nums;
+}
+.money input:focus { outline: none; }
+.money .unit {
+  display: grid;
+  place-items: center;
+  padding: 0 14px;
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-family: var(--font-form);
+}
+.money.small input { font-size: 17px; padding: 8px 12px; }
+.field.is-error .money { border-color: var(--error); }
+.err { color: var(--error); font-size: 13px; font-weight: 500; }
+.sample-badge {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--warn);
+  background: var(--warn-soft);
+  border-radius: 4px;
+  padding: 0 6px;
+  margin-left: 8px;
+  vertical-align: 2px;
+}
+
+details.options {
+  border-top: 1px solid var(--rule);
+  padding-top: 14px;
+}
+details.options summary {
+  cursor: pointer;
+  font-family: var(--font-form);
+  font-weight: 700;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+details.options summary::-webkit-details-marker { display: none; }
+details.options summary::after {
+  content: "＋";
+  color: var(--accent);
+  font-weight: 700;
+}
+details.options[open] summary::after { content: "−"; }
+details.options summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+.options-body { display: grid; gap: 18px; padding-top: 14px; }
+.subnote { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; min-width: 0; }
+legend { padding: 0; margin-bottom: 4px; font-family: var(--font-form); font-weight: 700; }
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 14px;
+  cursor: pointer;
+}
+.check input { margin-top: 5px; width: 17px; height: 17px; accent-color: var(--accent); flex: none; }
+fieldset:disabled .check { color: var(--muted); cursor: not-allowed; }
+
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+button {
+  font-family: var(--font-form);
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: var(--radius);
+  padding: 11px 22px;
+  cursor: pointer;
+  border: 1px solid var(--accent);
+}
+button:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
+.btn-primary { background: var(--accent); color: var(--accent-ink); flex: 1 1 180px; }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-ghost { background: transparent; color: var(--accent); }
+.btn-ghost:hover { background: var(--accent-soft); }
+.btn-small { font-size: 13px; padding: 6px 12px; }
+
+/* Result: 源泉徴収票風の枠 */
+.total {
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 16px 12px;
+  display: grid;
+  gap: 2px;
+}
+.total .cap { font-family: var(--font-form); font-size: 13px; color: var(--muted); }
+.total .val {
+  font-family: var(--font-form);
+  font-size: clamp(32px, 6vw, 44px);
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.total .val small { font-size: .45em; margin-left: 4px; font-weight: 700; }
+
+.slip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+}
+.cell {
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 6px 10px 8px;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.cell .cap { font-family: var(--font-form); font-size: 12px; color: var(--muted); line-height: 1.4; }
+.cell .val {
+  font-family: var(--font-form);
+  font-size: 18px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.cell.minus .val::before { content: "− "; color: var(--muted); }
+.cell.wide { grid-column: 1 / -1; }
+@media (max-width: 420px) { .slip { grid-template-columns: minmax(0, 1fr); } }
+
+.how {
+  background: var(--accent-soft);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+.how .tag { font-family: var(--font-form); font-weight: 700; }
+.how .steps { font-family: var(--font-form); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+
+.msgs { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.msgs li {
+  font-size: 13px;
+  background: var(--warn-soft);
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 6px 10px;
+}
+.result-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.copied { font-size: 13px; color: var(--accent); }
+
+.empty {
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius);
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* Table */
+.table-scroll { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-form);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  min-width: 520px;
+}
+th, td { border-bottom: 1px solid var(--rule); padding: 9px 10px; text-align: left; vertical-align: top; }
+thead th { font-size: 12px; color: var(--muted); font-weight: 700; letter-spacing: .05em; border-bottom: 2px solid var(--rule); }
+td.no { width: 3em; color: var(--muted); }
+tr.is-active td { background: var(--accent-soft); font-weight: 700; }
+tr.is-active td.no { color: var(--accent); }
+.table-note { margin: 0; font-size: 13px; color: var(--muted); }
+
+/* Notes */
+.notes { display: grid; gap: 8px; font-size: 13px; color: var(--muted); }
+.notes p { margin: 0; max-width: 62em; }
+.notes ol { margin: 0; padding-left: 1.4em; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .total .val { transition: color .2s; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <span class="year">2026年（令和8年）分</span>
+    <h1>給与所得の計算</h1>
+    <p class="lead">給与の収入金額（源泉徴収票の「支払金額」）を入力すると、給与所得の金額を計算します。所得金額調整控除と特定支出控除にも対応しています。</p>
+  </header>
+
+  <div class="main">
+    <form class="panel" id="calc-form" novalidate>
+      <h2>入力</h2>
+
+      <div class="field" id="field-revenue">
+        <label for="revenue">給与の収入金額（Ａ）<span class="sample-badge" id="sample-badge">入力例</span></label>
+        <div class="money">
+          <input id="revenue" name="revenue" type="text" inputmode="numeric" autocomplete="off" value="5,000,000" aria-describedby="revenue-hint revenue-err">
+          <span class="unit">円</span>
+        </div>
+        <span class="hint" id="revenue-hint">年間の給与・賞与の合計（税金や社会保険料を引く前の金額）</span>
+        <span class="err" id="revenue-err" hidden></span>
+      </div>
+
+      <details class="options" id="options">
+        <summary>所得金額調整控除・特定支出控除（該当する方のみ）</summary>
+        <div class="options-body">
+          <fieldset id="adj1-set" disabled>
+            <legend>所得金額調整控除①（子育て・介護）</legend>
+            <label class="check"><input type="checkbox" id="adj1-self" name="adj1">本人が特別障害者である</label>
+            <label class="check"><input type="checkbox" id="adj1-child" name="adj1">23歳未満の扶養親族がいる</label>
+            <label class="check"><input type="checkbox" id="adj1-family" name="adj1">特別障害者である同一生計配偶者または扶養親族がいる</label>
+            <p class="subnote" id="adj1-note">給与の収入金額が850万円を超える場合に選べます。</p>
+          </fieldset>
+
+          <div class="field" id="field-pension">
+            <label for="pension">公的年金等に係る雑所得の金額</label>
+            <div class="money small">
+              <input id="pension" name="pension" type="text" inputmode="numeric" autocomplete="off" placeholder="0" aria-describedby="pension-hint pension-err">
+              <span class="unit">円</span>
+            </div>
+            <span class="hint" id="pension-hint">年金を受け取っている場合に入力します（所得金額調整控除②の計算に使います）。</span>
+            <span class="err" id="pension-err" hidden></span>
+          </div>
+
+          <div class="field" id="field-specific">
+            <label for="specific">特定支出控除の額</label>
+            <div class="money small">
+              <input id="specific" name="specific" type="text" inputmode="numeric" autocomplete="off" placeholder="0" aria-describedby="specific-hint specific-err">
+              <span class="unit">円</span>
+            </div>
+            <span class="hint" id="specific-hint">別途計算した控除額を入力します。このツールでは特定支出控除の額は計算しません。</span>
+            <span class="err" id="specific-err" hidden></span>
+          </div>
+        </div>
+      </details>
+
+      <div class="actions">
+        <button type="submit" class="btn-primary" id="btn-calc">計算する</button>
+        <button type="button" class="btn-ghost" id="btn-clear">クリア</button>
+      </div>
+    </form>
+
+    <section class="panel" aria-labelledby="result-title" aria-live="polite">
+      <h2 id="result-title">計算結果</h2>
+
+      <div class="empty" id="result-empty" hidden>給与の収入金額を入力して「計算する」を押してください。</div>
+
+      <div id="result" style="display:grid;gap:16px">
+        <div class="total">
+          <span class="cap">給与所得の金額</span>
+          <span class="val"><span id="r-final">3,560,000</span><small>円</small></span>
+        </div>
+
+        <div class="slip">
+          <div class="cell"><span class="cap">給与の収入金額</span><span class="val" id="r-revenue">5,000,000</span></div>
+          <div class="cell minus"><span class="cap">給与所得控除額（相当額）</span><span class="val" id="r-deduction">1,440,000</span></div>
+          <div class="cell wide"><span class="cap">給与所得の金額（調整前）</span><span class="val" id="r-base">3,560,000</span></div>
+          <div class="cell minus"><span class="cap">所得金額調整控除①</span><span class="val" id="r-adj1">0</span></div>
+          <div class="cell minus"><span class="cap">所得金額調整控除②</span><span class="val" id="r-adj2">0</span></div>
+          <div class="cell minus wide"><span class="cap">特定支出控除</span><span class="val" id="r-specific">0</span></div>
+        </div>
+
+        <div class="how">
+          <span class="tag" id="r-band">適用区分 No.7（3,600,000円以上 6,599,999円以下）</span>
+          <span class="steps" id="r-steps">Ｂ ＝ 5,000,000 ÷ 4 ＝ 1,250,000円（千円未満切捨て） → 1,250,000 × 3.2 − 440,000 ＝ 3,560,000円</span>
+        </div>
+
+        <ul class="msgs" id="r-msgs" hidden></ul>
+
+        <div class="result-foot">
+          <span class="copied" id="copied" hidden>結果をコピーしました</span>
+          <button type="button" class="btn-ghost btn-small" id="btn-copy">結果をコピー</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="table-title">
+    <h2 id="table-title">計算表（2026年（令和8年）分）</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>No</th><th>給与の収入金額（Ａ）</th><th>所得金額</th></tr></thead>
+        <tbody id="band-table"></tbody>
+      </table>
+    </div>
+    <p class="table-note">Ｂ ＝ Ａ ÷ 4（千円未満切捨て）。No.6・No.7の計算で使います。計算に当てはまった行を色付けしています。</p>
+  </section>
+
+  <footer class="notes">
+    <p>※所得金額調整控除や特定支出控除適用前の金額です。特に年収850万円超の方はご注意ください。</p>
+    <p>（※）所得金額調整控除又は特定支出控除の適用がある場合には、上記所得金額からそれぞれの控除額を控除してください。なお、所得金額調整控除の適用がある場合の、所得金額調整控除の額の計算方法は、次の通りです（①②両方ある場合は、それらの合計額）。</p>
+    <ol>
+      <li>（給与の収入金額〔上限1,000万円〕－ 850万円）× 10％</li>
+      <li>給与所得控除後の給与等の金額〔上限10万円〕＋ 公的年金等に係る雑所得の金額〔上限10万円〕－ 10万円</li>
+    </ol>
+    <p>本ツールの計算結果は概算です。実際の申告・年末調整では最新の法令・国税庁の資料をご確認ください。</p>
+  </footer>
+</div>
+
+<script src="calc.js"></script>
+<script>
+(function () {
+  'use strict';
+  var S = window.SalaryIncome;
+  var $ = function (id) { return document.getElementById(id); };
+
+  var revenueEl = $('revenue');
+  var pensionEl = $('pension');
+  var specificEl = $('specific');
+  var adj1Set = $('adj1-set');
+  var adj1Boxes = adj1Set.querySelectorAll('input[type="checkbox"]');
+  var lastText = '';
+
+  var ERRORS = {
+    revenue: {
+      empty: '給与の収入金額を入力してください。',
+      nan: '数字で入力してください（例: 5000000）。',
+      negative: '0以上の金額を入力してください。',
+      max: '999,999,999円以下で入力してください。'
+    },
+    other: {
+      nan: '数字で入力してください。',
+      negative: '0以上の金額を入力してください。',
+      max: '999,999,999円以下で入力してください。'
+    }
+  };
+
+  // 計算表を描画
+  var tbody = $('band-table');
+  S.BANDS.forEach(function (b) {
+    var tr = document.createElement('tr');
+    tr.id = 'band-' + b.no;
+    tr.innerHTML = '<td class="no">' + b.no + '</td><td>' + b.range + '</td><td>' + b.formula + '</td>';
+    tbody.appendChild(tr);
+  });
+
+  function setError(fieldId, errEl, message) {
+    var field = $(fieldId);
+    var err = $(errEl);
+    if (message) {
+      field.classList.add('is-error');
+      err.textContent = message;
+      err.hidden = false;
+    } else {
+      field.classList.remove('is-error');
+      err.textContent = '';
+      err.hidden = true;
+    }
+  }
+
+  function updateAdj1State() {
+    var p = S.parseYen(revenueEl.value);
+    var enabled = !p.error && p.value > S.ADJ1_THRESHOLD;
+    adj1Set.disabled = !enabled;
+    if (!enabled) adj1Boxes.forEach(function (c) { c.checked = false; });
+    $('adj1-note').textContent = enabled
+      ? '1つでも当てはまれば対象です。'
+      : '給与の収入金額が850万円を超える場合に選べます。';
+  }
+
+  function highlight(no) {
+    S.BANDS.forEach(function (b) {
+      $('band-' + b.no).classList.toggle('is-active', b.no === no);
+    });
+  }
+
+  function showResult(r, msgs) {
+    var n = S.formatNumber;
+    $('result-empty').hidden = true;
+    $('result').hidden = false;
+    $('result').style.display = 'grid';
+    $('r-final').textContent = n(r.salaryIncome);
+    $('r-revenue').textContent = n(r.revenue);
+    $('r-deduction').textContent = n(r.deduction);
+    $('r-base').textContent = n(r.baseIncome);
+    $('r-adj1').textContent = n(r.adjustment1);
+    $('r-adj2').textContent = n(r.adjustment2);
+    $('r-specific').textContent = n(r.specificExpense);
+    $('r-band').textContent = '適用区分 No.' + r.band.no + '（' + r.band.range + '）';
+    $('r-steps').textContent = r.steps;
+    var ul = $('r-msgs');
+    ul.innerHTML = '';
+    msgs.forEach(function (m) {
+      var li = document.createElement('li');
+      li.textContent = m;
+      ul.appendChild(li);
+    });
+    ul.hidden = msgs.length === 0;
+    highlight(r.band.no);
+
+    lastText = [
+      '給与所得の計算（' + r.tableVersion + '）',
+      '給与の収入金額: ' + S.formatYen(r.revenue),
+      '給与所得控除額（相当額）: ' + S.formatYen(r.deduction),
+      '給与所得の金額（調整前）: ' + S.formatYen(r.baseIncome),
+      '所得金額調整控除①: ' + S.formatYen(r.adjustment1),
+      '所得金額調整控除②: ' + S.formatYen(r.adjustment2),
+      '特定支出控除: ' + S.formatYen(r.specificExpense),
+      '給与所得の金額: ' + S.formatYen(r.salaryIncome),
+      '適用区分: No.' + r.band.no + '（' + r.band.range + '） ' + r.steps
+    ].join('\n');
+  }
+
+  function showEmpty() {
+    $('result').hidden = true;
+    $('result').style.display = 'none';
+    $('result-empty').hidden = false;
+    highlight(0);
+    lastText = '';
+  }
+
+  function run() {
+    var msgs = [];
+    var rev = S.parseYen(revenueEl.value);
+    var pen = S.parseYen(pensionEl.value, { allowEmpty: true, allowZero: true });
+    var spe = S.parseYen(specificEl.value, { allowEmpty: true, allowZero: true });
+
+    setError('field-revenue', 'revenue-err', rev.error ? ERRORS.revenue[rev.error] : '');
+    setError('field-pension', 'pension-err', pen.error ? ERRORS.other[pen.error] : '');
+    setError('field-specific', 'specific-err', spe.error ? ERRORS.other[spe.error] : '');
+
+    if (rev.error || pen.error || spe.error) {
+      if (pen.error || spe.error) $('options').open = true;
+      showEmpty();
+      return;
+    }
+    if (rev.truncated || pen.truncated || spe.truncated) msgs.push('円未満は切り捨てて計算しました。');
+
+    var eligible = Array.prototype.some.call(adj1Boxes, function (c) { return c.checked; });
+    var r = S.calculate({
+      revenue: rev.value,
+      adj1Eligible: eligible,
+      pensionIncome: pen.value,
+      specificExpense: spe.value
+    });
+    if (rev.value > S.ADJ1_THRESHOLD && !eligible) {
+      msgs.push('年収850万円超のため、扶養親族などの条件に当てはまる場合は所得金額調整控除①の対象になります。');
+    }
+    if (pen.value > 0 && r.adjustment2 === 0) {
+      msgs.push('所得金額調整控除②は、給与所得と年金の雑所得の合計（各10万円上限）が10万円を超えないため0円です。');
+    }
+    if (spe.value > 0 && r.baseIncome - r.adjustment1 - r.adjustment2 - spe.value < 0) {
+      msgs.push('控除額が所得金額を上回るため、給与所得の金額は0円としました。');
+    }
+    showResult(r, msgs);
+  }
+
+  function formatField(el) {
+    var p = S.parseYen(el.value, { allowEmpty: true, allowZero: true });
+    if (!p.error && el.value.trim() !== '') el.value = S.formatNumber(p.value);
+  }
+
+  $('calc-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    [revenueEl, pensionEl, specificEl].forEach(formatField);
+    run();
+  });
+
+  revenueEl.addEventListener('input', function () {
+    $('sample-badge').hidden = true;
+    updateAdj1State();
+  });
+  [revenueEl, pensionEl, specificEl].forEach(function (el) {
+    el.addEventListener('blur', function () { formatField(el); });
+  });
+
+  $('btn-clear').addEventListener('click', function () {
+    revenueEl.value = '';
+    pensionEl.value = '';
+    specificEl.value = '';
+    $('sample-badge').hidden = true;
+    setError('field-revenue', 'revenue-err', '');
+    setError('field-pension', 'pension-err', '');
+    setError('field-specific', 'specific-err', '');
+    updateAdj1State();
+    showEmpty();
+    revenueEl.focus();
+  });
+
+  $('btn-copy').addEventListener('click', function () {
+    if (!lastText) return;
+    var done = function () {
+      var c = $('copied');
+      c.textContent = '結果をコピーしました';
+      c.hidden = false;
+      setTimeout(function () { c.hidden = true; }, 2500);
+    };
+    var fallback = function () {
+      var c = $('copied');
+      c.textContent = 'コピーできませんでした。結果欄を選択してコピーしてください。';
+      c.hidden = false;
+    };
+    try {
+      navigator.clipboard.writeText(lastText).then(done, fallback);
+    } catch (err) {
+      fallback();
+    }
+  });
+
+  // 入力例（5,000,000円）で初期表示
+  updateAdj1State();
+  run();
+})();
+</script>
+</body>
+</html>
