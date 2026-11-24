@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body { font-family: "Noto Sans JP", sans-serif; font-size: 13px; padding: 8px; color: #222; }
+    h3 { margin: 4px 0 8px; font-size: 15px; }
+    .muted { color: #666; font-size: 12px; }
+    .warn { background: #fff4e5; border-left: 3px solid #f0a020; padding: 6px; margin: 8px 0; font-size: 12px; }
+    .field { margin: 8px 0; }
+    .field label { display: block; font-weight: bold; margin-bottom: 2px; }
+    .row { display: flex; gap: 4px; }
+    .row input { flex: 1; }
+    input, textarea { width: 100%; box-sizing: border-box; font-size: 13px; padding: 4px; }
+    textarea { height: 220px; }
+    button { cursor: pointer; padding: 6px 10px; border-radius: 4px; border: 1px solid #bbb; background: #f5f5f5; }
+    button.primary { background: #1a73e8; color: #fff; border-color: #1a73e8; }
+    button.copy { padding: 4px 8px; font-size: 12px; }
+    .actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+    a.open { display: inline-block; margin: 6px 0; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="app"><p class="muted">読み込み中…</p></div>
+
+  <script>
+    let current = null;
+
+    function esc(s) {
+      return String(s || '').replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function field(label, id, value) {
+      return '<div class="field"><label>' + label + '</label><div class="row">' +
+        '<input id="' + id + '" value="' + esc(value) + '" readonly>' +
+        '<button class="copy" onclick="copyText(\'' + id + '\')">コピー</button></div></div>';
+    }
+
+    function render(item) {
+      current = item;
+      const app = document.getElementById('app');
+      if (item.done) {
+        app.innerHTML = '<h3>対応待ちはありません</h3><p class="muted">「フォーム営業の文面を作成」を実行すると、次の候補が追加されます。</p>';
+        return;
+      }
+      app.innerHTML =
+        '<p class="muted">残り ' + item.left + ' 件</p>' +
+        '<h3>' + esc(item.company) + '</h3>' +
+        '<a class="open" href="' + esc(item.url) + '" target="_blank" rel="noopener">問い合わせページを開く ↗</a>' +
+        (item.captcha ? '<div class="warn">CAPTCHAがあります。画面の指示に従って手動で確認してください。</div>' : '') +
+        '<div class="warn">送信前に、ページに「営業目的の問い合わせはお断り」等の表記がないか確認してください。表記があれば「お断り表記あり」を押します。</div>' +
+        field('会社名', 'f_company', item.me.company) +
+        field('氏名', 'f_name', item.me.name) +
+        field('メール', 'f_email', item.me.email) +
+        field('電話', 'f_tel', item.me.tel) +
+        field('件名', 'f_subject', item.subject) +
+        '<div class="field"><label>本文（ここで修正できます）</label>' +
+        '<textarea id="f_body">' + esc(item.body) + '</textarea>' +
+        '<button class="copy" onclick="copyText(\'f_body\')">本文をコピー</button></div>' +
+        '<div class="actions">' +
+        '<button class="primary" onclick="mark(\'送信済\')">送信した</button>' +
+        '<button onclick="mark(\'スキップ\')">スキップ</button>' +
+        '<button onclick="mark(\'お断り表記あり\')">お断り表記あり</button>' +
+        '</div>';
+    }
+
+    function copyText(id) {
+      const el = document.getElementById(id);
+      el.removeAttribute('readonly');
+      el.select();
+      document.execCommand('copy');
+      if (id !== 'f_body') el.setAttribute('readonly', 'readonly');
+    }
+
+    function mark(result) {
+      const body = document.getElementById('f_body').value;
+      document.getElementById('app').innerHTML = '<p class="muted">記録しています…</p>';
+      google.script.run.withSuccessHandler(render).withFailureHandler(showError).markFormItem(current.queueId, result, body);
+    }
+
+    function showError(e) {
+      document.getElementById('app').innerHTML = '<p>エラー：' + esc(e.message) + '</p>';
+    }
+
+    google.script.run.withSuccessHandler(render).withFailureHandler(showError).getNextFormItem();
+  </script>
+</body>
+</html>
