@@ -1,0 +1,591 @@
+<title>レーベンWEB×LINE連携構想</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 提案書の章立てを1カラムで縦に流す。各章＝スライド1〜2枚分。要点ボックス→詳細→図表案の順 */
+:root{
+  --bg:#f6f7f9; --paper:#ffffff; --fg:#1b2330; --muted:#5b6676; --line:#d9dee6;
+  --accent:#2c4f8c; --accent-soft:#e6ecf7;
+  --line-green:#0f8f4a; --line-soft:#e3f4ea;
+  --warn:#a5560a; --warn-soft:#fbefe1;
+  --fact:#1f6b52; --fact-soft:#e2f1ea; --hyp:#7a4d9c; --hyp-soft:#f0e8f7; --unk:#6b7280; --unk-soft:#eceef1;
+  --f-display:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161d; --paper:#1a2029; --fg:#e6eaf0; --muted:#9aa5b4; --line:#2e3744;
+  --accent:#8fb0ea; --accent-soft:#1f2b40;
+  --line-green:#4fd08a; --line-soft:#15301f;
+  --warn:#f0a95b; --warn-soft:#352616;
+  --fact:#6fd1aa; --fact-soft:#16302a; --hyp:#c9a2ea; --hyp-soft:#2c2138; --unk:#a7afbb; --unk-soft:#262c35;
+  color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#12161d; --paper:#1a2029; --fg:#e6eaf0; --muted:#9aa5b4; --line:#2e3744;
+  --accent:#8fb0ea; --accent-soft:#1f2b40;
+  --line-green:#4fd08a; --line-soft:#15301f;
+  --warn:#f0a95b; --warn-soft:#352616;
+  --fact:#6fd1aa; --fact-soft:#16302a; --hyp:#c9a2ea; --hyp-soft:#2c2138; --unk:#a7afbb; --unk-soft:#262c35;
+  color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.8;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.4;margin:0}
+h1{font-size:clamp(26px,4.2vw,38px);font-weight:900;letter-spacing:.01em}
+h2{font-size:clamp(20px,2.6vw,25px);font-weight:700}
+h3{font-size:17px;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+header.cover{display:flex;flex-direction:column;gap:12px;padding-bottom:20px;border-bottom:2px solid var(--fg)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}
+section.page{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:28px clamp(18px,3vw,36px);display:flex;flex-direction:column;gap:16px;min-width:0}
+.ptitle{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.pno{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.point{background:var(--accent-soft);border-radius:4px;padding:14px 18px}
+.point b{display:block;font-family:var(--f-display);font-size:13px;color:var(--accent);letter-spacing:.06em;margin-bottom:4px}
+.point ul{margin:0;padding-left:1.2em}
+.figidea{font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
+.figidea::before{content:"図表案　";font-weight:700;color:var(--fg)}
+ul,ol{margin:0;padding-left:1.3em}
+li+li{margin-top:4px}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px;white-space:nowrap;line-height:1.7}
+.t-fact{background:var(--fact-soft);color:var(--fact)}
+.t-sec{background:var(--warn-soft);color:var(--warn)}
+.t-hyp{background:var(--hyp-soft);color:var(--hyp)}
+.t-unk{background:var(--unk-soft);color:var(--unk)}
+.t-a{background:var(--accent);color:var(--paper)}
+.t-b{background:var(--accent-soft);color:var(--accent)}
+.t-c{background:var(--unk-soft);color:var(--unk)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+th{font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--muted);background:var(--bg)}
+td.src{font-size:12px;color:var(--muted);white-space:nowrap}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.grid3,.grid2{grid-template-columns:1fr}}
+.box{border:1px solid var(--line);border-radius:4px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.box h3{font-size:15px}
+.box.merit{border-top:3px solid var(--line-green)}
+.box.demerit{border-top:3px solid var(--warn)}
+.concept{font-family:var(--f-display);font-size:clamp(18px,2.4vw,22px);font-weight:700;border-left:4px solid var(--accent);padding:4px 0 4px 16px}
+/* diagram */
+.diagram{min-width:900px}
+.diagram text{font-family:var(--f-body);fill:var(--fg)}
+.d-lane{fill:var(--bg);stroke:var(--line)}
+.d-lanelabel{font-family:var(--f-display);font-weight:700;font-size:14px}
+.d-node{fill:var(--paper);stroke:var(--line);stroke-width:1.2}
+.d-line{fill:var(--line-soft);stroke:var(--line-green);stroke-width:1.5}
+.d-core{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.d-web{fill:var(--paper);stroke:var(--fg);stroke-width:1.5}
+.d-new{fill:var(--hyp-soft);stroke:var(--hyp);stroke-width:1.2;stroke-dasharray:5 3}
+.d-t{font-size:13px;font-weight:700}
+.d-s{font-size:11.5px;fill:var(--muted)!important}
+.d-arrow{stroke:var(--muted);stroke-width:1.6;fill:none}
+.d-arrow-g{stroke:var(--line-green);stroke-width:2;fill:none}
+.d-arrow-a{stroke:var(--accent);stroke-width:2;fill:none}
+.d-num{fill:var(--fg)}
+.d-numt{fill:var(--paper)!important;font-family:var(--f-mono);font-size:12px;font-weight:500}
+.d-lbl{font-size:11.5px;fill:var(--fg)}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.steps{grid-template-columns:1fr 1fr}}
+.step{background:var(--bg);border-radius:4px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.step .k{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
+.step b{font-family:var(--f-display)}
+.gantt td{font-size:13px}
+.bar{height:14px;border-radius:3px;background:var(--accent)}
+.bar.lite{background:var(--accent-soft);border:1px solid var(--accent)}
+.num{font-variant-numeric:tabular-nums;font-family:var(--f-mono)}
+.sources{font-size:13px;color:var(--muted)}
+.sources a{color:var(--accent);word-break:break-all}
+pre.mermaid{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:12px;margin:0;overflow-x:auto}
+</style>
+
+<div class="wrap">
+
+<header class="cover">
+  <span class="eyebrow">System integration proposal / draft</span>
+  <h1>レーベンWEB × LINE 連携構想<br>仕様分析とメリット・デメリット、全体概念図</h1>
+  <p class="muted">株式会社レーベンコミュニティ様が運営するマンション居住者向け会員サービス「レーベンWEB」の公開情報を整理し、LINE公式アカウントとシステム連携した場合の効果とリスク、全体構成をまとめた提案用の資料です。</p>
+  <div class="meta"><span>作成日：2026年11月24日</span><span>情報源：公開Web情報（プレスリリース、公式サイト、利用規約、求人媒体）</span><span>ステータス：初回提案用ドラフト</span></div>
+  <div class="legend">表記ルール：
+    <span class="tag t-fact">事実</span>公式情報で確認
+    <span class="tag t-sec">二次情報</span>報道・求人媒体等
+    <span class="tag t-hyp">仮説</span>当社の推定
+    <span class="tag t-unk">未確認</span>公開情報なし
+  </div>
+</header>
+
+<!-- 1 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.01</span><h2>提案背景</h2></div>
+  <div class="point"><b>要点</b>
+    <ul>
+      <li>レーベンWEBは、管理費等の請求書・領収書を電子化し、紙の発行・送付と問い合わせ対応の負担を減らす目的で開設されたサービスです。</li>
+      <li>電子化の効果は「登録して使ってもらう」ことが前提です。居住者が日常的に使うLINEを入口にすると、登録率と利用頻度を上げられる可能性があります（仮説）。</li>
+    </ul>
+  </div>
+  <p>マンション管理業界では、人手不足と管理委託費の見直し圧力の中で、紙・電話中心の居住者対応をデジタルへ移す動きが進んでいます。レーベンWEBは開設時の発表で「今後、他のマンション管理向けWEBサービスも追加予定」としており、機能拡張の途中にあると考えられます。本資料では、拡張の一手としてLINE連携を検討します。</p>
+  <p class="figidea">左に「紙・電話中心の現状」、右に「LINE＋レーベンWEBの将来像」を並べたBefore/After図。</p>
+</section>
+
+<!-- 2 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.02</span><h2>顧客の現状：レーベンWEBの仕様（公開情報の整理）</h2></div>
+  <div class="point"><b>要点</b>
+    <ul>
+      <li>現在の中心機能は「請求書・領収書の電子取得」です。利用規約上は「区分所有者・居住者の届出情報の管理」も対象に含まれています。</li>
+      <li>登録は「メールアドレス＋パスワード」で会員登録し、配布書類の仮ID・パスワードで部屋を認証する2段階方式です。</li>
+      <li>通知、チャット、施設予約、LINE連携などは公開情報では確認できませんでした。</li>
+    </ul>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:18%">項目</th><th>内容</th><th style="width:10%">区分</th><th style="width:16%">出典</th></tr></thead>
+    <tbody>
+      <tr><td>運営会社</td><td>株式会社レーベンコミュニティ（MIRARTHホールディングスグループのマンション管理会社）</td><td><span class="tag t-fact">事実</span></td><td class="src">公式サイト／MIRARTH発表資料</td></tr>
+      <tr><td>開設日</td><td>2月18日開設と発表。年は2023年とする報道あり</td><td><span class="tag t-sec">二次情報</span></td><td class="src">PR TIMES／東京Days</td></tr>
+      <tr><td>開設目的</td><td>請求書・領収書の電子化、発行・送付にかかる人件費と作業費の削減、問い合わせ対応の効率化、ペーパーレス化、利便性向上</td><td><span class="tag t-fact">事実</span></td><td class="src">プレスリリース</td></tr>
+      <tr><td>対象者</td><td>同社が管理受託するマンションの管理組合の区分所有者・居住者で、規約に同意し、同社が承認した人</td><td><span class="tag t-fact">事実</span></td><td class="src">利用規約（登録ページ）</td></tr>
+      <tr><td>主な機能</td><td>毎月の管理費等の請求書・領収書の確認とダウンロード（確定申告用の領収書取得）。表示期間は登録月から15か月分</td><td><span class="tag t-fact">事実</span></td><td class="src">公式「レーベンWEB」ページ</td></tr>
+      <tr><td>規約上の機能範囲</td><td>管理組合業務のため、区分所有者・居住者の届出情報を管理する機能と付随機能。日本語のみ</td><td><span class="tag t-fact">事実</span></td><td class="src">利用規約</td></tr>
+      <tr><td>登録・認証</td><td>①メールアドレスとパスワードで会員登録 → ②ログイン後、配布書類の仮ID・パスワードで部屋認証。仮IDの再発行は問い合わせフォームから</td><td><span class="tag t-fact">事実</span></td><td class="src">公式FAQ</td></tr>
+      <tr><td>規約変更</td><td>Webアプリ上の掲示で告知。変更後2週間以内に利用中止の申し出がなければ同意とみなす。サービスの変更・廃止も事前連絡なしでアプリ上に明示</td><td><span class="tag t-fact">事実</span></td><td class="src">利用規約</td></tr>
+      <tr><td>提供形態</td><td>規約で「webアプリ」と表記。登録フォームはSPIRAL系のドメイン（smp.ne.jp）上にあり、ローコード基盤で構築されている可能性</td><td><span class="tag t-hyp">仮説</span></td><td class="src">登録ページURL</td></tr>
+      <tr><td>関連手続き</td><td>管理費等の引落口座変更はオンラインまたは書面で受付（レーベンWEB内か別システムかは不明）</td><td><span class="tag t-fact">事実</span></td><td class="src">公式「口座変更手続き」</td></tr>
+      <tr><td>今後の拡張</td><td>他のマンション管理向けWEBサービスを追加予定</td><td><span class="tag t-fact">事実</span></td><td class="src">プレスリリース</td></tr>
+      <tr><td>プッシュ通知・チャット・施設予約・掲示板・LINE連携</td><td>記載なし</td><td><span class="tag t-unk">未確認</span></td><td class="src">—</td></tr>
+      <tr><td>管理戸数・管理組合数・登録率</td><td>公式な数値は確認できず（求人媒体に記載はあるが会社の特定が不十分なため不採用）</td><td><span class="tag t-unk">未確認</span></td><td class="src">—</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="figidea">上の表をそのまま「現状仕様一覧」として1枚に。登録フローは「会員登録 → ログイン → 部屋認証 → 請求書・領収書閲覧」の4ステップ横並び図。</p>
+</section>
+
+<!-- 3 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.03</span><h2>解決すべき課題</h2></div>
+  <div class="point"><b>要点</b>
+    <ul><li>仕様から読み取れる課題は「気づいてもらえない」「登録が面倒」「使う理由が月1回しかない」「連絡手段が分散している」の4点です（いずれも仮説。ヒアリングで検証が必要です）。</li></ul>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:16%">分類</th><th>課題（仮説）</th><th style="width:34%">仕様上の根拠</th></tr></thead>
+    <tbody>
+      <tr><td>経営</td><td>電子化しても紙の発行が残ると、印刷・郵送コストの削減効果が限定的になる</td><td>削減効果は登録率に比例する。登録率は未公開</td></tr>
+      <tr><td>顧客接点</td><td>請求書発行や重要なお知らせに居住者が気づきにくい（自分から見に行くプル型）</td><td>プッシュ通知の記載がない</td></tr>
+      <tr><td>Web・UX</td><td>初回登録が2段階で、配布書類の紛失時は再発行の問い合わせが必要。高齢の区分所有者ほど離脱しやすい</td><td>FAQに仮ID・再発行の案内がある</td></tr>
+      <tr><td>利用頻度</td><td>主機能が請求書・領収書で、利用が月1回や年1回（確定申告時）に偏り、ログイン情報を忘れやすい</td><td>機能範囲が請求・領収中心</td></tr>
+      <tr><td>業務</td><td>断水・点検・工事などの連絡は掲示物や投函が中心と想定され、フロント担当と総合受付の負荷が続く</td><td>お知らせ配信機能の記載がない</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="figidea">4象限（経営／顧客接点／Web・UX／業務）に課題カードを配置した図。</p>
+</section>
+
+<!-- 4 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.04</span><h2>課題の原因</h2></div>
+  <div class="point"><b>要点</b>
+    <ul><li>根本原因は「レーベンWEBが手続きの場としては整っている一方、居住者に届く連絡チャネルを持っていない」ことにあると考えます（仮説）。</li></ul>
+  </div>
+  <ol>
+    <li><b>チャネルの不在</b>：Webサイトは「訪問してもらう」設計で、連絡を届ける手段（プッシュ）がない。</li>
+    <li><b>ID管理の負担</b>：独自ID・パスワードを利用者が保持する必要があり、利用間隔が空くと忘れる。</li>
+    <li><b>機能の狭さ</b>：日常的な用件（お知らせ確認、問い合わせ、届出）がまだWebに載っておらず、ログインする動機が少ない。</li>
+    <li><b>窓口の分散</b>：電話、問い合わせフォーム、掲示物、紙書類と経路が分かれ、利用者はどこを見ればよいか判断しにくい。</li>
+  </ol>
+  <p class="figidea">「現象 → 原因」をつなぐロジックツリー（左：P.03の課題、右：原因4項目）。</p>
+</section>
+
+<!-- 5 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.05</span><h2>提案コンセプト</h2></div>
+  <p class="concept">LINEで「気づく・聞く」、レーベンWEBで「確かめる・手続きする」</p>
+  <div class="point"><b>要点</b>
+    <ul>
+      <li>LINEは通知と入口の役割に限定し、金額・氏名などの個人情報はLINEのトーク画面に出さない設計にします。</li>
+      <li>レーベンWEBは認証済みの手続き基盤としてそのまま使い、LINEからは LIFF（LINE内で開くWebアプリ）とアカウント連携で開きます。既存システムの作り直しは最小限にします。</li>
+    </ul>
+  </div>
+  <div class="grid3">
+    <div class="box"><h3>役割1　通知</h3><p>請求書・領収書の発行、断水・点検、総会の案内を、物件・部屋単位でLINEに届けます。</p></div>
+    <div class="box"><h3>役割2　入口</h3><p>リッチメニューからレーベンWEBの各機能へ。LINEログインでID・パスワードの入力を減らします。</p></div>
+    <div class="box"><h3>役割3　相談</h3><p>よくある質問はチャットボットが答え、解決しない内容は総合受付の担当者に引き継ぎます。</p></div>
+  </div>
+  <p class="figidea">3つの役割を3枚のカードで並べ、下に「個人情報はレーベンWEB側にのみ保持」と注記。</p>
+</section>
+
+<!-- 6 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.06</span><h2>具体的な施策（連携機能と優先順位）</h2></div>
+  <div class="point"><b>要点</b>
+    <ul><li>優先度Aは既存機能を活かして早く効果が出る施策、Bは業務削減を広げる施策、Cは管理組合運営まで踏み込む施策です。</li></ul>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:7%">優先</th><th style="width:22%">施策</th><th>内容</th><th style="width:20%">主な技術要素</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-a">A</span></td><td>LINEアカウント連携</td><td>LINEの友だち追加後、レーベンWEBにログイン（初回のみ）してLINEと会員IDを紐づけます。部屋認証済みの会員だけを連携対象にします。</td><td>Messaging API アカウント連携（連携トークン方式）／LINEログイン</td></tr>
+      <tr><td><span class="tag t-a">A</span></td><td>リッチメニューからレーベンWEBを起動</td><td>「請求書・領収書」「お知らせ」「問い合わせ」「各種届出」をメニュー化し、LIFFでレーベンWEBの該当画面を開きます。</td><td>リッチメニュー（連携前・連携後で切替）／LIFF</td></tr>
+      <tr><td><span class="tag t-a">A</span></td><td>請求書・領収書の発行通知</td><td>「今月の請求書を発行しました」のみを送り、金額はレーベンWEBで確認してもらいます。確定申告前（1〜2月）には領収書ダウンロードを案内します。</td><td>Messaging API プッシュ／請求システムからの発行イベント</td></tr>
+      <tr><td><span class="tag t-a">A</span></td><td>物件別のお知らせ配信</td><td>断水、停電、エレベーター点検、消防点検、大規模修繕の工程などを、物件・棟・部屋単位で配信します。</td><td>セグメント配信（物件・部屋マスタと連動）</td></tr>
+      <tr><td><span class="tag t-b">B</span></td><td>FAQチャットボットと有人チャット</td><td>仮ID再発行、口座変更、駐車場の空き状況などの定型の問い合わせに自動で回答し、解決しないものは総合受付へ引き継ぎます。</td><td>Webhook／FAQエンジン／問い合わせ管理システム連携</td></tr>
+      <tr><td><span class="tag t-b">B</span></td><td>届出・申請のオンライン化</td><td>居住者届、駐車場・駐輪場の申込、専有部リフォーム工事届などをLIFFフォーム化し、規約上の「届出情報管理機能」に取り込みます。</td><td>LIFFフォーム／レーベンWEBの届出情報DB</td></tr>
+      <tr><td><span class="tag t-b">B</span></td><td>総会・理事会のリマインド</td><td>総会招集の案内、出欠・委任状の提出期限の通知、理事向けの理事会日程の案内を送ります。</td><td>役職属性によるセグメント配信</td></tr>
+      <tr><td><span class="tag t-c">C</span></td><td>アンケート・意向確認</td><td>修繕計画や設備更新への意向調査をLINEで実施します。議決権行使の電子化は管理規約と法令の確認が前提です。</td><td>LIFFアンケート／集計ダッシュボード</td></tr>
+      <tr><td><span class="tag t-c">C</span></td><td>グループサービスの案内</td><td>リフォーム、売却相談などグループのサービスを、本人の同意を得た人にだけ案内します。</td><td>同意フラグ管理／配信停止の仕組み</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="figidea">縦軸「業務削減効果」、横軸「導入難易度」のマトリクスに施策をプロット（Aは左上に集まる想定）。</p>
+</section>
+
+<!-- 7 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.07</span><h2>全体の概念図</h2></div>
+  <div class="point"><b>要点</b>
+    <ul>
+      <li>LINEとレーベンWEBの間に「LINE連携基盤」を置き、ID連携、配信、チャットの処理をまとめます。レーベンWEB本体の改修は、認証の受け口と発行イベントの送信に限ります。</li>
+      <li>紫の破線枠は今回新たに作る部分です。</li>
+    </ul>
+  </div>
+  <div class="scroll">
+  <svg class="diagram" viewBox="0 0 1000 640" role="img" aria-labelledby="dg-title">
+    <title id="dg-title">レーベンWEBとLINEの連携全体構成図</title>
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-num" style="fill:var(--muted)"/></marker>
+      <marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--line-green)"/></marker>
+      <marker id="aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+    </defs>
+
+    <!-- lanes -->
+    <rect class="d-lane" x="10" y="10" width="170" height="620" rx="6"/>
+    <text class="d-lanelabel" x="95" y="36" text-anchor="middle">利用者</text>
+    <rect class="d-lane" x="200" y="10" width="190" height="620" rx="6"/>
+    <text class="d-lanelabel" x="295" y="36" text-anchor="middle">LINE</text>
+    <rect class="d-lane" x="410" y="10" width="200" height="620" rx="6"/>
+    <text class="d-lanelabel" x="510" y="36" text-anchor="middle">LINE連携基盤（新設）</text>
+    <rect class="d-lane" x="630" y="10" width="170" height="620" rx="6"/>
+    <text class="d-lanelabel" x="715" y="36" text-anchor="middle">レーベンWEB</text>
+    <rect class="d-lane" x="820" y="10" width="170" height="620" rx="6"/>
+    <text class="d-lanelabel" x="905" y="36" text-anchor="middle">社内システム・窓口</text>
+
+    <!-- users -->
+    <rect class="d-node" x="25" y="70" width="140" height="70" rx="6"/>
+    <text class="d-t" x="95" y="98" text-anchor="middle">区分所有者</text>
+    <text class="d-s" x="95" y="118" text-anchor="middle">請求・領収・総会</text>
+    <rect class="d-node" x="25" y="170" width="140" height="70" rx="6"/>
+    <text class="d-t" x="95" y="198" text-anchor="middle">居住者</text>
+    <text class="d-s" x="95" y="218" text-anchor="middle">お知らせ・届出・相談</text>
+    <rect class="d-node" x="25" y="270" width="140" height="70" rx="6"/>
+    <text class="d-t" x="95" y="298" text-anchor="middle">理事・役員</text>
+    <text class="d-s" x="95" y="318" text-anchor="middle">理事会・意向確認</text>
+    <rect class="d-node" x="25" y="490" width="140" height="80" rx="6"/>
+    <text class="d-t" x="95" y="518" text-anchor="middle">LINE非利用者</text>
+    <text class="d-s" x="95" y="538" text-anchor="middle">メール・紙・電話を</text>
+    <text class="d-s" x="95" y="555" text-anchor="middle">継続（併用）</text>
+
+    <!-- LINE -->
+    <rect class="d-line" x="215" y="70" width="160" height="80" rx="6"/>
+    <text class="d-t" x="295" y="100" text-anchor="middle">LINE公式アカウント</text>
+    <text class="d-s" x="295" y="120" text-anchor="middle">友だち追加・トーク</text>
+    <text class="d-s" x="295" y="137" text-anchor="middle">プッシュ通知</text>
+    <rect class="d-line" x="215" y="175" width="160" height="70" rx="6"/>
+    <text class="d-t" x="295" y="203" text-anchor="middle">リッチメニュー</text>
+    <text class="d-s" x="295" y="223" text-anchor="middle">連携前／連携後で切替</text>
+    <rect class="d-line" x="215" y="270" width="160" height="80" rx="6"/>
+    <text class="d-t" x="295" y="300" text-anchor="middle">LIFF</text>
+    <text class="d-s" x="295" y="320" text-anchor="middle">LINE内でWeb画面を表示</text>
+    <text class="d-s" x="295" y="337" text-anchor="middle">LINEログインで本人特定</text>
+    <rect class="d-line" x="215" y="380" width="160" height="60" rx="6"/>
+    <text class="d-t" x="295" y="406" text-anchor="middle">Messaging API</text>
+    <text class="d-s" x="295" y="425" text-anchor="middle">Webhook／送信API</text>
+
+    <!-- core -->
+    <rect class="d-new" x="425" y="70" width="170" height="70" rx="6"/>
+    <text class="d-t" x="510" y="98" text-anchor="middle">ID連携管理</text>
+    <text class="d-s" x="510" y="118" text-anchor="middle">LINEユーザーID⇔会員ID⇔部屋</text>
+    <rect class="d-new" x="425" y="165" width="170" height="70" rx="6"/>
+    <text class="d-t" x="510" y="193" text-anchor="middle">配信エンジン</text>
+    <text class="d-s" x="510" y="213" text-anchor="middle">物件・部屋・役職で絞り込み</text>
+    <rect class="d-new" x="425" y="260" width="170" height="70" rx="6"/>
+    <text class="d-t" x="510" y="288" text-anchor="middle">チャットボット</text>
+    <text class="d-s" x="510" y="308" text-anchor="middle">FAQ回答・有人へ引継ぎ</text>
+    <rect class="d-new" x="425" y="355" width="170" height="70" rx="6"/>
+    <text class="d-t" x="510" y="383" text-anchor="middle">同意・配信停止管理</text>
+    <text class="d-s" x="510" y="403" text-anchor="middle">通知種別ごとの同意</text>
+    <rect class="d-new" x="425" y="450" width="170" height="70" rx="6"/>
+    <text class="d-t" x="510" y="478" text-anchor="middle">管理画面・監査ログ</text>
+    <text class="d-s" x="510" y="498" text-anchor="middle">配信の作成・承認・履歴</text>
+
+    <!-- leben web -->
+    <rect class="d-web" x="645" y="70" width="140" height="80" rx="6"/>
+    <text class="d-t" x="715" y="98" text-anchor="middle">会員認証</text>
+    <text class="d-s" x="715" y="118" text-anchor="middle">メール＋パスワード</text>
+    <text class="d-s" x="715" y="135" text-anchor="middle">＋部屋認証</text>
+    <rect class="d-web" x="645" y="175" width="140" height="70" rx="6"/>
+    <text class="d-t" x="715" y="203" text-anchor="middle">請求書・領収書</text>
+    <text class="d-s" x="715" y="223" text-anchor="middle">15か月分の閲覧・DL</text>
+    <rect class="d-web" x="645" y="270" width="140" height="70" rx="6"/>
+    <text class="d-t" x="715" y="298" text-anchor="middle">届出情報管理</text>
+    <text class="d-s" x="715" y="318" text-anchor="middle">区分所有者・居住者</text>
+    <rect class="d-new" x="645" y="365" width="140" height="70" rx="6"/>
+    <text class="d-t" x="715" y="393" text-anchor="middle">連携用の受け口</text>
+    <text class="d-s" x="715" y="413" text-anchor="middle">ID連携・イベント送信</text>
+
+    <!-- internal -->
+    <rect class="d-node" x="835" y="70" width="140" height="70" rx="6"/>
+    <text class="d-t" x="905" y="98" text-anchor="middle">請求・会計</text>
+    <text class="d-s" x="905" y="118" text-anchor="middle">管理費等の請求・入金</text>
+    <rect class="d-node" x="835" y="165" width="140" height="70" rx="6"/>
+    <text class="d-t" x="905" y="193" text-anchor="middle">物件・部屋マスタ</text>
+    <text class="d-s" x="905" y="213" text-anchor="middle">管理組合・棟・部屋</text>
+    <rect class="d-node" x="835" y="260" width="140" height="70" rx="6"/>
+    <text class="d-t" x="905" y="288" text-anchor="middle">問い合わせ管理</text>
+    <text class="d-s" x="905" y="308" text-anchor="middle">総合受付・履歴</text>
+    <rect class="d-node" x="835" y="355" width="140" height="70" rx="6"/>
+    <text class="d-t" x="905" y="383" text-anchor="middle">フロント担当</text>
+    <text class="d-s" x="905" y="403" text-anchor="middle">お知らせ作成・承認</text>
+
+    <!-- arrows -->
+    <!-- users to LINE -->
+    <path class="d-arrow-g" d="M165,105 L213,105" marker-end="url(#ahg)"/>
+    <path class="d-arrow-g" d="M165,205 L213,205" marker-end="url(#ahg)"/>
+    <path class="d-arrow-g" d="M165,305 L213,305" marker-end="url(#ahg)"/>
+    <!-- LINE internal -->
+    <path class="d-arrow" d="M295,150 L295,173" marker-end="url(#ah)"/>
+    <path class="d-arrow" d="M295,245 L295,268" marker-end="url(#ah)"/>
+    <!-- Messaging API <-> core -->
+    <path class="d-arrow-g" d="M375,410 L400,410 L400,300 L423,300" marker-end="url(#ahg)"/>
+    <path class="d-arrow-g" d="M423,200 L392,200 L392,400 L377,400" marker-end="url(#ahg)"/>
+    <!-- LIFF -> leben web (via core) -->
+    <path class="d-arrow-a" d="M375,290 L405,290 L405,105 L423,105" marker-end="url(#aha)"/>
+    <path class="d-arrow-a" d="M595,105 L643,105" marker-end="url(#aha)"/>
+    <!-- leben web connector -> core -->
+    <path class="d-arrow" d="M645,400 L620,400 L620,200 L597,200" marker-end="url(#ah)"/>
+    <!-- internal -> leben web -->
+    <path class="d-arrow" d="M833,105 L815,105 L815,210 L787,210" marker-end="url(#ah)"/>
+    <path class="d-arrow" d="M833,200 L815,200 L815,400 L787,400" marker-end="url(#ah)"/>
+    <path class="d-arrow" d="M833,390 C760,470 650,470 597,488" marker-end="url(#ah)"/>
+    <!-- chatbot -> inquiry -->
+    <path class="d-arrow" d="M595,282 L632,282 L632,252 L870,252 L870,258" marker-end="url(#ah)"/>
+
+    <!-- numbered labels -->
+    <g>
+      <circle class="d-num" cx="619" cy="88" r="11"/><text class="d-numt" x="619" y="92" text-anchor="middle">1</text>
+      <circle class="d-num" cx="607" cy="200" r="11"/><text class="d-numt" x="607" y="204" text-anchor="middle">2</text>
+      <circle class="d-num" cx="405" cy="240" r="11"/><text class="d-numt" x="405" y="244" text-anchor="middle">3</text>
+      <circle class="d-num" cx="750" cy="252" r="11"/><text class="d-numt" x="750" y="256" text-anchor="middle">4</text>
+    </g>
+
+    <!-- legend -->
+    <g transform="translate(205,560)">
+      <text class="d-s" x="0" y="0">①ID連携：初回だけレーベンWEBにログインしてLINEと紐づけ</text>
+      <text class="d-s" x="0" y="18">②通知：発行イベント・お知らせを配信エンジン経由でLINEへ</text>
+      <text class="d-s" x="0" y="36">③画面表示：LIFFからLINEログインでレーベンWEBの画面を開く（金額はWEB側で表示）</text>
+      <text class="d-s" x="0" y="54">④相談：ボットで解決しない問い合わせは総合受付へ引継ぎ</text>
+    </g>
+  </svg>
+  </div>
+
+  <h3>アカウント連携の流れ（施策A-1）</h3>
+<pre class="mermaid">
+sequenceDiagram
+  actor U as 利用者
+  participant L as LINE公式アカウント
+  participant H as LINE連携基盤
+  participant W as レーベンWEB
+  U->>L: 友だち追加
+  L->>H: Webhook（友だち追加イベント）
+  H->>L: 連携トークン発行を依頼
+  H-->>U: 「レーベンWEBと連携する」ボタンを送信
+  U->>W: レーベンWEBにログイン（初回のみ・部屋認証済み）
+  W->>H: 会員IDを一時コードで連携
+  H->>L: 連携完了を通知
+  H->>H: LINEユーザーID・会員ID・部屋を紐づけて保存
+  H-->>U: 連携完了メッセージ、連携後のリッチメニューに切替
+</pre>
+  <p class="figidea">上の構成図を1枚、連携の流れを1枚に分けて掲載します。PowerPointでは5レーンのスイムレーン図として描き直してください。</p>
+</section>
+
+<!-- 8 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.08</span><h2>導入効果：メリット</h2></div>
+  <div class="point"><b>要点</b>
+    <ul><li>効果は利用者、管理組合、レーベンコミュニティの三者に分けて整理します。数値の効果は現状データ（登録率、問い合わせ件数、紙の発行枚数）を確認した上で試算します。</li></ul>
+  </div>
+  <div class="grid3">
+    <div class="box merit"><h3>利用者（区分所有者・居住者）</h3>
+      <ul>
+        <li>請求書・領収書の発行にLINEで気づける</li>
+        <li>ID・パスワードを覚えなくても、LINEからレーベンWEBを開ける</li>
+        <li>断水・点検などの連絡を外出先でも受け取れる</li>
+        <li>電話の受付時間外でも、よくある質問はすぐ解決できる</li>
+      </ul></div>
+    <div class="box merit"><h3>管理組合・理事会</h3>
+      <ul>
+        <li>重要なお知らせが居住者に届いたかを把握しやすくなる</li>
+        <li>総会の出欠・委任状の提出を促しやすく、定足数確保の助けになる</li>
+        <li>掲示物・配布物の印刷費と手間を減らせる</li>
+        <li>修繕などへの意向をアンケートで集めやすくなる</li>
+      </ul></div>
+    <div class="box merit"><h3>レーベンコミュニティ</h3>
+      <ul>
+        <li>レーベンWEBの登録率と利用頻度が上がり、紙の請求書・領収書の削減が進む（仮説）</li>
+        <li>仮ID再発行や請求内容の定型問い合わせが減る（仮説）</li>
+        <li>フロント担当が物件別のお知らせを一括で配信できる</li>
+        <li>居住者との接点が増え、管理品質の評価や管理受託の継続・新規提案の材料になる</li>
+        <li>レーベンWEB本体の作り直しが不要で、段階的に機能を追加できる</li>
+      </ul></div>
+  </div>
+  <p class="figidea">三者別メリットの3カラム。下段に「効果の試算式：削減額＝紙発行の単価×（LINE経由で増えた電子化登録数）」を想定値として記載。</p>
+</section>
+
+<!-- 9 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.09</span><h2>デメリット・リスクと対策</h2></div>
+  <div class="point"><b>要点</b>
+    <ul><li>大きなリスクは「個人情報の扱い」「LINE非利用者との格差」「配信の運用負荷」の3つです。いずれも設計と運用ルールで抑えられます。</li></ul>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:20%">デメリット・リスク</th><th>内容</th><th style="width:36%">対策</th></tr></thead>
+    <tbody>
+      <tr><td>個人情報・セキュリティ</td><td>LINEユーザーIDと部屋番号・氏名が結びつくため、紐づけデータの漏えいや誤配信の影響が大きい。LINEヤフー社では過去に情報漏えい事案があり、総務省の行政指導を受けている</td><td>金額・氏名はLINEに出さず通知のみ。紐づけ情報は連携基盤側で暗号化して保持。配信は承認制とし、テスト配信を必須にする</td></tr>
+      <tr><td>規約・法令対応</td><td>個人情報の利用目的、外部事業者への委託、外部送信（電気通信事業法の外部送信規律）の記載見直しが必要。総会の議決をLINEで扱う場合は管理規約の確認が必要</td><td>利用規約とプライバシーポリシーを改定し、連携時に同意を取得。議決は当面対象外とし、案内とリマインドに限定</td></tr>
+      <tr><td>LINE非利用者との格差</td><td>高齢の区分所有者や、LINEを使わない人に情報が届きにくくなる</td><td>LINEは追加の連絡手段と位置づけ、メール・紙・掲示を残す。重要通知は全チャネルに配信</td></tr>
+      <tr><td>運用負荷</td><td>物件ごとのお知らせ作成、配信の承認、チャットの有人対応が新たな業務になる</td><td>お知らせのテンプレート化、配信予約、ボットの回答範囲の段階的な拡大。有人対応の受付時間を明示</td></tr>
+      <tr><td>費用</td><td>LINE公式アカウントは配信数に応じた従量課金（月額プラン＋超過分）。初期開発費と保守費も発生する</td><td>通知は対象を絞って配信。費用は管理戸数と配信頻度から試算（最新の料金表で要確認）</td></tr>
+      <tr><td>外部プラットフォーム依存</td><td>LINE側の仕様変更、料金改定、障害の影響を受ける</td><td>機能の本体はレーベンWEBに置き、LINEは入口に限定。障害時はメールで代替する</td></tr>
+      <tr><td>対象者の取り違え</td><td>賃貸に出している区分所有者と入居者（賃借人）で受け取るべき情報が違う。転居・売却後の連携解除漏れも起こりうる</td><td>「区分所有者」「居住者」「理事」を属性で分けて配信。部屋マスタの変更時に連携を自動で見直す</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="figidea">リスク表に「影響度×発生可能性」のヒートマップを添える。</p>
+</section>
+
+<!-- 10 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.10</span><h2>実施体制</h2></div>
+  <div class="grid2">
+    <div class="box"><h3>レーベンコミュニティ様</h3>
+      <ul>
+        <li>プロジェクト責任者：方針決定、予算承認</li>
+        <li>システム担当：レーベンWEB・請求システムとの接続、情報セキュリティ審査</li>
+        <li>総合受付：FAQ整備、有人チャットの運用設計</li>
+        <li>フロント担当（代表者）：お知らせテンプレートの作成、パイロット物件の調整</li>
+        <li>法務・個人情報担当：規約改定、同意文言の確認</li>
+      </ul></div>
+    <div class="box"><h3>当社</h3>
+      <ul>
+        <li>プロジェクトマネージャー：進行管理、要件定義の取りまとめ</li>
+        <li>システムエンジニア：LINE連携基盤の設計・開発、LIFF画面の開発</li>
+        <li>UI/UXデザイナー：リッチメニュー、連携画面、通知文の設計</li>
+        <li>運用コンサルタント：配信ルール、KPIの計測、改善提案</li>
+      </ul></div>
+  </div>
+  <p class="figidea">左右2列の体制図。双方の窓口を線で結ぶ。</p>
+</section>
+
+<!-- 11 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.11</span><h2>スケジュール（目安）</h2></div>
+  <p class="muted">要件定義の結果により変わります。期間は一般的なLINE連携案件の目安です。</p>
+  <div class="scroll">
+  <table class="gantt">
+    <thead><tr><th style="width:26%">フェーズ</th><th style="width:20%">期間（目安）</th><th>主な作業</th><th style="width:24%">進行</th></tr></thead>
+    <tbody>
+      <tr><td>0. 現状調査・要件定義</td><td class="num">1〜2か月</td><td>現状データの確認、レーベンWEBの認証方式と接続方法の確認、セキュリティ審査、規約改定方針</td><td><div class="bar" style="width:25%"></div></td></tr>
+      <tr><td>1. 優先度Aの開発</td><td class="num">2〜3か月</td><td>アカウント連携、リッチメニュー、発行通知、物件別お知らせ配信</td><td><div class="bar" style="width:40%;margin-left:20%"></div></td></tr>
+      <tr><td>2. パイロット運用</td><td class="num">3か月</td><td>数物件で試行し、登録率、開封、問い合わせの変化を測定</td><td><div class="bar lite" style="width:35%;margin-left:52%"></div></td></tr>
+      <tr><td>3. 全物件展開・優先度B</td><td class="num">パイロット後〜</td><td>全管理物件への展開、チャットボット、届出・申請、総会リマインド</td><td><div class="bar lite" style="width:22%;margin-left:78%"></div></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="figidea">フェーズ別のガントチャート。パイロット終了時に「全展開の判断会議」を置く。</p>
+</section>
+
+<!-- 12 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.12</span><h2>KPI</h2></div>
+  <div class="point"><b>要点</b>
+    <ul><li>目標値は、要件定義で現状値を確認してから決めます。下表の「目標の考え方」は仮説です。</li></ul>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th style="width:24%">KPI</th><th>定義</th><th style="width:32%">目標の考え方（仮説）</th></tr></thead>
+    <tbody>
+      <tr><td>LINE連携率</td><td>LINE連携した会員数 ÷ 管理戸数</td><td>パイロット物件で現状のレーベンWEB登録率を上回るか</td></tr>
+      <tr><td>レーベンWEB登録率</td><td>部屋認証まで完了した戸数 ÷ 管理戸数</td><td>導入前より増加しているか</td></tr>
+      <tr><td>紙の請求書・領収書の発行数</td><td>月間の紙発行枚数</td><td>前年同月比で減少しているか</td></tr>
+      <tr><td>通知からの閲覧率</td><td>通知を開いてレーベンWEBを表示した数 ÷ 通知数</td><td>メール通知より高いか</td></tr>
+      <tr><td>定型問い合わせ件数</td><td>仮ID再発行・請求内容・口座変更などの電話件数</td><td>導入前の同時期より減少しているか</td></tr>
+      <tr><td>ボット自己解決率</td><td>有人に引き継がずに終わった会話 ÷ 全会話</td><td>FAQの追加で毎月上がっているか</td></tr>
+      <tr><td>ブロック率</td><td>ブロック数 ÷ 友だち数</td><td>配信頻度が適切かの監視指標</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="figidea">KPIツリー（最上位：紙と問い合わせ対応のコスト削減 → 中位：登録率・閲覧率 → 下位：連携率・ブロック率）。</p>
+</section>
+
+<!-- 13 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.13</span><h2>今後の展開</h2></div>
+  <ul>
+    <li><b>管理組合の運営支援</b>：理事会資料・議事録の共有、修繕積立金の状況の見える化（レーベンWEB側で表示）</li>
+    <li><b>設備・共用部</b>：共用施設の予約、不具合の写真付き報告</li>
+    <li><b>グループ連携</b>：本人の同意を前提に、リフォーム・売却・オーナー向けサービスを案内</li>
+    <li><b>データ活用</b>：問い合わせ内容と物件属性を分析し、点検・修繕の提案に活かす</li>
+  </ul>
+  <p class="figidea">フェーズ1〜3を左から右へ並べたロードマップ。</p>
+</section>
+
+<!-- 14 -->
+<section class="page">
+  <div class="ptitle"><span class="pno">P.14</span><h2>まとめ・次のアクション</h2></div>
+  <div class="point"><b>まとめ</b>
+    <ul>
+      <li>レーベンWEBは請求書・領収書の電子化を中心とした認証付きの会員サービスで、利用規約上は届出情報の管理まで範囲に含みます。</li>
+      <li>通知と入口の役割をLINEに持たせると、登録率と利用頻度の向上、紙と問い合わせ対応の削減を見込めます（仮説）。</li>
+      <li>個人情報はLINEに出さない設計とし、LINE非利用者には既存の手段を残します。</li>
+    </ul>
+  </div>
+  <h3>ヒアリングで確認したい事項</h3>
+  <ol>
+    <li>管理戸数、管理組合数、レーベンWEBの現在の登録率</li>
+    <li>紙の請求書・領収書の発行枚数と、1通あたりの印刷・郵送費</li>
+    <li>総合受付への問い合わせ件数と、多い問い合わせの内訳</li>
+    <li>レーベンWEBの構築基盤（SPIRAL等）と、外部連携（API、SSO）の可否</li>
+    <li>現在の通知手段（メール配信の有無）と、お知らせ作成の業務フロー</li>
+    <li>LINE公式アカウントの既存運用（グループ内を含む）の有無</li>
+  </ol>
+  <h3>次のアクション</h3>
+  <div class="steps">
+    <div class="step"><span class="k">STEP 1</span><b>ヒアリング</b><span class="muted">上記6項目を確認（1〜2週間）</span></div>
+    <div class="step"><span class="k">STEP 2</span><b>効果試算</b><span class="muted">現状データを使って削減額を試算</span></div>
+    <div class="step"><span class="k">STEP 3</span><b>技術確認</b><span class="muted">レーベンWEBとの接続方式を確認</span></div>
+    <div class="step"><span class="k">STEP 4</span><b>正式提案</b><span class="muted">見積とパイロット物件の候補を提示</span></div>
+  </div>
+</section>
+
+<section class="page sources">
+  <h3>出典</h3>
+  <ul>
+    <li><a href="https://prtimes.jp/main/html/rd/p/000000558.000034534.html">PR TIMES「【レーベンコミュニティ】マンション管理『レーベンWEB』開設のお知らせ」</a></li>
+    <li><a href="https://mirarth.co.jp/news/pdf/215175bcca409cd4f50533bb5e326d6f16549145.pdf">MIRARTHホールディングス 発表資料（PDF）</a></li>
+    <li><a href="https://www.jutaku-s.com/news/id/0000035994">住宅新報web「マンション管理『レーベンWEB』開設」</a></li>
+    <li><a href="https://tokyo.publishing.3rd-in.co.jp/article/da096624-ecf9-11ef-b3fb-9ca3ba0a67df">東京Days ニュース（開設年の記載）</a></li>
+    <li><a href="https://www.l-community.co.jp/resident/lebenweb/">レーベンコミュニティ「マンション管理レーベンWEB」</a></li>
+    <li><a href="https://www.l-community.co.jp/resident/">レーベンコミュニティ「管理物件のマンションにお住まいの方へ」</a></li>
+    <li><a href="https://www.l-community.co.jp/resident/procedure/">レーベンコミュニティ「管理費等の口座変更手続きについて」</a></li>
+    <li><a href="https://reg31.smp.ne.jp/regist/is?SMPFORM=qdrb-ljmdlb-c4b636a9ccb7e9d63b74c5705613b3ad">レーベンWEB 登録ページ・利用規約</a></li>
+  </ul>
+  <p>注：本資料は検索エンジン経由で取得した公開情報の要約に基づきます。作成環境から公式サイトを直接閲覧できなかったため、提案前に各ページの原文を確認してください。</p>
+</section>
+
+</div>
